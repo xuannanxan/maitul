@@ -1,0 +1,143 @@
+{% extends "admin/admin.html" %}
+{% block content %}
+<!-- wangEditor edit -->
+<script src="{{ url_for('static',filename = 'components/wangEditor/wangEditor.min.js')}}"></script>
+<script src="{{ url_for('static',filename = 'components/plupload/js/plupload.full.min.js')}}"></script>
+<!-- jQuery 3 -->
+<script src="{{ url_for('static',filename = 'components/jquery/jquery.min.js')}}"></script>
+<!-- 自定义JS -->
+<script src="{{ url_for('static',filename = 'admin/js/main2.js')}}"></script>
+<script>
+    var csrftoken = "{{ csrf_token() }}"
+    var extraData = {
+        "csrf_token": csrftoken,
+        "width":800,
+        "height":600,
+        "watermark":0,
+        "thumb":0
+    }
+</script>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body table-responsive no-padding">
+                <form role="form" id="conf_form" class="form-horizontal">
+                    <div class="box-body">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        {% for v in conf_data %}
+                            {% if v.type==1 %}
+                            <div class="form-group row">
+                                <label class="col-sm-2 control-label">{{v.name}}({{v.ename}})</label>
+                                <div class="col-sm-10 row">
+                                    <input type="text" class="form-control" name="{{v.ename}}" placeholder="{{v.placeholder}}" value="{{v.value}}">
+                                </div>
+                            </div>
+                            {% elif v.type==2 %}
+                            <div class="form-group row">
+                                <label class="col-sm-2 control-label">{{v.name}}({{v.ename}})</label>
+                                <div class="col-sm-10 row">
+                                    <input type="number" class="form-control" name="{{v.ename}}" placeholder="{{v.placeholder}}" value="{{v.value}}">
+                                </div>
+                            </div>
+                            {% elif v.type==3 %}
+                            <div class="form-group row">
+                                <label class="col-sm-2 control-label">{{v.name}}({{v.ename}})</label>
+                                <div class="col-sm-10 row">
+                                    <textarea type="text" class="form-control" name="{{v.ename}}" placeholder="{{v.placeholder}}">{{v.value}}</textarea>
+                                </div>
+                            </div>
+                            {% elif v.type==4 %}
+                            <div class="form-group row">
+                                <label class="col-sm-2 control-label">{{v.name}}({{v.ename}})</label>
+                                <div class="col-sm-10 row">
+                                     <select class="form-control select2" name = "{{v.ename}}">
+                                        {% for val in v['values'] %}
+                                        <option value="{{val}}"
+                                        {% if val  == v.value %} selected {% endif %}
+                                        >{{val}}</option>
+                                        {%　endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            {% elif v.type==5 %}
+                            <div class="form-group row">
+                                <label class="col-sm-2 control-label">{{v.name}}({{v.ename}})</label>
+                                <div class="col-sm-10 row">
+                                    <input type="text"  name = "{{v.ename}}" hidden value="{{v.value}}">
+                                     <select class="form-control select2"  multiple="multiple">
+                                        {% for val in v['values'] %}
+                                        <option value="{{val}}"
+                                        {% if val in v.value %} selected {% endif %}
+                                        >{{val}}</option>
+                                        {%　endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            {% elif v.type==6 %}
+                            <div class="form-group row">
+                                <label class="col-sm-2 control-label">{{v.name}}({{v.ename}})</label>
+                                <div class="col-sm-10 row">
+                                    <div id="{{v.ename}}" href="javascript:void(0);" class='col-sm-2 plupload'><i class="fa fa-plus"></i>
+                                    </div>
+                                    <input  type="text" class="form-control" name="{{v.ename}}" value="{{v.value}}">
+                                </div>
+                            </div>
+                            <script>
+                                initPlupload('{{v.ename}}',1,extraData)
+                                showAllFiles('{{v.ename}}','')
+                            </script>
+                            {% endif %}
+                        {%　endfor %}
+                    </div>
+                    <!-- /.box-body -->
+                </form>
+               <div class="box-title">
+                    <button type="button" class="btn btn-block btn-info btn-sm" onclick="configSave(this)">
+                        <i class="fa fa-plus"></i> 提交
+                    </button>
+                </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+<script>
+
+
+
+function configSave(obj) {
+        //禁用提交按钮，避免重复提交
+        obj.disabled = true;
+        $.ajax({
+            //几个参数需要注意一下
+            type: "POST",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "{{ url_for('admin.webconfig') }}",//url
+            data: $('#conf_form').serialize(),
+            success: function (result) {
+                if (result.code == 1) {
+                    toastr.success(result.msg);
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    toastr.error(result.msg);
+                    obj.disabled = false;
+                }
+                ;
+            },
+            error: function () {
+                toastr.error("服务器异常，请稍后重试！");
+            }
+        });
+
+    }
+
+
+</script>
+{% endblock %}

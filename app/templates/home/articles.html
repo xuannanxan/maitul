@@ -1,0 +1,79 @@
+{% extends "home/home.html" %}
+{% import "home/pagination.html" as pagination %}
+{% block content %}
+<!-- product_banner start -->
+<div class="section parallax dark-translucent-bg" style=" background-image: url('{{active_nav.cover}}');">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <ol class="breadcrumb breadcrumb-banner">
+					<li><i class="fa fa-home pr-10"></i><a href="{{url_for('home.index')}}">Home</a></li>
+                    {% if top_nav.id == active_nav.id%}
+                    <li class="active">{{active_nav.name}}</li>
+                    {% else %}
+					<li><a href="{{top_nav.url+'/'+top_nav.id |string}}">{{top_nav.name}}</a></li>
+					<li class="active">{{active_nav.name}}</li>
+                    {% endif %}
+				</ol>
+                <div class="separator-2"></div>
+                {{active_nav.info | safe}}
+            </div>
+             <div class="col-md-4" style="margin-top: 30px">
+                    <div class="input-group form-group">
+                        <input type="text" name="articlesSearch" class="form-control pull-right" placeholder="Search..." value="{{request_data.search}}">
+                        <div class="input-group-addon"  onclick="btnSearch(this)">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- product_banner end -->
+
+<!-- product start -->
+<div class="section  clearfix object-non-visible animated object-visible fadeInUpSmall"
+     data-animation-effect="fadeInUpSmall" data-effect-delay="300">
+    <div class="container">
+        <div class="row">
+           <div class="main col-md-12">
+               {% for v in articles.items%}
+							<article class="clearfix blogpost object-non-visible animated object-visible fadeInUpSmall" data-animation-effect="fadeInUpSmall" data-effect-delay="200">
+								<div class="blogpost-body">
+									<div class="post-info">
+										<span class="day">{{v.addtime.strftime('%d')}}</span>
+										<span class="month">{{v.addtime.strftime('%m/%y')}}</span>
+									</div>
+									<div class="blogpost-content">
+										<header>
+											<h2 class="title"><a href="{{url_for('home.article',nav_id=active_nav.id,id=v.id)}}">{{v.title}}</a></h2>
+										</header>
+										<p>{{v.info|safe}}</p>
+									</div>
+								</div>
+								<footer class="clearfix">
+									<ul class="links pull-left">
+										<li><i class="fa fa-tags pr-5"></i>
+                                            {% for v in v.tags %}
+                                            <a href="{{url_for('home.articles',nav_id=top_nav.id,tag=v.id)}}"> {{v.name}} </a>
+                                            {% endfor %}
+                                        </li>
+									</ul>
+									<a class="pull-right link" href="{{url_for('home.article',nav_id=active_nav.id,id=v.id)}}"><span>Read more</span></a>
+								</footer>
+							</article>
+               {% endfor%}
+               {{ pagination.page(articles,"home.articles",nav_id=active_nav.id,tag=request_data.tag,search=request_data.search) }}
+						</div>
+        </div>
+    </div>
+
+</div>
+<!-- product end -->
+{% endblock %}
+{% block js %}
+<script>
+    enterSearch('input[name=articlesSearch]')
+</script>
+{% endblock %}

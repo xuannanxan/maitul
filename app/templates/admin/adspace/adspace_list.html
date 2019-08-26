@@ -1,0 +1,83 @@
+{% extends "admin/admin.html" %}
+{% import "admin/search.html" as search %}
+{% block content %}
+    {% include "admin/adspace/adspace_add.html" %}
+    {% include "admin/adspace/adspace_edit.html" %}
+
+<div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="box-title">
+                            <button type="button" class="btn btn-block btn-info btn-sm" data-toggle="modal"
+                                    data-target="#adspace_add">
+                                <i class="fa fa-plus"></i> 添加
+                            </button>
+                        </div>
+                        {{search}}
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                            <tbody>
+                            <tr>
+                                <th>ID</th>
+                                <th>名称</th>
+                                <th>调用名称</th>
+                                <th>添加时间</th>
+                                <th>操作</th>
+                            </tr>
+                            {% for v in list_data %}
+                                <tr>
+                                    <td>{{ v.id }}</td>
+                                    <td>{{ v.name }}</td>
+                                    <td>{{ v.ename }}</td>
+                                    <td>{{ v.addtime }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-info btn-sm"  onclick="showEditForm('{{ v.id }}')"
+                                                ><i class="fa fa-edit"></i>
+                                            编辑
+                                        </button>
+                                        <button type="button" class="btn btn-default btn-sm"
+                                           id="{{ v.id }}"  url="{{ url_for('admin.adspace_del') }}"  csrftoken="{{ csrf_token() }}" onclick="deleteFun(this)"><i
+                                                class="fa fa-trash-o"></i> 删除
+                                        </button>
+                                    </td>
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    <script type="text/javascript">
+        function showEditForm(id){
+            var csrftoken = "{{ csrf_token() }}"
+                $.ajax({
+                type: "GET",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{ url_for('admin.adspace_edit') }}",//url
+                headers: {"X-CSRFToken": csrftoken},
+                data:{"id":id},
+                success: function (result) {
+                   if (result.code == 1){
+                        var data = result.data;
+                        $("#adspace_edit_form input[name=id]" ).val(data.id) ;
+                        $("#adspace_edit_form input[name=name]" ).val(data.name) ;
+                        $("#adspace_edit_form input[name=ename]" ).val(data.ename) ;
+                        $('#adspace_edit').modal('show')
+                    }else {
+                        toastr.error(result.msg);
+                    }
+                },
+                error: function () {
+                    toastr.error("服务器异常，请稍后重试！");
+                }
+            });
+        }
+    </script>
+{% endblock %}

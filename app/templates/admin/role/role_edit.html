@@ -1,0 +1,61 @@
+<div class="modal fade" id="role_edit">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">修改角色</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" id="role_edit_form">
+                <input type="hidden" name="id" id="id"/>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="auths" id="roleEditAuths"/>
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="name">角色名称</label>
+                            <input type="text" id="name" class="form-control" name="name" placeholder="请输入角色名称">
+                        </div>
+                        <div class="form-group row">
+                            <div>
+                                <label>操作权限</label>
+                            </div>
+                            {% for v in menu_auths %}
+                                <p class="title-underline col-sm-12">{{ v.name }}</p>
+                                {% for auth in v.auths %}
+                                <div class="col-sm-2">
+                                        <input type="checkbox" cid="editAuthCheck" class="filled-in chk-col-green" id="edit_{{ auth.id }}" value="{{ auth.id }}" />
+                                        <label for="edit_{{ auth.id }}">{{ auth.name }}</label>
+                                 </div>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" url="{{url_for('admin.role_edit')}}" formId="role_edit_form" onclick="updateRole(this)" class="btn btn-info">提交</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<script type="text/javascript">
+    function updateRole(obj){
+        //禁用提交按钮，避免重复提交
+        obj.disabled = true;
+        var auths = '';//定义一个字符串来接受选中的复选框
+        $("input[cid='editAuthCheck']:checked").each(function(i){//把所有被选中的复选框的值存入数组
+            if (auths){
+                auths = auths +','+$(this).val();
+            }else {
+                auths = $(this).val();
+            }
+        });
+         $("#roleEditAuths").val(auths)
+        updateFun(obj)
+    }
+</script>

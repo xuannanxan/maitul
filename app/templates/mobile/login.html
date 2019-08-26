@@ -1,0 +1,25 @@
+{% extends "admin/mobile/mobile.html" %}
+{% block content %}
+<div class="page__bd" style="height: 100%;">
+    <form action="" method="post">
+        <div class="weui-cells weui-cells_form">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">E-mail</label></div>
+                <div class="weui-cell__bd">
+                    {{ form.username }}
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">Password</label></div>
+                <div class="weui-cell__bd">
+                    {{ form.password }}
+                </div>
+            </div>
+        </div>
+        <div class="weui-btn-area">
+            {{ form.submit }}
+            {{ form.csrf_token }}
+        </div>
+    </form>
+</div>
+{% endblock %}

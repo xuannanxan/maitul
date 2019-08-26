@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jQuery WeUI</title>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+<meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+">
+
+<link rel="stylesheet" href="./css/weui.min.css">
+<link rel="stylesheet" href="./css/jquery-weui.css">
+<link rel="stylesheet" href="./css/style.css">
+<link rel="stylesheet" href="./css/quill.snow.css">
+
+  </head>
+
+  <body ontouchstart>
+        <div class="page__bd" style="height: 100%;">
+                <div class="weui-tab">
+                        <div class="weui-tab__panel">
+            <div class="swiper-container" data-space-between='10' data-pagination='.swiper-pagination' data-autoplay="1000">
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide"><img src="images/swiper-1.jpg" alt="" style="width:100%;"></div>
+                  <div class="swiper-slide"><img src="images/swiper-2.jpg" alt=""  style="width:100%;"></div>
+                  <div class="swiper-slide"><img src="images/swiper-3.jpg" alt="" style="width:100%;"></div>
+                </div>
+                <div class="swiper-pagination"></div>
+              </div>
+              <div class="weui-flex">
+                    <div class="weui-panel__bd weui-flex__item">
+                            <div class="weui-media-box__bd">
+                    <div class="weui-media-box weui-media-box_text">
+                            <h4 class="weui-media-box__title">this is title</h4>
+                            <p class="weui-media-box__desc">description some this here </p>
+                          </div>
+                          </div>
+                    </div>
+                    <div><div class="placeholder">like</div></div>
+                </div>
+        
+                <div>
+                        <div id="list" class="demos-content-padded">
+      
+                                <p>《世界著名计算机教材精选·人工智能:一种现代的方法(第3版)》是最权威、最经典的人工智能教材，已被全世界100多个国家的1200多所大学用作教材。《世界著名计算机教材精选·人工智能:一种现代的方法(第3版)》的最新版全面而系统地介绍了人工智能的理论和实践，阐述了人工智能领域的核心内容，并深入介绍了各个主要的研究方向。全书分为七大部分：第Ⅰ部分“人工智能”，第Ⅱ部分“问题求解”，第Ⅲ部分“知识、推理与规划”，第Ⅳ部分“不确定知识与推理”，第Ⅴ部分“学习”，第Ⅵ部分“通信、感知与行动”，第Ⅶ部分“结论”。《世界著名计算机教材精选·人工智能:一种现代的方法(第3版)》既详细介绍了人工智能的基本概念、思想和算法，还描述了其各个研究方向最前沿的进展，同时收集整理了详实的历史文献与事件。《世界著名计算机教材精选·人工智能:一种现代的方法(第3版)》适合于不同层次和领域的研究人员及学生，是高等院校本科生和研究生人工智能课的首选教材，也是相关领域的科研与工程技术人员的重要参考书。</p>
+                                
+                              </div>
+                              <div class="weui-loadmore">
+                                    <i class="weui-loading"></i>
+                                    <span class="weui-loadmore__tips">正在加载</span>
+                                  </div>
+                            
+                            </div>
+                         
+            
+            </div>
+        </div>
+
+                  
+    </div>
+                  
+        </div>
+        <div class="weui-tabbar">
+                <a href="javascript:;" class="weui-tabbar__item weui-bar__item_on">
+                    <span style="display: inline-block;position: relative;">
+                        <img src="./images/icon_tabbar.png" alt="" class="weui-tabbar__icon">
+                        <span class="weui-badge" style="position: absolute;top: -2px;right: -13px;">8</span>
+                    </span>
+                    <p class="weui-tabbar__label">shop</p>
+                </a>
+                <a href="javascript:;" class="weui-tabbar__item">
+                    <img src="./images/icon_tabbar.png" alt="" class="weui-tabbar__icon">
+                    <p class="weui-tabbar__label">chat</p>
+                </a>
+                <a href="javascript:;" class="weui-tabbar__item">
+                    <span style="display: inline-block;position: relative;">
+                        <img src="./images/icon_tabbar.png" alt="" class="weui-tabbar__icon">
+                        <span class="weui-badge weui-badge_dot" style="position: absolute;top: 0;right: -6px;"></span>
+                    </span>
+                    <p class="weui-tabbar__label">e-mail</p>
+                </a>
+                <a href="javascript:;" class="weui-tabbar__item" style="background-color:darkgreen">
+                    
+                    <p class="weui-tabbar__label">message</p>
+                </a>
+            </div>
+        
+    <script src="./js/jquery-2.1.4.js"></script>
+<script src="./js/fastclick.js"></script>
+<script src="./js/swiper.min.js"></script>
+<script src="./js/jquery-weui.js"></script>
+<script>
+$(".swiper-container").swiper()
+var loading = false;  //状态标记
+$(document.body).infinite().on("infinite", function() {
+  if(loading) return;
+  loading = true;
+  setTimeout(function() {
+    $("#list").append("<p> 我是新加载的内容 </p>");
+    loading = false;
+  }, 1500);   //模拟延迟
+});
+</script>
+   
+
+  </body>
+</html>

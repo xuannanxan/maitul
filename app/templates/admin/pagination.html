@@ -1,0 +1,30 @@
+{% macro page(data,url) -%}
+{% if data %}
+ <ul class="pagination pagination-sm pull-right">
+    {% if data.has_prev %}
+    <li><a class="paginate_button previous" href="{{ url_for(url,page = data.prev_num, **kwargs) }}">上一页</a></li>
+    {% else %}
+    <li><a class="paginate_button previous disabled" href="#">上一页</a></li>
+    {% endif %}
+
+        {% for v in data.iter_pages() %}
+            {% if v %}
+                 {% if v == data.page %}
+                <li><a class="paginate_button current" href="{{ url_for(url,page = v, **kwargs) }}">{{ v }}</a></li>
+                {% else %}
+                <li><a class="paginate_button" href="{{ url_for(url,page = v, **kwargs) }}">{{ v }}</a></li>
+                {% endif %}
+            {% else %}
+            <li><a class="paginate_button" href="{{ url_for(url,page = v, **kwargs) }}">···</a></li>
+            {% endif %}
+        {% endfor %}
+
+    {% if data.has_next %}
+    <li><a class="paginate_button next" href="{{ url_for(url,page = data.next_num, **kwargs) }}">下一页</a></li>
+    {% else %}
+    <li><a class="paginate_button next disabled" href="#">下一页</a></li>
+    {% endif %}
+</ul>
+{% endif %}
+{% endmacro %}
+

@@ -1,0 +1,146 @@
+{% extends "admin/admin.html" %}
+{% import "admin/search.html" as search %}
+{% import "admin/pagination.html" as pagination %}
+{% block content %}
+    {% include "admin/conf/conf_add.html" %}
+    {% include "admin/conf/conf_edit.html" %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="box-title">
+                            <button type="button" class="btn btn-block btn-info btn-sm" data-toggle="modal"
+                                    data-target="#conf_add">
+                                <i class="fa fa-plus"></i> 添加
+                            </button>
+                        </div>
+                        {{search}}
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                            <tbody>
+                            <tr>
+                                <th>id</th>
+                                <th>配置项名称</th>
+                                <th>调用名</th>
+                                <th>配置项类型</th>
+                                <th>添加时间</th>
+                                <th>操作</th>
+                            </tr>
+                            {% for v in page_data.items %}
+                                <tr>
+                                    <td>{{ v.id }}</td>
+                                    <td>{{ v.name }}</td>
+                                    <td>{{ v.ename }}</td>
+                                     <!--1为文本，2为数字,3为文本域，4为下拉单选，5为下拉多选，6为图片，7为富文本-->
+                                    <td>
+                                        {% if v.type==1 %}
+                                        文本输入框
+                                        {% elif  v.type==2 %}
+                                        数字输入框
+                                        {% elif  v.type==3 %}
+                                        文本域
+                                        {% elif  v.type==4 %}
+                                        下拉单选
+                                        {% elif  v.type==5 %}
+                                        下拉多选
+                                        {% elif  v.type==6 %}
+                                        图片
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ v.addtime }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-info btn-sm" onclick="showEditForm('{{ v.id }}')"
+                                                ><i class="fa fa-edit"></i> 编辑
+                                        </button>
+                                        <button type="button" class="btn btn-default btn-sm"
+                                             id="{{ v.id }}"  url="{{ url_for('admin.conf_del') }}"  csrftoken="{{ csrf_token() }}" onclick="deleteFun(this)"><i class="fa fa-trash-o"></i> 删除
+                                        </button>
+                                    </td>
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                     <div class="box-footer clearfix">
+                        {{ pagination.page(page_data,"admin.conf_list") }}
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+{% endblock %}
+{% block js %}
+<script>
+    $(".conf-values").select2({
+            tags: true,
+            tokenSeparators: [',', ' '],
+        })
+     $(".conf-values").change(function(){
+        var arr = [];
+        $(this).select2('data').forEach(function(v){
+            arr.push(v.id)
+        });
+        $(this).prev().val(arr.join(','))
+    })
+    $(" select[name=type]").change(function(){
+          if ($(this).val() == 4 || $(this).val() == 5 ){
+              $(this).parent().parent().next().prop("hidden",false);
+          }else {
+              $(this).parent().parent().next().prop("hidden",true);
+          }
+
+
+    })
+    var csrftoken = "{{ csrf_token() }}"
+
+        function showEditForm(id){
+                $.ajax({
+                type: "GET",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{ url_for('admin.conf_edit') }}",//url
+                headers: {"X-CSRFToken": csrftoken},
+                data:{"id":id},
+                success: function (result) {
+                    if (result.code == 1){
+                        var data = result.data;
+                        $("#conf_edit_form input[name=id]").val(data.id) ;
+                        $("#conf_edit_form select[name=type]").val(data.type).trigger('change')  ;
+                        $("#conf_edit_form input[name=values]").next().select2({
+                            data:formatSelect2Data(strToArr(data.values)),
+                            tags: true,
+                            tokenSeparators: [',', ' '],
+                        });
+                        $("#conf_edit_form input[name=values]").next().val(strToArr(data.values)).trigger('change');
+                        $("#conf_edit_form input[name=name]").val(data.name) ;
+                        $("#conf_edit_form input[name=value]").val(data.value) ;
+                        $("#conf_edit_form input[name=ename]").val(data.ename) ;
+                        $("#conf_edit_form input[name=placeholder]").val(data.placeholder) ;
+                        $("#conf_edit_form input[name=sort]").val(data.sort) ;
+                        $('#conf_edit').modal('show')
+                    }else {
+                        toastr.error(result.msg);
+                    }
+                },
+                error: function () {
+                    toastr.error("服务器异常，请稍后重试！");
+                }
+            });
+        }
+    function formatSelect2Data(values){
+        if(values){
+            var arr = [];
+            values.forEach(function(v){
+                arr.push({
+                     id: v, text: v
+                })
+            })
+            return arr
+        }
+    }
+</script>
+{% endblock %}

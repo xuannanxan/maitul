@@ -1,0 +1,143 @@
+{% extends "home/home.html" %}
+{% block content %}
+<!-- product_banner start -->
+<div class="section parallax dark-translucent-bg" style=" background-image: url('{{active_nav.cover}}');">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <ol class="breadcrumb breadcrumb-banner">
+                    <li><i class="fa fa-home pr-10"></i><a href="{{url_for('home.index')}}">Home</a></li>
+                    {% if top_nav.id == active_nav.id%}
+                    <li class="active">{{active_nav.name}}</li>
+                    {% else %}
+                    <li><a href="{{top_nav.url+'/'+top_nav.id |string}}">{{top_nav.name}}</a></li>
+                    <li class="active">{{active_nav.name}}</li>
+                    {% endif %}
+                </ol>
+                <div class="separator-2"></div>
+                {{active_nav.info | safe}}
+            </div>
+            <div class="col-md-4" style="margin-top: 30px">
+                    <div class="input-group form-group">
+                        <input type="text" name="productsSearch" class="form-control pull-right" placeholder="Search..." value="">
+                        <div class="input-group-addon"  onclick="btnSearch(this)">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- product_banner end -->
+<!-- services start-->
+{% if active_nav.children %}
+<div class="page-top">
+    <div class="container ">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row grid-space-10">
+                    {% for v in active_nav.children %}
+                    <div class="col-sm-4">
+                        <div class="box-style-2 object-non-visible animated object-visible fadeInUpSmall"
+                             data-animation-effect="fadeInUpSmall" data-effect-delay="200">
+                            <div class="icon-container default-bg">
+                                <i class="fa {{v.icon}}"></i>
+                            </div>
+                            <div class="body">
+                                <h2>{{v.name}}</h2>
+                                <p>{{v.info}}</p>
+                                <a href="{{url_for('home.services',nav_id=v.id)}}" class="link"><span>Read More</span></a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor%}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- main-container start -->
+<!-- ================ -->
+<section class="main-container">
+
+    <div class="container">
+        <div class="row">
+
+								<div class="col-lg-8 col-sm-8">
+									{{active_nav.content | safe}}
+								</div>
+            <!-- main start -->
+            <aside class="col-md-4">
+                <div class="sidebar">
+                    <div class="portfolio-item side vertical-divider-left">
+                        <div class="row">
+                            <div class="col-md-12">
+										<h2 class="title">Contact Us</h2>
+										<ul class="list-icons">
+											<li><i class="fa fa-phone pr-5"></i>{{webconfig.phone}}</li>
+											<li><i class="fa fa-envelope pr-5"></i><a href="mailto:{{webconfig.email}}">{{webconfig.email}}</a></li>
+										</ul>
+										<ul class="social-links colored clearfix">
+                                            {% for v in columns.social_tools.children%}
+											<li class="{{v.name}}"><a target="_blank" href="{{v.href}}"><i class="fa {{v.icon}}"></i></a></li>
+                                            {% endfor %}
+										</ul>
+                                 <hr>
+								</div>
+                            <div class="col-md-12">
+                                <div class="clearfix">
+                                    <h2 class="title margin-top-clear">Share This</h2>
+                                    <ul class="list">
+                                        <li><strong class="vertical-divider">URL </strong> <a
+                                                href="{{ request.url }}">{{ request.url }}</a></li>
+                                    </ul>
+                                    <div class="qrcode">
+                                        <img src="data:image/png;base64,{{url_code}}">
+                                        <p>[ Open on Mobile ]</p>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="clearfix">
+                                    <h2 class="title margin-top-clear">Case</h2>
+
+                            <div class="gallery row">
+                                         {% for v in products %}
+										<div class="gallery-item col-xs-4">
+											<div class="overlay-container">
+												<img src="{{v.cover}}" alt="{{v.title}}">
+												<a href="{{url_for('home.product',nav_id=v.column_id,id=v.id)}}" class="overlay small">
+													<i class="fa fa-search"></i>
+												</a>
+											</div>
+										</div>
+                                        {% endfor %}
+									</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+
+            <!-- main end -->
+
+
+        </div>
+    </div>
+</section>
+<!-- main-container end -->
+{% endif%}
+<!-- services end -->
+{% endblock %}
+{% block js %}
+<script>
+    enterSearch('input[name=productsSearch]')
+
+</script>
+{% endblock %}

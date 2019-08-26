@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<!--[if IE 9]>
+<html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <title>{{webconfig.webname+(("-"+active_nav.name) if active_nav.name else '')+(("-"+seo_data.title) if
+        seo_data.title else '')}}</title>
+    <meta name="keywords"
+          content="{{webconfig.webkeywords+(('-'+active_nav.keywords) if active_nav.keywords else '')+(('-'+seo_data.keywords) if seo_data.keywords else '')}}">
+    <meta name="description" content="
+    {% if seo_data.description %}
+        {{seo_data.description}}
+    {% elif active_nav.info %}
+        {{active_nav.info}}
+    {% else %}
+        {{webconfig.webdescription}}
+    {% endif %}
+    ">
+
+
+    <!-- Mobile Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{webconfig.webicon}}">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{{ url_for('static',filename = 'components/bootstrap/css/bootstrap.min.css') }}">
+    <!-- Plugins -->
+    <link rel="stylesheet" href="{{ url_for('static',filename = 'home/css/style.css') }}">
+    {% block css %}{% endblock %}
+    <!--[if lt IE 9]>
+    <script src="{{ url_for('static',filename = 'home/js/ie9/html5shiv.min.js') }}"></script>
+    <script src="{{ url_for('static',filename = 'home/js/ie9/respond.min.js') }}"></script>
+    <![endif]-->
+</head>
+
+<!-- body classes:
+        "boxed": boxed layout mode e.g. <body class="boxed">
+        "pattern-1 ... pattern-9": background patterns for boxed layout mode e.g. <body class="boxed pattern-1">
+-->
+<body class="front">
+<!-- scrollToTop -->
+<!-- ================ -->
+<div class="scrollToTop"><i class="fa fa-angle-up "></i></div>
+<!--LOGIN Modal -->
+<!-- page wrapper start -->
+<!-- ================ -->
+<div class="page-wrapper">
+    <!-- header-top start -->
+    <!-- ================ -->
+    <div class="header-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-2  col-sm-4">
+
+                    <!-- header-top-first start -->
+                    <!-- ================ -->
+                    <div class="header-top-first clearfix">
+                        <ul class="social-links clearfix hidden-xs">
+                           {% for v in columns.social_tools.children%}
+								<li class="{{v.name}}"><a target="_blank" href="{{v.href}}"><i class="fa {{v.icon}}"></i></a></li>
+                           {% endfor %}
+                        </ul>
+                        <div class="social-links hidden-lg hidden-md hidden-sm">
+                            <div class="btn-group dropdown">
+                                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><i
+                                        class="fa fa-share-alt"></i></button>
+                                <ul class="dropdown-menu dropdown-animation">
+                                    {% for v in columns.social_tools.children%}
+											<li class="{{v.name}}"><a target="_blank" href="{{v.href}}"><i class="fa {{v.icon}}"></i></a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- header-top-first end -->
+
+                </div>
+                <div class="col-xs-10 col-sm-8">
+
+                    <!-- header-top-second start -->
+                    <!-- ================ -->
+                    <div id="header-top-second" class="clearfix">
+
+                        <!-- header top dropdowns start -->
+                        <!-- ================ -->
+                        <div class="header-top-dropdown">
+                            <div class="btn-group dropdown">
+                                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><i
+                                        class="fa fa-search"></i> Search
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right dropdown-animation">
+                                    <li>
+                                        <form role="search" class="search-box">
+                                            <div class="form-group has-feedback">
+                                                <input type="text" class="form-control" placeholder="Search">
+                                                <i class="fa fa-search form-control-feedback"></i>
+                                            </div>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="btn-group dropdown">
+                                <button type="button" class="btn dropdown-toggle"
+                                        onclick="window.location.href='mailto:{{webconfig.email}}'"><i
+                                        class="fa fa-envelope"></i> {{webconfig.email}}
+                                </button>
+                            </div>
+                            <div class="btn-group dropdown">
+                                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><i
+                                        class="fa fa-phone"></i> {{webconfig.phone}}
+                                </button>
+                            </div>
+
+                        </div>
+                        <!--  header top dropdowns end -->
+
+                    </div>
+                    <!-- header-top-second end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- header-top end -->
+
+    <!-- header start (remove fixed class from header in order to disable fixed navigation mode) -->
+    <!-- ================ -->
+    <header class="header fixed clearfix">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 mini-logo">
+
+                    <!-- header-left start -->
+                    <!-- ================ -->
+                    <div class="header-left clearfix">
+
+                        <!-- logo -->
+                        <div class="logo">
+                            <a href="index.html"><img id="logo" src="{{webconfig.weblogo}}" alt="iDea"></a>
+                        </div>
+
+                        <!-- name-and-slogan -->
+                        <div class="site-slogan">
+                            {{webconfig.weblocation}}
+                        </div>
+
+                    </div>
+                    <!-- header-left end -->
+
+                </div>
+                <div class="col-md-9 mini-nav">
+
+                    <!-- header-right start -->
+                    <!-- ================ -->
+                    <div class="header-right clearfix">
+
+                        <!-- main-navigation start -->
+                        <!-- ================ -->
+                        <div class="main-navigation animated">
+
+                            <!-- navbar start -->
+                            <!-- ================ -->
+                            <nav class="navbar navbar-default" role="navigation">
+                                <div class="container-fluid">
+
+                                    <!-- Toggle get grouped for better mobile display -->
+                                    <div class="navbar-header">
+                                        <button type="button" class="navbar-toggle" data-toggle="collapse"
+                                                data-target="#navbar-collapse-1">
+                                            <span class="sr-only">Toggle navigation</span>
+                                            <span class="icon-bar"></span>
+                                            <span class="icon-bar"></span>
+                                            <span class="icon-bar"></span>
+                                        </button>
+                                    </div>
+
+                                    <!-- Collect the nav links, forms, and other content for toggling -->
+                                    <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                                        <ul class="nav navbar-nav navbar-right">
+                                            <li class="{% if top_nav == ''%}active{% endif %}">
+                                                <a href="{{url_for('home.index')}}">Home</a>
+                                            </li>
+                                            <!-- nav start -->
+                                            {% for nav in columns.values()%}
+                                            {% if nav.is_nav == 1 %}
+                                            {% if nav.children %}
+                                            <li class="dropdown mega-menu {% if top_nav.id == nav.id%}active{% endif %}">
+                                                <a href="{{nav.url+'/'+ nav.id | string}}" class="dropdown-toggle"
+                                                   data-toggle="dropdown">{{nav.name}}</a>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <div class="row">
+                                                            <div class="col-lg-4 col-md-3 hidden-sm">
+                                                                <p>{{nav.info}}</p>
+                                                                <img src="{{nav.cover}}" alt="{{nav.name}}">
+                                                            </div>
+                                                            <div class="col-lg-8 col-md-9">
+                                                                <h4>{{nav.name}}</h4>
+                                                                <div class="row">
+                                                                    <div class="col-sm-12">
+                                                                        <div class="divider"></div>
+                                                                        <ul class="menu">
+                                                                            {% for nav_child in nav.children%}
+                                                                            <li
+                                                                            {% if  active_nav.id == nav_child.id %}
+                                                                            class="active"
+                                                                            {% endif %}
+                                                                            >
+                                                                                <a href="{{nav.url+'/'+ nav_child.id | string}}"><i
+                                                                                        class="fa {{nav_child.icon}}"></i>{{nav_child.name}}</a>
+                                                                            </li>
+                                                                            {% endfor %}
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            {% else %}
+                                            <li class="{% if top_nav.id == nav.id%}active{% endif %}">
+                                                <a href="{{nav.url+'/'+ nav.id | string}}">{{nav.name}}</a>
+                                            </li>
+                                            {% endif %}
+                                            {% endif %}
+                                            {% endfor %}
+                                            <!-- nav end -->
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </nav>
+                            <!-- navbar end -->
+
+                        </div>
+                        <!-- main-navigation end -->
+
+                    </div>
+                    <!-- header-right end -->
+
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- header end -->
+
+    {% block content %} {% endblock %}
+    <!-- message start -->
+    <section class="main-container parallax dark-translucent-bg"
+             style="background-image: url('{{ad_data.message[0].img}}')">
+
+        <!-- main start -->
+        <!-- ================ -->
+        <div class="main">
+            <div class="container">
+                <div class="call-to-action">
+                    <div class="row">
+                        <div class="col-sm-12 footer-content">
+                            <h1 class="text-center title">{{ad_data.message[0].title}}</h1>
+                            <div class="separator"></div>
+                            <p class="text-center">{{ad_data.message[0].info}}</p>
+                            <div class="comments-form">
+                                <form role="form" id="contact-form">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <div class="col-sm-4">
+                                        <div class="form-group has-feedback">
+                                            <input type="text" class="form-control" placeholder="Name"
+                                                   name="name">
+                                            <i class="fa fa-user form-control-feedback"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group has-feedback">
+                                            <input type="email" class="form-control" placeholder="Email" name="email">
+                                            <i class="fa fa-envelope-o form-control-feedback"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <div class="form-group has-feedback">
+                                            <input type="text" class="form-control" placeholder="Contact"
+                                                   name="contact">
+                                            <i class="fa fa-phone form-control-feedback"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <div class="form-group has-feedback">
+                                            <textarea class="form-control" rows="2" placeholder="Demand"
+                                                      name="info"></textarea>
+                                            <i class="fa fa-pencil form-control-feedback"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-8">
+                                        <p style="margin-top: 25px;">Or send us an email:
+                                            <a onclick="window.location.href='mailto:{{webconfig.email}}'">
+                                                <i class="fa fa-envelope-o"> {{webconfig.email}}</i>
+                                            </a></p>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4">
+                                        <a onclick="sendMessage(this,'contact-form')" class="btn btn-default btn-lg">Submit</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- main end -->
+    </section>
+    <!-- message end -->
+    <!-- factory start -->
+    <div class="section clearfix">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <h2>Factory</h2>
+                    <div class="separator-2"></div>
+                    <div class="owl-carousel carousel owl-theme">
+                        {% for v in ad_data.factory %}
+                        <div class="item image-box" data-animation-effect="fadeInLeft" data-effect-delay="300">
+                            <div class="overlay-container">
+                                <img src="{{v.img}}" alt="{{v.title}}">
+                                <a href="{{v.img}}" class="popup-img overlay small">
+                                    <i class="fa fa-search"></i>
+                                    <span>{{v.title}}</span>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- factory end -->
+    <!-- customer start -->
+    <!-- ================ -->
+    <div class="section gray-bg text-muted footer-top clearfix">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="owl-carousel clients">
+                        {% for v in ad_data.customer %}
+                        <div class="client">
+                            <a><img src="{{v.img}}" alt="{{v.title}}"></a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h3>{{columns.customers.name}}</h3>
+                    <p>{{columns.customers.content |safe}} </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- customer end -->
+    <!-- footer start (Add "light" class to #footer in order to enable light footer) -->
+    <!-- ================ -->
+    <footer id="footer">
+
+        <!-- .footer start -->
+        <!-- ================ -->
+        <div class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6 col-md-4">
+                        <div class="footer-content">
+                            <h2>Contact</h2>
+                            <div class="col-md-12 col-sm-6">
+                                <ul class="list-icons">
+                                    <li><i class="fa fa-map-marker pr-10"></i> {{webconfig.address}}</li>
+                                    <li><i class="fa fa-phone pr-10"></i> {{webconfig.phone}}</li>
+                                    <li onclick="window.location.href='mailto:{{webconfig.email}}'"><i
+                                            class="fa fa-envelope-o pr-10"></i> {{webconfig.email}}
+                                    </li>
+                                </ul>
+                                <ul class="social-links circle">
+                                    {% for v in columns.social_tools.children%}
+											<li class="{{v.name}}"><a target="_blank" href="{{v.href}}"><i class="fa {{v.icon}}"></i></a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="col-sm-6 col-md-3 col-md-offset-1">
+                        <div class="footer-content">
+
+                            <h2>{{columns.products.name}}</h2>
+                            <nav>
+                                <ul class="nav nav-pills nav-stacked">
+                                    {% for v in columns.products.children %}
+                                    <li><a href="{{url_for('home.products',nav_id=v.id)}}"
+                                    >{{v.name}}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3 col-md-offset-1">
+                        <div class="footer-content">
+
+                            <h2>{{columns.services.name}}</h2>
+                            <nav>
+                                <ul class="nav nav-pills nav-stacked">
+                                    {% for v in columns.services.children %}
+                                    <li><a href="{{url_for('home.services',nav_id=v.id)}}"
+                                    ><i class="fa {{v.icon}}"></i> {{v.name}}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="space-bottom hidden-lg hidden-xs"></div>
+            </div>
+        </div>
+        <!-- .footer end -->
+
+        <!-- .subfooter start -->
+        <!-- ================ -->
+        <div class="subfooter">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-1" style="padding-left:0px">
+                        <div class="col-md-12 col-sm-4">
+                                <img src="data:image/png;base64,{{url_code}}">
+                             </div>
+                    </div>
+                    <div class="col-md-4" style="line-height: 50px">
+                        <p>{{webconfig.copyright | safe}}</p>
+                    </div>
+                    <div class="col-md-6" style="line-height: 50px">
+                        <nav class="navbar navbar-default" role="navigation">
+                            <!-- Toggle get grouped for better mobile display -->
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                                        data-target="#navbar-collapse-2">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                            </div>
+                            <div class="collapse navbar-collapse" id="navbar-collapse-2">
+                                <ul class="nav navbar-nav">
+
+                                    <li><a href="{{url_for('home.index')}}">Home</a></li>
+                                    {% for nav in columns.values()%}
+                                    {% if nav.is_nav == 1 %}
+                                    <li><a href="{{nav.url+'/'+ nav.id | string}}">{{nav.name}}</a></li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- .subfooter end -->
+
+    </footer>
+    <!-- footer end -->
+
+</div>
+<!-- page-wrapper end -->
+
+<!-- JavaScript files placed at the end of the document so the pages load faster
+================================================== -->
+
+<!-- jQuery 3 -->
+<script type="text/javascript" src="{{ url_for('static',filename = 'components/jquery/jquery.min.js')}}"></script>
+<script type="text/javascript"
+        src="{{ url_for('static',filename = 'components/bootstrap/js/bootstrap.min.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename = 'components/owl/owl.carousel.min.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename = 'components/modernizr/modernizr.js')}}"></script>
+<script src="{{ url_for('static',filename = 'components/toastr/toastr.min.js')}}"></script>
+<script src="{{ url_for('static',filename = 'components/magnific-popup/jquery.magnific-popup.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename = 'home/js/template.js')}}"></script>
+{% block js %}{% endblock %}
+</body>
+</html>

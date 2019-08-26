@@ -1,0 +1,181 @@
+{% extends "admin/admin.html" %}
+{% import "admin/search.html" as search %}
+{% import "admin/pagination.html" as pagination %}
+{% block css %}
+{% endblock %}
+{% block content %}
+    {% include "admin/product/product_add.html" %}
+    {% include "admin/product/product_edit.html" %}
+    {% include "admin/category/category_add.html" %}
+
+        <div class="row">
+            <div class="col-lg-3 col-12">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">产品分类</h3>
+                        <div class="box-tools">
+                            <button type="button" class="btn btn-box-tool" data-toggle="modal"
+                                    data-target="#category_add"><i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="box-body no-padding skin-green-light">
+                        <section class="sidebar" style="height: auto;">
+                            <ul  class="sidebar-menu" data-widget="tree">
+                                {% for category in product_category %}
+                                    {% if category['children'] %}
+                                        <li class="treeview">
+                                            <a href="{{ url_for('admin.product_list',category_id = category['id']) }}">
+                                                <span>{{ category['name'] }}</span>
+                                                <span class="pull-right-container">
+                                                  <i class="fa fa-angle-left pull-right"></i>
+                                                </span>
+                                            </a>
+
+                                            <ul class="treeview-menu">
+                                                {% for child_category in  category['children'] %}
+                                                    <li class="{% if  child_category['id'] == category_id %}active{% endif %}">
+                                                        <a href="{{ url_for('admin.product_list',category_id = child_category['id']) }}">
+                                                            {{ child_category['name'] }}
+                                                        </a></li>
+                                                {% endfor %}
+                                            </ul>
+
+                                        </li>
+                                    {% else %}
+                                        <li class="{% if  category['id'] == category_id %}active{% endif %}">
+                                            <a href="{{ url_for('admin.product_list',category_id = category['id']) }}">
+                                                <span>{{ category['name'] }}</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </section>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="box-title">
+                            <button type="button" class="btn btn-block btn-info btn-sm" data-toggle="modal"
+                                    data-target="#product_add">
+                                <i class="fa fa-plus"></i> 添加
+                            </button>
+                        </div>
+                        {{search}}
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                            <tbody>
+                            <tr>
+                                <th>id</th>
+                                <th>封面图片</th>
+                                <th>标题</th>
+                                <th>点击数</th>
+                                <th>添加时间</th>
+                                <th>操作</th>
+                            </tr>
+                            {% for v in product_data.items %}
+                                <tr>
+                                    <td>{{ v.id }}</td>
+                                    <td><img src="{{v.cover}}" style="width: 100px" alt="{{v.title}}"></td>
+                                    <td>{{ v.title }}</td>
+                                    <td>{{ v.click }}</td>
+                                    <td>{{ v.create_time }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-info btn-sm" onclick="showEditForm('{{ v.id }}')"
+                                                ><i class="fa fa-edit"></i> 编辑
+                                        </button>
+                                        <button type="button" class="btn btn-default btn-sm"
+                                             id="{{ v.id }}"  url="{{ url_for('admin.product_del') }}"  csrftoken="{{ csrf_token() }}" onclick="deleteFun(this)"><i class="fa fa-trash-o"></i> 删除
+                                        </button>
+                                    </td>
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+
+                    <div class="box-footer clearfix">
+                        {{ pagination.page(product_data,"admin.product_list",category_id=category_id,search=search_key) }}
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+{% endblock %}
+{% block js %}
+<!-- wangEditor edit -->
+<script src="{{ url_for('static',filename = 'components/wangEditor/wangEditor.min.js')}}"></script>
+<script src="{{ url_for('static',filename = 'components/plupload/js/plupload.full.min.js')}}"></script>
+
+<script>
+
+    var csrftoken = "{{ csrf_token() }}"
+    var extraData = {
+        "csrf_token": csrftoken,
+        "width":400,
+        "height":300,
+        "watermark":0,
+        "thumb":0
+    }
+    var editorExtraData = {
+        "csrf_token": csrftoken,
+        "width":800,
+        "height":600,
+        "watermark":1,
+        "thumb":0
+    }
+    //初始化wangedit编辑器
+    initEditor('#addproductContent',editorExtraData,'')
+    //初始化文件上传
+    initPlupload('add_img',1,extraData)
+    initPlupload('add_product_img',1,extraData)
+    initPlupload('add_product_pic',10,extraData)
+    initPlupload('edit_product_img',1,extraData)
+    initPlupload('edit_product_pic',10,extraData)
+        function showEditForm(id){
+                $.ajax({
+                type: "GET",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{ url_for('admin.product_edit') }}",//url
+                headers: {"X-CSRFToken": csrftoken},
+                data:{"id":id},
+                success: function (result) {
+                    if (result.code == 1){
+                        var data = result.data;
+                        $("#product_edit_form input[name=id]").val(data.id) ;
+                        $("#product_edit_form select[name=category_id]").val(data.category_id).trigger('change')  ;
+                        $("#product_edit_form select[name=relation_id]").val(data.relation_id).trigger('change')  ;
+                        $("#product_edit_form input[name=tags]").next().val(data.tags).trigger('change');
+                        $("#product_edit_form input[name=title]").val(data.title) ;
+                        $("#product_edit_form textarea[name=info]").val(data.info) ;
+                        $("#product_edit_form textarea[name=description]").val(data.description) ;
+                        $("#product_edit_form input[name=cover]").val(data.cover) ;
+                        $("#product_edit_form input[name=pictures]").val(data.pictures) ;
+                        showAllFiles('edit_product_img','')
+                        showAllFiles('edit_product_pic','')
+                        $("#product_edit_form textarea[name=content]").val(data.content) ;
+                        initEditor('#editproductContent',editorExtraData,data.content);
+                        $("#product_edit_form input[name=sort]").val(data.sort) ;
+                        $("#product_edit_form input[name=price]").val(data.price) ;
+                        $('#product_edit').modal('show')
+                    }else {
+                        toastr.error(result.msg);
+                    }
+                },
+                error: function () {
+                    toastr.error("服务器异常，请稍后重试！");
+                }
+            });
+        }
+
+</script>
+{% endblock %}

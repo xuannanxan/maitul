@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">  
+<html>  
+<head>  
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+    <style type="text/css">  
+    #login  
+    {  
+        display:none;  
+        border:1em solid #3366FF;  
+        height:30%;  
+        width:50%;  
+        position:absolute;/*让节点脱离文档流,我的理解就是,从页面上浮出来,不再按照文档其它内容布局*/  
+        top:24%;/*节点脱离了文档流,如果设置位置需要用top和left,right,bottom定位*/  
+        left:24%;  
+        z-index:2;/*个人理解为层级关系,由于这个节点要在顶部显示,所以这个值比其余节点的都大*/  
+        background: white;  
+    }  
+    #over  
+    {  
+        width: 100%;  
+        height: 100%;  
+        opacity:0.8;/*设置背景色透明度,1为完全不透明,IE需要使用filter:alpha(opacity=80);*/  
+        filter:alpha(opacity=80);  
+        display: none;  
+        position:absolute;  
+        top:0;  
+        left:0;  
+        z-index:1;  
+        background: silver;  
+    }  
+    </style>  
+</head>  
+<body>  
+  <a href="javascript:show()">弹出</a>  
+  <div id="login">  
+      <a href="javascript:hide()">关闭</a>  
+      <div>这里是关闭弹窗的内容</div>  
+  </div>  
+  <div id="over"></div>  
+</body>  
+</html>  
+  
+<script type="text/javascript">  
+
+    function show()  
+    {  
+        var login = document.getElementById('login');  
+        var over = document.getElementById('over');  
+        login.style.display = "block";  
+        over.style.display = "block";  
+    }  
+    function hide()  
+    {  
+       var login = document.getElementById('login');  
+        var over = document.getElementById('over');    
+        login.style.display = "none";  
+        over.style.display = "none";  
+    }  
+</script>

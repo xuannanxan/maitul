@@ -1,0 +1,140 @@
+{% extends "admin/admin.html" %}
+{% import "admin/search.html" as search %}
+{% import "admin/pagination.html" as pagination %}
+{% block content %}
+    {% include "admin/reptile/reptile_add.html" %}
+    {% include "admin/reptile/reptile_edit.html" %}
+<div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="box-title">
+                            <button type="button" class="btn btn-block btn-info btn-sm" data-toggle="modal"
+                                    data-target="#reptile_add">
+                                <i class="fa fa-plus"></i> 添加
+                            </button>
+                        </div>
+                        {{search}}
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                            <tbody>
+                            <tr>
+                                <th>ID</th>
+                                <th>名称</th>
+                                <th>添加时间</th>
+                                <th>操作</th>
+                            </tr>
+                            {% for v in page_data.items %}
+                                <tr>
+                                    <td>{{ v.id }}</td>
+                                    <td>{{ v.name }}</td>
+                                    <td>{{ v.addtime }}</td>
+                                    <td>
+
+                                        <button type="button" class="btn btn-info btn-sm" onclick="reptileGet('{{ v.id }}')"
+                                        ><i class="fa fa-bug"></i>
+                                            爬取
+                                        </button>
+                                        <button type="button" class="btn btn-info btn-sm"  onclick="showEditForm('{{ v.id }}')"
+                                                ><i class="fa fa-edit"></i>
+                                            编辑
+                                        </button>
+                                        <button type="button" class="btn btn-default btn-sm"
+                                           id="{{ v.id }}"  url="{{ url_for('admin.reptile_del') }}"  csrftoken="{{ csrf_token() }}" onclick="deleteFun(this)"><i
+                                                class="fa fa-trash-o"></i> 删除
+                                        </button>
+                                    </td>
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer clearfix">
+                        {{ pagination.page(page_data,"admin.reptile_list") }}
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    <script type="text/javascript">
+        var csrftoken = "{{ csrf_token() }}"
+        function reptileGet(id){
+            swal({
+            title: "开始爬取数据?",
+            text: "开始后需要等待比较长的时间!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            closeOnConfirm: false
+          }, function(){
+            swal({
+                    title: "服务器处理中!",
+                    text: "开始爬了，请勿关闭页面，避免引起错误",
+                    imageUrl: "{{ url_for('static',filename = 'components/sweetalert/timg.gif')}}",
+                    showConfirmButton: false ,
+                });
+                 $.ajax({
+                type: "GET",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{ url_for('admin.reptile_get') }}",//url
+                headers: {"X-CSRFToken": csrftoken},
+                data:{"id":id},
+                success: function (result) {
+                   if (result.code == 1){
+                       swal({
+                            title: "成功啦！",
+                            text: result.msg,
+                            type: "success",
+                        });
+                    }else {
+                        swal({
+                            title: "失败啦！",
+                            text: result.msg,
+                            type: "error",
+                        });
+                    }
+                },
+                error: function () {
+                    toastr.error("服务器异常，请稍后重试！");
+                }
+            });
+        })
+        }
+        function showEditForm(id){
+                $.ajax({
+                type: "GET",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{ url_for('admin.reptile_edit') }}",//url
+                headers: {"X-CSRFToken": csrftoken},
+                data:{"id":id},
+                success: function (result) {
+                   if (result.code == 1){
+                        var data = result.data;
+                        $("#reptile_edit_form input[name=id]" ).val(data.id) ;
+                        $("#reptile_edit_form input[name=name]" ).val(data.name) ;
+                        $("#reptile_edit_form input[name=url]" ).val(data.url) ;
+                        $("#reptile_edit_form input[name=dom]" ).val(data.dom) ;
+                        $("#reptile_edit_form input[name=begin_page]" ).val(data.begin_page) ;
+                        $("#reptile_edit_form input[name=end_page]" ).val(data.end_page) ;
+                        $("#reptile_edit_form input[name=content_name]" ).val(data.content_name) ;
+                        $("#reptile_edit_form input[name=content_info]" ).val(data.content_info) ;
+                        $("#reptile_edit_form input[name=content_main]" ).val(data.content_main) ;
+                        $("#reptile_edit_form input[name=content_img]" ).val(data.content_img) ;
+                        $('#reptile_edit').modal('show')
+                    }else {
+                        toastr.error(result.msg);
+                    }
+                },
+                error: function () {
+                    toastr.error("服务器异常，请稍后重试！");
+                }
+            });
+        }
+    </script>
+{% endblock %}

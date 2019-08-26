@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+    <meta name="description" content="{{webconfig.webdescription}}">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="{{webconfig.webicon}}">
+    <title>{{webconfig.webname}}</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{{ url_for('static',filename = 'components/bootstrap/css/bootstrap.min.css') }}">
+    <!-- toastr -->
+    <link rel="stylesheet" href="{{ url_for('static',filename = 'components/toastr/toastr.min.css') }}">
+    <!-- select2 -->
+    <link rel="stylesheet" href="{{ url_for('static',filename = 'components/select2/select2.min.css') }}">
+    <!-- sweetalert -->
+    <link rel="stylesheet" href="{{ url_for('static',filename = 'components/sweetalert/sweetalert.css') }}">
+    <!-- 自定义 style -->
+    <link rel="stylesheet" href="{{ url_for('static',filename = 'admin/css/master_style.css') }}">
+    <!-- jQuery 3 -->
+    <script src="{{ url_for('static',filename = 'components/jquery/jquery.min.js')}}"></script>
+    {% block css %}{% endblock %}
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="{{ url_for('static',filename = 'components/ie9/html5shiv.js')}}"></script>
+    <script src="{{ url_for('static',filename = 'components/ie9/respond.min.js')}}"></script>
+    <![endif]-->
+
+
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<!-- Site wrapper -->
+<div class="wrapper">
+
+    <header class="main-header">
+        {% include "admin/header.html" %}
+    </header>
+    {% include "admin/pwd.html" %}
+    <!-- =============================================== -->
+
+    <!-- Left side column. contains the sidebar -->
+    <aside class="main-sidebar">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+            <!-- sidebar menu: : style can be found in sidebar.less -->
+            {% include "admin/sidebar.html" %}
+        </section>
+        <!-- /.sidebar -->
+    </aside>
+
+    <!-- =============================================== -->
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <section class="content-header">
+          <h4>
+            {{active_menu.name}}
+          </h4>
+        </section>
+        <!-- Main content -->
+        <section class="content">
+             <!-- 内容 -->
+            {% block content %} {% endblock %}
+            <!-- 内容 -->
+        </section>
+    </div>
+
+</div>
+<!-- ./wrapper -->
+<!-- Bootstrap-->
+<script src="{{ url_for('static',filename = 'components/bootstrap/js/bootstrap.min.js')}}"></script>
+<!-- slimscroll -->
+<script src="{{ url_for('static',filename = 'components/slimscroll/jquery.slimscroll.js')}}"></script>
+<!-- sticky -->
+<script src="{{ url_for('static',filename = 'components/sticky/sticky-kit.min.js')}}"></script>
+<!-- select2 -->
+<script src="{{ url_for('static',filename = 'components/select2/select2.full.min.js')}}"></script>
+<!-- sweetalert -->
+<script src="{{ url_for('static',filename = 'components/sweetalert/sweetalert.min.js')}}"></script>
+<!-- toastr -->
+<script src="{{ url_for('static',filename = 'components/toastr/toastr.min.js')}}"></script>
+<!-- 自定义JS -->
+<script src="{{ url_for('static',filename = 'admin/js/main.js')}}"></script>
+<script src="{{ url_for('static',filename = 'admin/js/adminlte.min.js')}}"></script>
+{% block js %}{% endblock %}
+</body>
+</html>

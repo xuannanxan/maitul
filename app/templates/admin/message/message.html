@@ -1,0 +1,81 @@
+{% extends "admin/admin.html" %}
+{% import "admin/search.html" as search %}
+{% import "admin/pagination.html" as pagination %}
+{% block content %}
+<div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="box-title">
+                        </div>
+                        {{search}}
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                            <tbody>
+                            <tr>
+                                <th>ID</th>
+                                <th>留言时间</th>
+                                <th>邮箱</th>
+                                <th>姓名</th>
+                                <th>联系方式</th>
+                                <th style="width: 200px">内容</th>
+                                <th>操作</th>
+                            </tr>
+                            {% for v in page_data.items %}
+                                <tr>
+                                    <td>{{ v.id }}</td>
+                                    <td>{{ v.addtime }}</td>
+                                    <td>{{ v.email }}</td>
+                                    <td>{{ v.name }}</td>
+                                    <td>{{ v.contact }}</td>
+                                    <td>{{ v.info }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-sm"
+                                           id="{{ v.id }}"  url="{{ url_for('admin.message_del') }}"  csrftoken="{{ csrf_token() }}" onclick="deleteFun(this)"><i
+                                                class="fa fa-trash-o"></i> 删除
+                                        </button>
+                                    </td>
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer clearfix">
+                        {{ pagination.page(page_data,"admin.message") }}
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    <script type="text/javascript">
+        function showEditForm(id){
+            var csrftoken = "{{ csrf_token() }}"
+                $.ajax({
+                type: "GET",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{ url_for('admin.tag_edit') }}",//url
+                headers: {"X-CSRFToken": csrftoken},
+                data:{"id":id},
+                success: function (result) {
+                   if (result.code == 1){
+                        var data = result.data;
+                        $("#tag_edit_form input[name=id]" ).val(data.id) ;
+                        $("#tag_edit_form select[name=type]" ).val(data.type).trigger('change') ;
+                        $("#tag_edit_form input[name=name]" ).val(data.name) ;
+                        $("#tag_edit_form input[name=sort]" ).val(data.sort) ;
+                        $('#tag_edit').modal('show')
+                    }else {
+                        toastr.error(result.msg);
+                    }
+                },
+                error: function () {
+                    toastr.error("服务器异常，请稍后重试！");
+                }
+            });
+        }
+    </script>
+{% endblock %}

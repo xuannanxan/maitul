@@ -1,0 +1,261 @@
+{% extends "home/home.html" %}
+{% import "home/pagination.html" as pagination %}
+{% block content %}
+<!-- banner start -->
+<div class="banner">
+
+    <!-- slideshow start -->
+    <!-- ================ -->
+    <div class="slideshow white-bg">
+
+        <!-- slider revolution start -->
+        <!-- ================ -->
+        <div class="owl-carousel home-slider-carousel">
+            {% for v in ad_data.index_banner%}
+            <div class="single-slide-item" style="background-image: url('{{v.img}}')">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="slider-text">
+                                <h3>{{v.title}}</h3>
+                                <a href="{{v.url}}" class="btn btn-info">LEARN MORE</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <!-- slider revolution end -->
+
+    </div>
+    <!-- slideshow end -->
+
+</div>
+<!-- banner end -->
+<!-- product start -->
+<div class="section  clearfix object-non-visible animated object-visible fadeInUpSmall"
+     data-animation-effect="fadeInUpSmall" data-effect-delay="300">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-8">
+                    <h1 class="title">{{columns.products.name}}</h1>
+                    <div class="separator-2"></div>
+                    <p>{{columns.products.info}}</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group form-group" style="margin-top: 30px">
+                        <input type="text" name="productsSearch" data-url="{{url_for('home.products',nav_id=columns.products.id)}}" class="form-control pull-right" placeholder="Search..." >
+                        <div class="input-group-addon"  onclick="btnSearch(this,'{{url_for('home.products',nav_id=columns.products.id)}}')">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-12 search-filters" id="searchBar">
+                <div class="form-group">
+                    <div class="col-sm-12 col-md-12">
+                        <!-- isotope filters start -->
+                        <div class="filters margin-bottom-clear">
+                            <ul>
+                                {% for v in columns.products.children %}
+                                <li><a href="{{url_for('home.products',nav_id=v.id)}}"
+                                >{{v.name}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <!-- isotope filters end -->
+                    </div>
+                </div>
+            </div>
+
+                <!-- portfolio items start -->
+                <div class="isotope-container grid-space-20" style="display: block; position: relative;">
+                    {% for v in products.items %}
+                    <div class="col-sm-6 col-md-3 isotope-item web-design">
+									<div class="image-box">
+										<div class="overlay-container">
+											<img src="{{v.cover}}" alt="{{v.title}}">
+											<a href="{{url_for('home.product',nav_id=v.column_id,id=v.id)}}" class="overlay small">
+												<i class="fa fa-search"></i>
+												<span>{{v.title | safe}}</span>
+											</a>
+										</div>
+										<a href="{{url_for('home.product',nav_id=v.column_id,id=v.id)}}" class="btn btn-light-gray btn-block">{{v.title}}</a>
+									</div>
+								</div>
+                    {% endfor %}
+                    {{ pagination.page(products,"home.products",nav_id=columns.products.id) }}
+                </div>
+                <!-- portfolio items end -->
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+<!-- product end -->
+<!-- services start-->
+<div class="page-top gray-bg">
+    <div class="container ">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center title">{{columns.services.name}}</h1>
+                <div class="separator"></div>
+                <p class="text-center">{{columns.services.info}}</p>
+                <div class="row grid-space-10">
+                    {% for v in columns.services.children %}
+                    <div class="col-sm-4">
+                        <div class="box-style-2 object-non-visible animated object-visible fadeInUpSmall"
+                             data-animation-effect="fadeInUpSmall" data-effect-delay="200">
+                            <div class="icon-container default-bg">
+                                <i class="fa {{v.icon}}"></i>
+                            </div>
+                            <div class="body">
+                                <h2>{{v.name}}</h2>
+                                <p>{{v.info}}</p>
+                                <a href="{{url_for('home.services',nav_id = v.id)}}" class="link"><span>Read More</span></a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor%}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- services end -->
+
+<!-- index_center_ad start -->
+<section class="main-container parallax dark-translucent-bg"
+         style="background-image: url('{{ad_data.index_center_ad[0].img}}')">
+
+    <!-- main start -->
+    <!-- ================ -->
+    <div class="main">
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-8">
+                        <h1 class="title">{{ad_data.index_center_ad[0].title}}</h1>
+                        <div class="separator-2"></div>
+                        <p>{{ad_data.index_center_ad[0].info}}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <a href="{{ad_data.index_center_ad[0].url}}" class="btn btn-default btn-lg">Contact us</a>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <!-- main end -->
+</section>
+<!-- index_center_ad end -->
+
+<!-- about_us  start-->
+<section class="main-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h1 class="title">{{columns.about_us.name}}</h1>
+                <div class="separator-2"></div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <img src="{{columns.about_us.cover}}" alt="">
+                    </div>
+                    {{columns.about_us.content| safe }}
+                </div>
+                <a href="{{columns.about_us.url}}" class="btn btn-white">Learn More</a>
+                <div class="space hidden-md hidden-lg"></div>
+            </div>
+            <div class="col-md-6">
+                <h1 class="title">{{columns.choose_us.name}}</h1>
+                <div class="separator-2"></div>
+                <div class="panel-group" id="accordion">
+                    {% for v in columns.choose_us.children%}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#{{v.id}}"
+                                   {% if columns.choose_us.children.index(v) !=0 %}
+                                   class="collapsed"
+                                   {% endif %}
+                                >
+                                    <i class="fa {{v.icon}}"></i>{{v.name}}
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="{{v.id}}" class="panel-collapse collapse
+											{% if columns.choose_us.children.index(v) == 0 %}
+											in
+											{% endif %}
+											">
+                            <div class="panel-body">
+                                {{v.content| safe}}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+<!-- about_us end -->
+
+<!-- process start -->
+<div class="section gray-bg clearfix">
+    <div class="container">
+        <h1 class="text-center title">{{columns.process.name}}</h1>
+        <div class="separator"></div>
+        <p class="text-center">{{columns.process.info}}</p>
+        <!-- pills start -->
+        <div class="process">
+            <!-- Nav tabs -->
+            <ul class="nav nav-pills white space-top" role="tablist">
+                {% for v in columns.process.children%}
+                <li class="
+							{% if columns.process.children.index(v) == 0 %}
+							active
+							{% endif %}
+							"><a href="#{{v.id}}" role="tab" data-toggle="tab" title="{{v.name}}"><i
+                        class="fa fa-dot-circle-o pr-5"></i>{{columns.process.children.index(v)+1}} {{v.name}}</a></li>
+                {% endfor %}
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content clear-style">
+                {% for v in columns.process.children%}
+                <div class="tab-pane
+							{% if columns.process.children.index(v) == 0 %}
+							active
+							{% endif %}
+							" id="{{v.id}}">
+                    <h3>{{v.name}}</h3>
+                    <div class="row">
+                        <div class="col-md-12">
+                            {{v.content |safe}}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <!-- pills end -->
+    </div>
+</div>
+<!-- process end -->
+
+
+{% endblock %}
+{% block js %}
+<script>
+    enterSearch('input[name=productsSearch]',$('input[name=productsSearch]').attr('data-url'))
+</script>
+{% endblock %}

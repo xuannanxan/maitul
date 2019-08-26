@@ -1,0 +1,170 @@
+{% extends "admin/admin.html" %}
+{% import "admin/search.html" as search %}
+{% import "admin/pagination.html" as pagination %}
+{% block content %}
+    {% include "admin/reptile/reptile_add.html" %}
+    {% include "admin/reptile/preview.html" %}
+        <div class="row">
+            <div class="col-lg-3 col-12">
+                <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">爬取任务</h3>
+                        <div class="box-tools">
+                            <button type="button" class="btn btn-box-tool" data-toggle="modal"
+                                    data-target="#reptile_add"><i class="fa fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="box-body no-padding skin-green-light">
+                        <section class="sidebar" style="height: auto;">
+                            <ul  class="sidebar-menu" data-widget="tree">
+                                {% for request in request_data %}
+                                        <li class="{% if  request['id'] == request_id %}active{% endif %}">
+                                            <a href="{{ url_for('admin.reptile_list',request_id = request['id']) }}">
+                                                <span>{{ request['name'] }}</span>
+                                            </a>
+                                        </li>
+
+                                {% endfor %}
+                            </ul>
+                        </section>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="box">
+                    <div class="box-header">
+                         <div class="box-title">
+                             <div class="btn-group">
+                                  <button type="button" class="btn btn-info">导入数据到栏目</button>
+                                  <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                  </button>
+                                  <ul class="dropdown-menu" role="menu">
+                                    {% for column in column_tree%}
+                                      {% if column.type==1 or column.type==2%}
+                                      <li><a onclick="importData('{{column.id}}','{{column.type}}')">{{column.name}}</a></li>
+                                      {%endif%}
+                                      {% if column['children'] %}
+                                          {% for column_child in column['children'] %}
+                                            {% if column_child.type==1 or column_child.type==2%}
+                                            <li><a  onclick="importData('{{column_child.id}}','{{column_child.type}}')">{{column_child.name}}</a></li>
+                                            {%endif%}
+                                          {% endfor%}
+                                      {%endif%}
+                                  {% endfor%}
+                                  </ul>
+                             </div>
+                        </div>
+                        {{search}}
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                            <tbody>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="select-all" class="filled-in chk-col-green" />
+					                <label for="select-all">ID</label>
+                                </th>
+                                <th>标题</th>
+                                <th>添加时间</th>
+                                <th>操作</th>
+                            </tr>
+                            {% for v in page_data.items %}
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" id="{{ v.id }}" name="selected" class="filled-in chk-col-green" />
+					                    <label for="{{ v.id }}">{{ v.id }}</label>
+                                    </td>
+                                    <td>{{ v.content_name }}</td>
+                                    <td>{{ v.addtime }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-info btn-sm" onclick="showPreview('{{ v.id }}')"
+                                                ><i class="fa fa-edit"></i> 预览
+                                        </button>
+                                        <button type="button" class="btn btn-default btn-sm"
+                                             id="{{ v.id }}"  url="{{ url_for('admin.reptile_data_del') }}"  csrftoken="{{ csrf_token() }}" onclick="deleteFun(this)"><i class="fa fa-trash-o"></i> 删除
+                                        </button>
+                                    </td>
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                      <div class="box-footer clearfix">
+                        {{ pagination.page(page_data,"admin.reptile_list",request_id=request_id) }}
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+
+{% endblock %}
+{% block js %}
+<script>
+    var csrftoken = "{{ csrf_token() }}"
+        function showPreview(id){
+                $.ajax({
+                type: "GET",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{ url_for('admin.reptile_preview') }}",//url
+                headers: {"X-CSRFToken": csrftoken},
+                data:{"id":id},
+                success: function (result) {
+                    if (result.code == 1){
+                        var data = result.data;
+                        $('#content_name').html(data.content_name);
+                        $('#content_info').html(data.content_info);
+                        $('#content_main').html(data.content_main);
+                        $('#content_img').css("background-image","url("+data.content_img+")");
+                        $('#preview').modal('show')
+                    }else {
+                        toastr.error(result.msg);
+                    }
+                },
+                error: function () {
+                    toastr.error("服务器异常，请稍后重试！");
+                }
+            });
+        }
+    function importData(id,type){
+        var checked_id = checkedValue()
+        if (checked_id){
+             $.ajax({
+                type: "put",//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: "{{ url_for('admin.reptile_export') }}",//url
+                headers: {"X-CSRFToken": csrftoken},
+                data:{
+                    "id":id,
+                    "reptile_id":checked_id,
+                    "type":type
+                },
+                success: function (result) {
+                    if (result.code == 1){
+                       toastr.success(result.msg);
+                    }else {
+                        toastr.error(result.msg);
+                    }
+                },
+                error: function () {
+                    toastr.error("服务器异常，请稍后重试！");
+                }
+            });
+        }else {
+            toastr.error('请选择数据！！！');
+        }
+    }
+</script>
+{% endblock %}
+
+
+
+
+
+

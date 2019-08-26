@@ -1,0 +1,145 @@
+{% extends "home/home.html" %}
+{% block content %}
+<!-- product_banner start -->
+<div class="section parallax dark-translucent-bg" style=" background-image: url('{{active_nav.cover}}');">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <ol class="breadcrumb breadcrumb-banner">
+                    <li><i class="fa fa-home pr-10"></i><a href="{{url_for('home.index')}}">Home</a></li>
+                    {% if top_nav.id == active_nav.id%}
+                    <li class="active">{{active_nav.name}}</li>
+                    {% else %}
+                    <li><a href="{{top_nav.url+'/'+top_nav.id |string}}">{{top_nav.name}}</a></li>
+                    <li class="active">{{active_nav.name}}</li>
+                    {% endif %}
+                </ol>
+                <div class="separator-2"></div>
+                {{active_nav.info | safe}}
+            </div>
+            <div class="col-md-4" style="margin-top: 30px">
+                <div class="input-group form-group">
+                    <input type="text" name="articlesSearch" class="form-control pull-right" placeholder="Search...">
+                    <div class="input-group-addon" onclick="btnSearch(this)">
+                        <i class="fa fa-search"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- product_banner end -->
+
+<!-- main-container start -->
+<!-- ================ -->
+<section class="main-container">
+
+    <div class="container">
+        <div class="row">
+
+            <!-- main start -->
+            <!-- ================ -->
+            <div class="main col-md-8">
+
+                <!-- page-title start -->
+                <!-- ================ -->
+                <h1 class="page-title margin-top-clear">{{article_data.title}}</h1>
+                <!-- page-title end -->
+                <!-- pictures panes start-->
+                <div class="owl-carousel content-slider-with-controls">
+                    <div class="overlay-container">
+                        <img src="{{article_data.cover}}" alt="{{article_data.title}}">
+                    </div>
+                </div>
+                <div class="product-interaction clearfix">
+                    <ul class="links pull-left">
+                        <li><i class="fa fa-tags pr-5"></i>
+                            {% for v in article_data.tags %}
+                            <a href="{{url_for('home.articles',nav_id=top_nav.id,tag=v.id)}}">{{v.name}} </a>
+                            {% endfor %}
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-12">
+                    <p>{{article_data.info|safe}}</p>
+                     <hr>
+                    {{article_data.content | safe}}
+                </div>
+
+                <!-- pictures panes end-->
+            </div>
+            <aside class="col-md-4">
+                <div class="sidebar">
+                    <div class="portfolio-item side vertical-divider-left">
+                        <div class="row">
+                            <div class="col-md-12">
+										<h2 class="title">Contact Us</h2>
+										<ul class="list-icons">
+											<li><i class="fa fa-phone pr-5"></i>{{webconfig.phone}}</li>
+											<li><i class="fa fa-envelope pr-5"></i><a href="mailto:{{webconfig.email}}">{{webconfig.email}}</a></li>
+										</ul>
+										<ul class="social-links colored clearfix">
+                                            {% for v in columns.social_tools.children%}
+											<li class="{{v.name}}"><a target="_blank" href="{{v.href}}"><i class="fa {{v.icon}}"></i></a></li>
+                                            {% endfor %}
+										</ul>
+                                 <hr>
+								</div>
+                            <div class="col-md-12">
+                                <div class="clearfix">
+                                    <h2 class="title margin-top-clear">Share This</h2>
+                                    <ul class="list">
+                                        <li><strong class="vertical-divider">URL </strong> <a
+                                                href="{{ request.url }}">{{ request.url }}</a></li>
+                                    </ul>
+                                    <div class="qrcode">
+                                        <img src="data:image/png;base64,{{url_code}}">
+                                        <p>[ Open on Mobile ]</p>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                            <!-- Add the extra clearfix for only the required viewport -->
+                            <div class="col-md-12">
+                                <div class="clerfix">
+                                    <h2 class="title margin-top-clear">Get more information</h2>
+                                    <p>Leave your mailbox and we will send you the details of the article.</p>
+                                    <form role="form" id="getMoreInfo">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                        <input type="hidden" name="name"/>
+                                        <input type="hidden" name="contact"/>
+                                        <textarea style="display: none" class="form-control" rows="2" name="info">
+                                            <p>Interested : <h1>{{article_data.title}}</h1></p>
+                                            <p>URL: <a href="{{ request.url }}">{{ request.url }}</a></p>
+                                        </textarea>
+                                        <div class="form-group has-feedback">
+                                            <input type="email" class="form-control" placeholder="Email" name="email">
+                                            <i class="fa fa-envelope-o form-control-feedback"></i>
+                                        </div>
+                                        <a onclick="sendMessage(this,'getMoreInfo')"
+                                           class="btn btn-default">Subscribe</a>
+                                    </form>
+                                </div>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+
+            <!-- main end -->
+
+
+        </div>
+    </div>
+</section>
+<!-- main-container end -->
+{% endblock %}
+{% block js %}
+<script>
+    enterSearch('input[name=articlesSearch]')
+    click_count()
+</script>
+{% endblock %}

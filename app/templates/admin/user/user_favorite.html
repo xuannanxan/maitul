@@ -1,0 +1,55 @@
+<div class="modal fade" id="user_favorite">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">用户收藏</h4>
+            </div>
+            <div class="modal-body">
+                <section class="content">
+                  <div class="row">
+                    <div class="col-xs-12">
+                      <div class="box">
+                        <!-- /.box-header -->
+                        <div class="box-body table-responsive no-padding">
+                          <table class="table table-hover">
+                            <tbody><tr>
+                              <th>编号</th>
+                              <th>收藏内容</th>
+                              <th>添加时间</th>
+                            </tr>
+                            {% for v in range(1,11) %}
+                            <tr>
+                              <td>1</td>
+                              <td><a href="">电子配件</a></td>
+                              <td>2019-09-10</td>
+
+                            </tr>
+                            {% endfor %}
+                          </tbody></table>
+                        </div>
+                        <!-- /.box-body -->
+                      <div class="box-footer clearfix">
+                          <ul class="pagination pagination-sm no-margin pull-right">
+                            <li><a href="#">«</a></li>
+                            <li><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">»</a></li>
+                          </ul>
+                        </div>
+                      </div>
+                      <!-- /.box -->
+                    </div>
+                  </div>
+            </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

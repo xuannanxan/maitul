@@ -1,0 +1,132 @@
+{% extends "admin/admin.html" %}
+{% import "admin/search.html" as search %}
+{% block content %}
+{% include "admin/ad/ad_add.html" %}
+{% include "admin/ad/ad_edit.html" %}
+{% include "admin/adspace/adspace_add.html" %}
+{% block css %}
+{% endblock %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">广告位</h3>
+                <div class="box-tools">
+                    <button type="button" class="btn btn-box-tool" data-toggle="modal"
+                            data-target="#adspace_add"><i class="fa fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body no-padding skin-green-light">
+                <section class="sidebar" style="height: auto;">
+                    <ul id="menusidebar" class="sidebar-menu" data-widget="tree">
+                        {% for adspace in sapce_data %}
+                        <li class="{% if  adspace['id'] == space_id %}active{% endif %}">
+                            <a href="{{ url_for('admin.ad_list',space_id = adspace['id']) }}">
+                                <span>{{ adspace['name'] }}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="box">
+            <div class="box-header">
+                <div class="box-title">
+                    <button type="button" class="btn btn-block btn-info btn-sm" data-toggle="modal"
+                            data-target="#ad_add">
+                        <i class="fa fa-plus"></i> 添加
+                    </button>
+                </div>
+                {{search}}
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body table-responsive no-padding">
+                <table class="table table-hover">
+                    <tbody>
+                    <tr>
+                        <th>id</th>
+                        <th>广告名称</th>
+                        <th>URL</th>
+                        <th>添加时间</th>
+                        <th>操作</th>
+                    </tr>
+                    {% for v in ad_data %}
+                    <tr>
+                        <td>{{ v.id }}</td>
+                        <td>{{ v.title }}</td>
+                        <td>{{ v.url }}</td>
+                        <td>{{ v.addtime }}</td>
+                        <td>
+                            <button type="button" class="btn btn-info btn-sm" onclick="showEditForm('{{ v.id }}')"
+                            ><i class="fa fa-edit"></i> 编辑
+                            </button>
+                            <button type="button" class="btn btn-default btn-sm"
+                                    id="{{ v.id }}" url="{{ url_for('admin.ad_del') }}" csrftoken="{{ csrf_token() }}"
+                                    onclick="deleteFun(this)"><i class="fa fa-trash-o"></i> 删除
+                            </button>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+<script src="{{ url_for('static',filename = 'components/plupload/js/plupload.full.min.js')}}"></script>
+<script>
+        //初始化文件上传
+
+    var csrftoken = "{{ csrf_token() }}"
+    var extraData = {
+        "csrf_token": csrftoken,
+        "width":1100,
+        "height":300,
+        "watermark":0,
+        "thumb":0
+    }
+        initPlupload('add_ad_img',1,extraData)
+        initPlupload('edit_ad_img',1,extraData)
+    function showEditForm(id) {
+        var csrftoken = "{{ csrf_token() }}"
+        $.ajax({
+            type: "GET",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "{{ url_for('admin.ad_edit') }}",//url
+            headers: {"X-CSRFToken": csrftoken},
+            data: {"id": id},
+            success: function (result) {
+                if (result.code == 1) {
+                    var data = result.data;
+                    $("#ad_edit_form input[name=id]").val(data.id);
+                    $("#ad_edit_form select[name=space_id]").val(data.space_id).trigger('change');
+                    $("#ad_edit_form input[name=title]").val(data.title);
+                    $("#ad_edit_form textarea[name=info]").val(data.info);
+                    $("#ad_edit_form input[name=sort]").val(data.sort);
+                    $("#ad_edit_form input[name=img]").val(data.img);
+                  showAllFiles('edit_ad_img','')
+                    $("#ad_edit_form input[name=url]").val(data.url);
+                    $('#ad_edit').modal('show')
+                } else {
+                    toastr.error(result.msg);
+                }
+            },
+            error: function () {
+                toastr.error("服务器异常，请稍后重试！");
+            }
+        });
+    }
+    ;
+</script>
+{% endblock %}

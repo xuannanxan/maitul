@@ -1,0 +1,51 @@
+<div class="modal fade" id="auth_add">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">添加权限</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" id="auth_add_form">
+                    <div class="box-body">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <div class="form-group">
+                            <label>所属菜单</label>
+                            <select class="form-control select2" name = "menu_id">
+                            <option value=""> 请选择</option>
+                                {% for menu in menu_tree %}
+                                    <option value="{{  menu['id'] }}"
+                                    {% if menu['id']  == menuid%} selected {% endif %}
+                                    > {{  menu['name'] }}</option>
+                                    {% if menu['children'] %}
+                                        {% for child_menu in menu['children'] %}
+                                             <option value="{{  child_menu['id'] }}"
+                                                     {% if child_menu['id']  == menuid%} selected {% endif %}
+                                             > --- {{  child_menu['name'] }}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>名称</label>
+                            <input type="text" class="form-control" name="name" placeholder="请输入权限名称">
+                        </div>
+                        <div class="form-group">
+                            <label>URL</label>
+                            <input type="text" class="form-control" name="url" placeholder="请输入需授权URL地址">
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-info" url="{{url_for('admin.auth_add')}}" formId="auth_add_form" onclick="addFun(this)">提交</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

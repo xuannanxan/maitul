@@ -1,0 +1,120 @@
+{% extends "admin/admin.html" %}
+{% import "admin/search.html" as search %}
+{% import "admin/pagination.html" as pagination %}
+{% block content %}
+{% include "admin/menu/menu_add.html" %}
+{% include "admin/menu/menu_edit.html" %}
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-header">
+                <div class="box-title">
+                    <button type="button" class="btn btn-block btn-info btn-sm" data-toggle="modal"
+                            data-target="#menu_add">
+                        <i class="fa fa-plus"></i> 添加
+                    </button>
+                </div>
+                {{search}}
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body table-responsive no-padding">
+                <table class="table table-hover">
+                    <tbody>
+                    <tr>
+                        <th>ID</th>
+                        <th>菜单名称</th>
+                        <th>URL</th>
+                        <th>添加时间</th>
+                        <th>操作</th>
+                    </tr>
+                    {% for menu in menu_tree %}
+                    <tr>
+                        <td>{{ menu.id }}</td>
+                        <td><i class="fa {{ menu.icon }}"></i> {{ menu.name }}</td>
+                        <td>
+                            {{ menu.url }}
+                        </td>
+                        <td>{{ menu.addtime }}</td>
+                        <td>
+                            <button type="button" class="btn btn-info btn-sm" onclick="showEditForm('{{ menu.id }}')"
+                            ><i class="fa fa-edit"></i>
+                                编辑
+                            </button>
+                            <button type="button" class="btn btn-default btn-sm"
+                                    id="{{ menu.id }}" url="{{ url_for('admin.menu_del') }}"
+                                    csrftoken="{{ csrf_token() }}" onclick="deleteFun(this)"><i
+                                    class="fa fa-trash-o"></i> 删除
+                            </button>
+                        </td>
+                    </tr>
+                    {% if menu['children']%}
+                    {% for childmenu in menu['children']%}
+                    <tr>
+                        <td>{{ childmenu.id }}</td>
+                        <td> -----<i class="fa {{ childmenu.icon }}"></i> {{ childmenu.name }}</td>
+                        <td>
+                            {{ childmenu.url }}
+                        </td>
+                        <td>{{ childmenu.addtime }}</td>
+                        <td>
+                            <button type="button" class="btn btn-info btn-sm"
+                                    onclick="showEditForm('{{ childmenu.id }}')"
+                            ><i class="fa fa-edit"></i>
+                                编辑
+                            </button>
+                            <button type="button" class="btn btn-default btn-sm"
+                                    id="{{ childmenu.id }}" url="{{ url_for('admin.menu_del') }}"
+                                    csrftoken="{{ csrf_token() }}" onclick="deleteFun(this)"><i
+                                    class="fa fa-trash-o"></i> 删除
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor%}
+                    {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+                {{ pagination.page(page_data,"admin.tag_list") }}
+            </div>
+        </div>
+        <!-- /.box -->
+    </div>
+</div>
+
+<script type="text/javascript">
+    function showEditForm(id) {
+        var csrftoken = "{{ csrf_token() }}"
+        $.ajax({
+            type: "GET",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "{{ url_for('admin.menu_edit') }}",//url
+            headers: {"X-CSRFToken": csrftoken},
+            data: {"id": id},
+            success: function (result) {
+                if (result.code == 1) {
+                    var data = result.data;
+                    $("#menu_edit_form input[name=id]").val(data.id);
+                    $("#menu_edit_form select[name=pid]").val(data.pid).trigger('change');
+                    $("#menu_edit_form input[name=url]").val(data.url);
+                    var icon = $("#menu_edit_form input[name=icon]");
+                    icon.val(data.icon);
+                    icon.siblings().children().removeClass();
+                    icon.siblings().children().addClass("fa "+data.icon)
+                    $("#menu_edit_form input[name=name]").val(data.name);
+                    $("#menu_edit_form input[name=sort]").val(data.sort);
+                    $('#menu_edit').modal('show')
+                } else {
+                    toastr.error(result.msg);
+                }
+            },
+            error: function () {
+                toastr.error("服务器异常，请稍后重试！");
+            }
+        });
+    }
+</script>
+{% endblock %}

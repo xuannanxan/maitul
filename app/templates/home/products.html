@@ -1,0 +1,138 @@
+{% extends "home/home.html" %}
+{% import "home/pagination.html" as pagination %}
+{% block content %}
+<!-- product_banner start -->
+<div class="section parallax dark-translucent-bg" style=" background-image: url('{{active_nav.cover}}');">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <ol class="breadcrumb breadcrumb-banner">
+					<li><i class="fa fa-home pr-10"></i><a href="{{url_for('home.index')}}">Home</a></li>
+                    {% if top_nav.id == active_nav.id%}
+                    <li class="active">{{active_nav.name}}</li>
+                    {% else %}
+					<li><a href="{{top_nav.url+'/'+top_nav.id |string}}">{{top_nav.name}}</a></li>
+					<li class="active">{{active_nav.name}}</li>
+                    {% endif %}
+				</ol>
+                <div class="separator-2"></div>
+                {{active_nav.info | safe}}
+            </div>
+             <div class="col-md-4" style="margin-top: 30px">
+                    <div class="input-group form-group">
+                        <input type="text" name="productsSearch" class="form-control pull-right" placeholder="Search..." value="{{request_data.search}}">
+                        <div class="input-group-addon"  onclick="btnSearch(this)">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- product_banner end -->
+
+<!-- product start -->
+<div class="section  clearfix object-non-visible animated object-visible fadeInUpSmall"
+     data-animation-effect="fadeInUpSmall" data-effect-delay="300">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-12 search-filters" id="searchBar">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Category </label>
+                    <div class="col-sm-10">
+                        <!-- isotope filters start -->
+                        <div class="filters margin-bottom-clear">
+                            <ul>
+                                <li><a href="{{url_for('home.products',nav_id=top_nav.id,services=request_data.services,tag=request_data.tag,search=request_data.search)}}"
+                                {% if active_nav.id == top_nav.id %} class="selected" {% endif%}
+                                >All</a></li>
+                                {% for v in columns.products.children %}
+                                <li><a href="{{url_for('home.products',nav_id=v.id,services=request_data.services,tag=request_data.tag,search=request_data.search)}}"
+                                        {% if v.id == active_nav.id%}
+                                 class="selected"
+                                       {% endif%}
+                                >{{v.name}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <!-- isotope filters end -->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">services </label>
+                    <div class="col-sm-10">
+                        <!-- isotope filters start -->
+                        <div class="filters margin-bottom-clear">
+                            <ul>
+                                <li><a href="{{url_for('home.products',nav_id=active_nav.id,services='',tag=request_data.tag,search=request_data.search)}}"
+                                {% if not request_data.services %} class="selected" {% endif%}
+                                >All</a></li>
+                                {% for v in columns.services.children %}
+                                <li><a href="{{url_for('home.products',nav_id=active_nav.id,services=v.id,tag=request_data.tag,search=request_data.search)}}"
+                                {% if v.id| string == request_data.services%}
+                                 class="selected"
+                                       {% endif%}
+                                >{{v.name}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <!-- isotope filters end -->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Tag </label>
+                    <div class="col-sm-10">
+                        <!-- isotope filters start -->
+                        <div class="filters margin-bottom-clear">
+                            <ul>
+                                <li><a href="{{url_for('home.products',nav_id=active_nav.id,services=request_data.services,tag='',search=request_data.search)}}"
+                                {% if not request_data.tag %} class="selected" {% endif%}
+                                >All</a></li>
+                                {% for v in tags.product %}
+                                <li><a href="{{url_for('home.products',nav_id=active_nav.id,services=request_data.services,tag=v.id,search=request_data.search)}}"
+                                       {% if v.id | string == request_data.tag%}
+                                 class="selected"
+                                       {% endif%}
+                                >{{v.name}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <!-- isotope filters end -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <!-- portfolio items start -->
+				<div class="isotope-container grid-space-20" style="display: block; position: relative;">
+                    {% for v in products.items %}
+								<div class="col-sm-6 col-md-3 isotope-item web-design">
+									<div class="image-box">
+										<div class="overlay-container">
+											<img src="{{v.cover}}" alt="{{v.title}}">
+											<a href="{{url_for('home.product',nav_id=v.column_id,id=v.id)}}" class="overlay small">
+												<i class="fa fa-search"></i>
+												<span>{{v.title | safe}}</span>
+											</a>
+										</div>
+										<a href="{{url_for('home.product',nav_id=v.column_id,id=v.id)}}" class="btn btn-light-gray btn-block">{{v.title}}</a>
+									</div>
+								</div>
+                    {% endfor %}
+                    {{ pagination.page(products,"home.products",nav_id=active_nav.id,services=request_data.services,tag=request_data.tag,search=request_data.search ) }}
+                </div>
+                <!-- portfolio items end -->
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- product end -->
+{% endblock %}
+{% block js %}
+<script>
+    enterSearch('input[name=productsSearch]')
+</script>
+{% endblock %}

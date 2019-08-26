@@ -1,0 +1,142 @@
+{% extends "admin/admin.html" %}
+{% import "admin/search.html" as search %}
+{% block content %}
+{% include "admin/auth/auth_add.html" %}
+{% include "admin/auth/auth_edit.html" %}
+{% include "admin/menu/menu_add.html" %}
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">菜单</h3>
+                <div class="box-tools">
+                    <button type="button" class="btn btn-box-tool" data-toggle="modal"
+                            data-target="#menu_add"><i class="fa fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body no-padding skin-green-light">
+                <section class="sidebar" style="height: auto;">
+                    <ul id="menusidebar" class="sidebar-menu" data-widget="tree">
+                        {% for menu in menu_tree %}
+                        {% if menu['children'] %}
+                        <li class="treeview">
+                            <a href="{{ url_for('admin.auth_list',menuid = menu['id']) }}">
+                            <i class="fa {{ menu['icon'] }}"></i> <span>{{ menu['name'] }}</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+                            </a>
+
+                            <ul class="treeview-menu">
+                                {% for child_menu in menu['children'] %}
+                                <li class="{% if  child_menu['id'] == menuid %}active{% endif %}">
+                                    <a href="{{ url_for('admin.auth_list',menuid = child_menu['id']) }}"><i
+                                            class="fa {{ child_menu['icon'] }}"></i> {{ child_menu['name'] }}
+                                    </a></li>
+                                {% endfor %}
+                            </ul>
+
+                        </li>
+                        {% else %}
+                        <li class="{% if  menu['id'] == menuid %}active{% endif %}">
+                            <a href="{{ url_for('admin.auth_list',menuid = menu['id']) }}">
+                                <i class="fa {{ menu['icon'] }}"></i> <span>{{ menu['name'] }}</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                    </ul>
+                </section>
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="box">
+            <div class="box-header">
+                <div class="box-title">
+                    <button type="button" class="btn btn-block btn-info btn-sm" data-toggle="modal"
+                            data-target="#auth_add">
+                        <i class="fa fa-plus"></i> 添加
+                    </button>
+                </div>
+                {{search}}
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body table-responsive no-padding">
+                <table class="table table-hover">
+                    <tbody>
+                    <tr>
+                        <th>id</th>
+                        <th>权限名称</th>
+                        <th>需授权URL</th>
+                        <th>添加时间</th>
+                        <th>操作</th>
+                    </tr>
+                    {% for v in auth_data %}
+                    <tr>
+                        <td>{{ v.id }}</td>
+                        <td>{{ v.name }}</td>
+                        <td>{{ v.url }}</td>
+                        <td>{{ v.create_time }}</td>
+                        <td>
+                            <button type="button" class="btn btn-info btn-sm" onclick="showEditForm('{{ v.id }}')"
+                            ><i class="fa fa-edit"></i> 编辑
+                            </button>
+                            <button type="button" class="btn btn-default btn-sm"
+                                    id="{{ v.id }}" url="{{ url_for('admin.auth_del') }}" csrftoken="{{ csrf_token() }}"
+                                    onclick="deleteFun(this)"><i class="fa fa-trash-o"></i> 删除
+                            </button>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+<script>
+    $(function () {
+        $('#menusidebar').find('li').each(function () {
+            if ($(this).hasClass("active") && $(this).parent().parent().hasClass('treeview')) {
+                $(this).parent().parent().addClass("menu-open active ")
+            }
+        })
+    })
+    function showEditForm(id) {
+        var csrftoken = "{{ csrf_token() }}"
+        $.ajax({
+            type: "GET",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "{{ url_for('admin.auth_edit') }}",//url
+            headers: {"X-CSRFToken": csrftoken},
+            data: {"id": id},
+            success: function (result) {
+                if (result.code == 1) {
+                    var data = result.data;
+                    $("#auth_edit_form input[name=id]").val(data.id);
+                    $("#auth_edit_form select[name=menu_id]").val(data.menu_id).trigger('change');
+                    $("#auth_edit_form input[name=name]").val(data.name);
+                    $("#auth_edit_form input[name=url]").val(data.url);
+                    $('#auth_edit').modal('show')
+                } else {
+                    toastr.error(result.msg);
+                }
+            },
+            error: function () {
+                toastr.error("服务器异常，请稍后重试！");
+            }
+        });
+    }
+    ;
+</script>
+{% endblock %}

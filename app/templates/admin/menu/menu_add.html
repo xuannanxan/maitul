@@ -1,0 +1,56 @@
+<div class="modal fade" id="menu_add">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">添加菜单</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form" id="menu_add_form">
+                    <div class="box-body">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <div class="form-group">
+                            <label>上级菜单</label>
+                            <select class="form-control select2" name="pid">
+                                <option value="0">最上级</option>
+                                {% for v in menu_tree %}
+                                <option value="{{ v.id }}">{{ v.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>图标</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" onchange="showicon(this)" name="icon"
+                                       placeholder="图标编号">
+                                <span class="input-group-addon"><i class="fa"></i></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>名称</label>
+                            <input type="text" class="form-control" name="name" placeholder="请输入菜单名称">
+                        </div>
+                        <div class="form-group">
+                            <label>URL</label>
+                            <input type="text" class="form-control" name="url" placeholder="请输入URL地址">
+                        </div>
+                        <div class="form-group">
+                            <label>排序</label>
+                            <input type="number" value=1 class="form-control" name="sort" placeholder="请输入排序编号，数字越大越靠前">
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-info" url="{{url_for('admin.menu_add')}}" formId="menu_add_form"
+                        onclick="addFun(this)">提交
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

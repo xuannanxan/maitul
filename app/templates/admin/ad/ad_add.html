@@ -1,0 +1,74 @@
+<div class="modal fade" id="ad_add">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">添加广告</h4>
+            </div>
+            <div class="modal-body" style="height:450px;overflow-x:hidden; ">
+                <form role="form" id="ad_add_form" class="form-horizontal">
+                    <div class="box-body">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label">所属广告位</label>
+                            <div class="col-sm-10 row">
+                                <select class="form-control select2" name="space_id">
+                                    <option value=""> 请选择</option>
+                                    {% for adspace in sapce_data %}
+                                    <option value="{{  adspace['id'] }}"
+                                            {% if adspace.id == adspace_id%} selected {% endif %}
+                                    > {{ adspace['name'] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label">名称</label>
+                            <div class="col-sm-10 row">
+                                <input type="text" class="form-control" name="title" placeholder="请输入广告名称">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label">描述</label>
+                            <div class="col-sm-10 row">
+                                <textarea type="text" class="form-control" name="info" placeholder="请输入描述信息"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label">URL</label>
+                            <div class="col-sm-10 row">
+                                <input type="text" class="form-control" name="url" placeholder="请输入跳转的URL">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label">图片</label>
+                            <div class="col-sm-10 row">
+                                <div id="add_ad_img" href="javascript:void(0);" class='col-sm-2 plupload'><i
+                                        class="fa fa-plus"></i>
+                                </div>
+                                <input type="text" class="form-control" name="img">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label">排序</label>
+                            <div class="col-sm-10 row">
+                                <input type="number" value=1 class="form-control" name="sort"
+                                       placeholder="请输入排序编号，数字越大越靠前">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-info" url="{{url_for('admin.ad_add')}}" formId="ad_add_form"
+                        onclick="addFun(this)">提交
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
