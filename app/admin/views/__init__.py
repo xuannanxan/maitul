@@ -22,7 +22,7 @@ def tpl_extra():
             sql = '''
             SELECT url 
             FROM auth LEFT JOIN role ON FIND_IN_SET(auth.id,role.auths) LEFT JOIN admin ON admin.role_id = role.id
-            WHERE admin.id = %i
+            WHERE admin.id = %i AND auth.is_del = 0
             '''%(current_user.id)
             data = Crud.auto_commit(sql)
             #etchall() 获取所有的数据，返回类型  RowProxy 数组

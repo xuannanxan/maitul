@@ -6,7 +6,7 @@ from flask_login import login_required
 
 from app.admin.forms import AuthForm,RoleForm
 from app.admin.views.base import op_log,auth_required
-from app.expand.utils import object_to_dict
+from app.expand.utils import object_to_dict,rows_by_date
 from app.models import Auth,Menu,Role,Crud
 from .. import admin
 
@@ -17,16 +17,15 @@ from .. import admin
 @login_required
 @auth_required
 def role_list(page=None):
-    menu_auths = Menu.query.join(
-        Auth
-    ).filter(
-        Menu.id == Auth.menu_id
-    ).order_by(
-        Menu.sort.desc()
-    ).all()
-    for v in menu_auths:
-        auths = v.auths # 读取auths才能获取到数据
-    page_data = Crud.get_data_paginate(Role, Role.addtime.desc(), page, 10)
+    sql = '''
+    SELECT menu.name as menu_name,auth.id,auth.name
+    FROM auth LEFT JOIN menu ON auth.menu_id = menu.id 
+    WHERE auth.is_del = 0
+    ORDER BY menu.sort DESC;
+    '''
+    data = Crud.auto_commit(sql)  
+    menu_auths = rows_by_date(data.fetchall(),'menu_name')
+    page_data = Crud.get_data_paginate(Role, Role.create_time.desc(), page, 10)
     return render_template("admin/role/role_list.html",page_data = page_data,menu_auths = menu_auths)
 
 

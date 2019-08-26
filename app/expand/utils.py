@@ -346,3 +346,13 @@ def make_dir(make_dir_path):
     if not os.path.exists(path):
         os.makedirs(path)
     return path
+
+def rows_by_date(data,name):
+    '''
+    按字段对数据进行分类
+    '''
+    from collections import defaultdict
+    rows_date = defaultdict(list)
+    for row in data:
+        rows_date[row[name]].append(row)    
+    return rows_date

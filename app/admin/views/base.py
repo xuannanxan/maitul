@@ -26,7 +26,7 @@ def auth_required(fun):
             sql = '''
             SELECT url 
             FROM auth LEFT JOIN role ON FIND_IN_SET(auth.id,role.auths) LEFT JOIN admin ON admin.role_id = role.id
-            WHERE admin.id = %i
+            WHERE admin.id = %i AND auth.is_del = 0
             '''%(current_user.id)
             data = Crud.auto_commit(sql)
             urls = [v.url for v in data.fetchall()]
