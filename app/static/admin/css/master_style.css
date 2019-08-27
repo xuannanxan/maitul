@@ -395,9 +395,10 @@ import icon and fonts Styles
     opacity: 0;
 }
 [type=checkbox]+label {
-    font-weight: 300;
+    font-weight: 400;
     position: relative;
-    padding-left: 35px;
+    font-size: 13px;
+    padding-left: 25px;
     cursor: pointer;
     display: inline-block;
     height: 25px;

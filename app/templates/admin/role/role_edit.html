@@ -23,7 +23,7 @@
                             {% for key in menu_auths %}
                                 <p class="title-underline col-sm-12">{{ key }}</p>
                                 {% for auth in menu_auths[key] %}
-                                <div class="col-sm-2">
+                                <div class="col-sm-3">
                                         <input type="checkbox" cid="editAuthCheck" class="filled-in chk-col-green" id="edit_{{ auth.id }}" value="{{ auth.id }}" />
                                         <label for="edit_{{ auth.id }}">{{ auth.name }}</label>
                                  </div>

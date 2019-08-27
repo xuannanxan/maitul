@@ -20,10 +20,12 @@ def menu_add():
     form = MenuForm(data)
     if form.validate():
         result = Crud.add(Menu,data,'name')
-        op_log("添加菜单-%s" % data["name"])
-    else:
-        result = {"code": 2, "msg": form.get_errors()}
-    return jsonify(result)
+        if result:
+            op_log("添加菜单-%s" % data["name"])
+            return {"code": 1, "msg": "添加成功！"}
+        return {"code": 0, "msg": "添加失败，系统错误或菜单已存在"}
+    return {"code": 0, "msg": form.get_errors()}
+
 
 
 # 菜单列表
@@ -48,10 +50,11 @@ def menu_edit():
         form = MenuForm(data)
         if form.validate():
             result = Crud.update(Menu,data,'name')
-            op_log("修改菜单#%s" %  data["id"])
-        else:
-            result = {"code": 2, "msg": form.get_errors()}
-        return jsonify(result)
+            if result:
+                op_log("修改菜单#%s" %  data["id"])
+                return {"code": 1, "msg": "修改成功！"}
+            return {"code": 0, "msg": "修改失败，系统错误或菜单已存在"}
+        return {"code": 0, "msg": form.get_errors()}
 
 
 # 删除菜单
@@ -66,5 +69,7 @@ def menu_del():
     else:
         data = Menu.query.filter_by(id=deldata['id']).first_or_404()
         result = Crud.delete(data)
-        op_log("删除菜单-%s" % data.name)
-    return jsonify(result)
+        if result:
+            op_log("删除菜单-%s" % data.name)
+            return {"code": 1, "msg": "删除成功！"}
+        return {"code": 0, "msg": "删除失败，系统错误"}

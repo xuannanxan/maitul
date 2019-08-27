@@ -25,7 +25,7 @@ def role_list(page=None):
     '''
     data = Crud.auto_commit(sql)  
     menu_auths = rows_by_date(data.fetchall(),'menu_name')
-    page_data = Crud.get_data_paginate(Role, Role.create_time.desc(), page, 10)
+    page_data = Crud.get_data_paginate(Role, Role.create_time.asc(), page, 10)
     return render_template("admin/role/role_list.html",page_data = page_data,menu_auths = menu_auths)
 
 
@@ -38,10 +38,11 @@ def role_add():
     form = RoleForm(data)
     if form.validate():
         result = Crud.add(Role,data,'name')
-        op_log("添加角色-%s" % data["name"])
-    else:
-        result = {"code": 2, "msg": form.get_errors()}
-    return jsonify(result)
+        if result:
+            op_log("添加角色-%s" % data["name"])
+            return {"code": 1, "msg": '新增成功'}
+        return {"code": 0, "msg": '修改失败，系统错误或名称已存在'}
+    return {"code": 0, "msg": form.get_errors()}
 # 修改角色
 @admin.route("/role/edit", methods=['GET', 'PUT'])
 @login_required
@@ -50,21 +51,24 @@ def role_edit():
     if request.method == 'GET':
         getdata = request.args
         if int(getdata["id"]) == 1:
-            return jsonify({"code": 2, "msg": "超级管理员不能修改！"})
+            return {"code": 0, "msg": "超级管理员不能修改！"}
         data = Crud.get_data_by_id(Role, getdata["id"])
         # auth_list = list(map(lambda v:int(v),(data.auths).split(",")))
         auth_list = (data.auths).split(",")
         role_data = {"name": data.name,"id":data.id, "auths": auth_list}
-        return jsonify({"code": 1, "data": role_data})
+        return {"code": 1, "data": role_data}
     elif request.method == "PUT":
         data = request.form
         form = RoleForm(data)
         if form.validate():
-                result = Crud.update(Role,data,'name')
+            result = Crud.update(Role,data,'name')
+            if result:
                 op_log("修改角色 #%s" %  data["id"])
-        else:
-            result = {"code": 2, "msg": form.get_errors()}
-        return jsonify(result)
+                return {"code": 1, "msg": '修改成功'}
+            return {"code": 0, "msg": '修改失败，系统错误或名称已存在'}
+        return {"code": 0, "msg": form.get_errors()}
+
+
 # 删除角色
 @admin.route("/role/del", methods=['DELETE'])
 @login_required
