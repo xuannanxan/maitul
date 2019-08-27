@@ -10,7 +10,6 @@ import app.admin.views.menu
 import app.admin.views.role
 import app.admin.views.auth
 import app.admin.views.admin
-import app.admin.views.m_login
 import app.admin.views.category
 import app.admin.views.article
 import app.admin.views.product

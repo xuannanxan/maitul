@@ -5,8 +5,7 @@ from .. import admin
 from flask import  render_template
 from flask_login import login_required
 from app.models import Operationlog,Admin,Adminlog,Userlog,Crud
-class page_data:
-    pass
+from app.expand.utils import Pagination
 
 # 操作日志
 @admin.route("/operation/log/<int:page>", methods=["GET"])
@@ -15,13 +14,16 @@ class page_data:
 def operation_log(page=None):
     if page is None:
         page = 1
-    page_data = Operationlog.query.join(
-            Admin
-    ).filter(
-            Admin.id == Operationlog.admin_id
-    ).order_by(
-            Operationlog.addtime.desc()
-    ).paginate(page=page, per_page=10)
+    sql = '''
+        SELECT operationlog.id,operationlog.create_time,operationlog.ip,admin.username,operationlog.reason
+        FROM operationlog LEFT JOIN admin ON operationlog.admin_id = admin.id
+        WHERE operationlog.is_del = 0 
+        ORDER BY operationlog.create_time DESC
+        LIMIT %d,%d
+    '''%(page*10-9,10)
+    data = Crud.auto_commit(sql)
+    count = Operationlog.query.filter(Operationlog.is_del == 0).count()
+    page_data = Pagination(page,10,count,data.fetchall())
     return render_template("admin/log/operation_log.html", page_data=page_data)
 
 
@@ -38,12 +40,11 @@ def admin_log(page=None):
         WHERE adminlog.is_del = 0 
         ORDER BY adminlog.create_time DESC
         LIMIT %d,%d
-    '''%(page*10-9,page*10)
+    '''%(page*10-9,10)
     data = Crud.auto_commit(sql)
-    page_data.items = data.fetchall()
-    page_data.prev_num = page
-    page_data.next_num = page+1
-    page_data.iter_pages = '10'
+    count = Adminlog.query.filter(Adminlog.is_del == 0).count()
+    page_data = Pagination(page,10,count,data.fetchall())
+ 
     return render_template("admin/log/admin_log.html", page_data=page_data)
 
 
