@@ -30,21 +30,21 @@
                             <div class="form-group row">
                                 <label class="col-sm-2 control-label">{{v.name}}({{v.ename}})</label>
                                 <div class="col-sm-10 row">
-                                    <input type="text" class="form-control" name="{{v.ename}}" placeholder="{{v.placeholder}}" value="{{v.value}}">
+                                    <input type="text" class="form-control" name="{{v.ename}}" placeholder="{{v.placeholder}}" value="{{v.default_value}}">
                                 </div>
                             </div>
                             {% elif v.type==2 %}
                             <div class="form-group row">
                                 <label class="col-sm-2 control-label">{{v.name}}({{v.ename}})</label>
                                 <div class="col-sm-10 row">
-                                    <input type="number" class="form-control" name="{{v.ename}}" placeholder="{{v.placeholder}}" value="{{v.value}}">
+                                    <input type="number" class="form-control" name="{{v.ename}}" placeholder="{{v.placeholder}}" value="{{v.default_value}}">
                                 </div>
                             </div>
                             {% elif v.type==3 %}
                             <div class="form-group row">
                                 <label class="col-sm-2 control-label">{{v.name}}({{v.ename}})</label>
                                 <div class="col-sm-10 row">
-                                    <textarea type="text" class="form-control" name="{{v.ename}}" placeholder="{{v.placeholder}}">{{v.value}}</textarea>
+                                    <textarea type="text" class="form-control" name="{{v.ename}}" placeholder="{{v.placeholder}}">{{v.default_value}}</textarea>
                                 </div>
                             </div>
                             {% elif v.type==4 %}
@@ -52,9 +52,9 @@
                                 <label class="col-sm-2 control-label">{{v.name}}({{v.ename}})</label>
                                 <div class="col-sm-10 row">
                                      <select class="form-control select2" name = "{{v.ename}}">
-                                        {% for val in v['values'] %}
+                                        {% for val in v['optional_values'] %}
                                         <option value="{{val}}"
-                                        {% if val  == v.value %} selected {% endif %}
+                                        {% if val  == v.default_value %} selected {% endif %}
                                         >{{val}}</option>
                                         {%　endfor %}
                                     </select>
@@ -64,11 +64,11 @@
                             <div class="form-group row">
                                 <label class="col-sm-2 control-label">{{v.name}}({{v.ename}})</label>
                                 <div class="col-sm-10 row">
-                                    <input type="text"  name = "{{v.ename}}" hidden value="{{v.value}}">
+                                    <input type="text"  name = "{{v.ename}}" hidden value="{{v.default_value}}">
                                      <select class="form-control select2"  multiple="multiple">
-                                        {% for val in v['values'] %}
+                                        {% for val in v['optional_values'] %}
                                         <option value="{{val}}"
-                                        {% if val in v.value %} selected {% endif %}
+                                        {% if val in v.default_value %} selected {% endif %}
                                         >{{val}}</option>
                                         {%　endfor %}
                                     </select>
@@ -80,7 +80,7 @@
                                 <div class="col-sm-10 row">
                                     <div id="{{v.ename}}" href="javascript:void(0);" class='col-sm-2 plupload'><i class="fa fa-plus"></i>
                                     </div>
-                                    <input  type="text" class="form-control" name="{{v.ename}}" value="{{v.value}}">
+                                    <input  type="text" class="form-control" name="{{v.ename}}" value="{{v.default_value}}">
                                 </div>
                             </div>
                             <script>
@@ -89,14 +89,17 @@
                             </script>
                             {% endif %}
                         {%　endfor %}
+                        <div class="form-group row">
+                            <label class="col-sm-2 control-label"></label>
+                            <div class="col-sm-10 row">
+                                <button type="button" class="btn btn-info btn-sm" onclick="configSave(this)">
+                                    <i class="fa fa-plus"></i> 提交
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <!-- /.box-body -->
                 </form>
-               <div class="box-title">
-                    <button type="button" class="btn btn-block btn-info btn-sm" onclick="configSave(this)">
-                        <i class="fa fa-plus"></i> 提交
-                    </button>
-                </div>
             </div>
             <!-- /.box-body -->
         </div>

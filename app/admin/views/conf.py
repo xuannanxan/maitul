@@ -20,11 +20,12 @@ def conf_add():
     form = ConfForm(data)
     if form.validate():
         result = Crud.add(Conf,data,"ename")
-        if result['code'] == 1:
+        if result:
             op_log("添加配置项-%s" % data["ename"])
-    else:
-        result = {"code": 2, "msg": form.get_errors()}
-    return jsonify(result)
+            return {"code":1, "msg": '添加成功'}
+        return {"code":0, "msg": '添加失败，系统错误或调用名已存在'}
+    return {"code": 0, "msg": form.get_errors()}
+
 
 
 # 配置项列表
@@ -52,10 +53,11 @@ def conf_edit():
         form = ConfForm(data)
         if form.validate():
             result = Crud.update(Conf,data,"ename")
-            op_log("修改配置项#%s" %  data["id"])
-        else:
-            result = {"code": 2, "msg": form.get_errors()}
-        return jsonify(result)
+            if result:
+                op_log("修改配置项#%s" %  data["id"])
+                return {"code":1, "msg": '修改成功'}
+            return {"code":0, "msg": '修改失败，系统错误或调用名已存在'}
+        return {"code": 0, "msg": form.get_errors()}
 
 
 # 删除配置项
@@ -66,8 +68,10 @@ def conf_del():
     deldata = request.form
     data = Conf.query.filter_by(id=deldata['id']).first_or_404()
     result = Crud.delete(data)
-    op_log("删除配置项-%s" % data.name)
-    return jsonify(result)
+    if result:
+        op_log("删除配置项-%s" % data.name)
+        return {"code":1, "msg": '删除成功'}
+    return {"code":0, "msg": '删除失败，系统错误'}
 
 
 # 配置项
@@ -81,7 +85,9 @@ def webconfig():
     elif request.method == 'POST':
         form_data = request.form
         for v in data:
-            v.value = form_data[v.ename]
+            v.default_value = form_data[v.ename]
         result = Crud.easy_update(data)
-        op_log("修改配置")
-        return jsonify(result)
+        if result:
+            op_log("修改配置")
+            return {"code":1, "msg": '保存成功'}
+        return {"code":0, "msg": '保存失败，系统错误'}

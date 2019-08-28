@@ -49,7 +49,7 @@
                                         图片
                                         {% endif %}
                                     </td>
-                                    <td>{{ v.addtime }}</td>
+                                    <td>{{ v.create_time }}</td>
                                     <td>
                                         <button type="button" class="btn btn-info btn-sm" onclick="showEditForm('{{ v.id }}')"
                                                 ><i class="fa fa-edit"></i> 编辑
@@ -110,14 +110,14 @@
                         var data = result.data;
                         $("#conf_edit_form input[name=id]").val(data.id) ;
                         $("#conf_edit_form select[name=type]").val(data.type).trigger('change')  ;
-                        $("#conf_edit_form input[name=values]").next().select2({
-                            data:formatSelect2Data(strToArr(data.values)),
+                        $("#conf_edit_form input[name=optional_values]").next().select2({
+                            data:formatSelect2Data(strToArr(data.optional_values)),
                             tags: true,
                             tokenSeparators: [',', ' '],
                         });
-                        $("#conf_edit_form input[name=values]").next().val(strToArr(data.values)).trigger('change');
+                        $("#conf_edit_form input[name=optional_values]").next().val(strToArr(data.optional_values)).trigger('change');
                         $("#conf_edit_form input[name=name]").val(data.name) ;
-                        $("#conf_edit_form input[name=value]").val(data.value) ;
+                        $("#conf_edit_form input[name=default_value]").val(data.default_value) ;
                         $("#conf_edit_form input[name=ename]").val(data.ename) ;
                         $("#conf_edit_form input[name=placeholder]").val(data.placeholder) ;
                         $("#conf_edit_form input[name=sort]").val(data.sort) ;
