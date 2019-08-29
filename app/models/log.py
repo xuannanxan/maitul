@@ -9,6 +9,7 @@ class Adminlog(Base):
     id = db.Column(db.Integer, primary_key=True)
     admin_id = db.Column(db.Integer)
     ip = db.Column(db.String(100))
+    info = db.Column(db.String(255))
 
     def __repr__(self):
         return '<Adminlog %r>' % self.id

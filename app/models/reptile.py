@@ -28,6 +28,6 @@ class ReptileList(Base):
     content_info = db.Column(db.Text())  # 内容元素定位
     content_main = db.Column(db.Text())  # 内容元素定位
     content_img = db.Column(db.Text())  # 内容元素定位
-
+    request_id = db.Column(db.Integer)
     def __repr__(self):
         return '<ReptileList %r>' % self.content_name

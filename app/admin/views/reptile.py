@@ -11,7 +11,7 @@ from app.models import ReptileRequest,ReptileList,Crud,Category,Article,Product
 from .. import admin
 
 
-# 添加爬虫请求
+# 添加爬虫任务
 @admin.route("/reptile/add", methods=["POST"])
 @login_required
 @auth_required
@@ -20,11 +20,12 @@ def reptile_add():
     form = ReptileForm(data)
     if form.validate():
         result = Crud.add(ReptileRequest,data,"name")
-        if result['code'] == 1:
-            op_log("添加爬虫请求-%s" % data["name"])
-    else:
-        result = {"code": 2, "msg": form.get_errors()}
-    return jsonify(result)
+        if result:
+            op_log("添加爬虫任务-%s" % data["name"])
+            return {"code": 1, "msg": '添加成功'}
+        return {"code": 0, "msg": '添加失败，系统错误或名称已存在'}
+    return {"code": 0, "msg": form.get_errors()}
+
 
 
 # 爬虫请求列表
@@ -33,7 +34,7 @@ def reptile_add():
 @login_required
 @auth_required
 def reptile_request(page=None):
-    page_data = Crud.get_data_paginate(ReptileRequest, ReptileRequest.addtime.desc(), page, 10)
+    page_data = Crud.get_data_paginate(ReptileRequest, ReptileRequest.create_time.desc(), page, 10)
     return render_template("admin/reptile/reptile_request.html", page_data=page_data)
 
 # 已经爬下来的数据
@@ -48,11 +49,11 @@ def reptile_list():
         page = int(request.args.get('page'))
     else:
         page = 1
-    request_data = Crud.get_data(ReptileRequest, ReptileRequest.addtime.desc())
+    request_data = Crud.get_data(ReptileRequest, ReptileRequest.create_time.desc())
     if request_id:
-        page_data = Crud.search_data_paginate(ReptileList,ReptileList.request_id==request_id, ReptileList.addtime.desc(), page, 20)
+        page_data = Crud.search_data_paginate(ReptileList,ReptileList.request_id==request_id, ReptileList.create_time.desc(), page, 20)
     else:
-        page_data = Crud.get_data_paginate(ReptileList, ReptileList.addtime.desc(), page, 20)
+        page_data = Crud.get_data_paginate(ReptileList, ReptileList.create_time.desc(), page, 20)
     category_data = Crud.get_data(Category,Category.sort.desc())
     category_tree = build_tree(category_data, 0, 0)
     return render_template("admin/reptile/reptile_list.html",
@@ -75,10 +76,11 @@ def reptile_edit():
         form = ReptileForm(data)
         if form.validate():
             result = Crud.update(ReptileRequest,data,"name")
-            op_log("修改爬虫请求#%s" %  data["id"])
-        else:
-            result = {"code": 2, "msg": form.get_errors()}
-        return jsonify(result)
+            if result:
+                op_log("修改爬虫任务#%s" %  data["id"])
+                return {"code": 1, "msg": '修改成功'}
+            return {"code": 0, "msg": '修改失败，系统错误或名称已存在'}
+        return {"code": 0, "msg": form.get_errors()}
 
 
 # 删除爬虫请求
@@ -89,8 +91,11 @@ def reptile_del():
     deldata = request.form
     data = ReptileRequest.query.filter_by(id=deldata['id']).first_or_404()
     result = Crud.delete(data)
-    op_log("删除爬虫请求-%s" % data.name)
-    return jsonify(result)
+    if result:
+        op_log("删除爬虫任务-%s" % data.name)
+        return {"code": 1, "msg": '删除成功'}
+    return {"code": 0, "msg": '删除失败，系统错误'}
+    
 
     # 开始爬数据
 @admin.route("/reptile/get", methods=['GET'])
@@ -143,10 +148,8 @@ def reptile_get():
         Crud.add(ReptileList,content,'url')
         print('-'*40+'第%d个数据已爬取成功'%(number)+'-'*40)
     if number>0:
-        result={"code": 1, "msg": "已成功爬取"+str(number)+"个数据！"}
-    else:
-        result = {"code": 2, "msg": "数据不存在或已经被爬过啦！"}
-    return  jsonify(result)
+        return  {"code": 1, "msg": "已成功爬取"+str(number)+"个数据！"}
+    return {"code": 0, "msg": "数据不存在或已经被爬过啦！"}
 
 # 预览数据
 @admin.route("/reptile/preview", methods=['GET'])
@@ -155,7 +158,7 @@ def reptile_get():
 def reptile_preview():
     getdata = request.args
     data = Crud.get_data_by_id(ReptileList, getdata['id'])
-    return jsonify({"code": 1, "data": object_to_dict(data)})
+    return {"code": 1, "data": object_to_dict(data)}
 
 # 删除已爬数据
 @admin.route("/reptile/data/del", methods=['DELETE'])
@@ -204,5 +207,7 @@ def reptile_export():
             )
             add_data.append(product)
     result = Crud.add_all(add_data)
-    return jsonify(result)
+    if result:
+        return {"code": 1, "msg": '导入数据到栏目完成'}
+    return {"code": 0, "msg": '导入数据到栏目失败'}
 

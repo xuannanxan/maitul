@@ -35,7 +35,7 @@ def admin_log(page=None):
     if page is None:
         page = 1
     sql = '''
-        SELECT adminlog.id,adminlog.create_time,adminlog.ip,admin.username
+        SELECT adminlog.id,adminlog.create_time,adminlog.ip,admin.username,adminlog.info
         FROM adminlog LEFT JOIN admin ON adminlog.admin_id = admin.id
         WHERE adminlog.is_del = 0 
         ORDER BY adminlog.create_time DESC

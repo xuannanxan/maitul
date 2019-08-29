@@ -24,7 +24,6 @@
                                                 <span>{{ request['name'] }}</span>
                                             </a>
                                         </li>
-
                                 {% endfor %}
                             </ul>
                         </section>
@@ -43,14 +42,14 @@
                                     <span class="sr-only">Toggle Dropdown</span>
                                   </button>
                                   <ul class="dropdown-menu" role="menu">
-                                    {% for column in column_tree%}
-                                      {% if column.type==1 or column.type==2%}
-                                      <li><a onclick="importData('{{column.id}}','{{column.type}}')">{{column.name}}</a></li>
+                                    {% for category in category_tree%}
+                                      {% if category.type==1 or category.type==2%}
+                                      <li><a onclick="importData('{{category.id}}','{{category.type}}')">{{category.name}}</a></li>
                                       {%endif%}
-                                      {% if column['children'] %}
-                                          {% for column_child in column['children'] %}
-                                            {% if column_child.type==1 or column_child.type==2%}
-                                            <li><a  onclick="importData('{{column_child.id}}','{{column_child.type}}')">{{column_child.name}}</a></li>
+                                      {% if category['children'] %}
+                                          {% for category_child in category['children'] %}
+                                            {% if category_child.type==1 or category_child.type==2%}
+                                            <li><a  onclick="importData('{{category_child.id}}','{{category_child.type}}')">--{{category_child.name}}</a></li>
                                             {%endif%}
                                           {% endfor%}
                                       {%endif%}
@@ -80,7 +79,7 @@
 					                    <label for="{{ v.id }}">{{ v.id }}</label>
                                     </td>
                                     <td>{{ v.content_name }}</td>
-                                    <td>{{ v.addtime }}</td>
+                                    <td>{{ v.create_time }}</td>
                                     <td>
                                         <button type="button" class="btn btn-info btn-sm" onclick="showPreview('{{ v.id }}')"
                                                 ><i class="fa fa-edit"></i> 预览
@@ -121,7 +120,7 @@
                         $('#content_name').html(data.content_name);
                         $('#content_info').html(data.content_info);
                         $('#content_main').html(data.content_main);
-                        $('#content_img').css("background-image","url("+data.content_img+")");
+                        $('#content_img').attr('src',data.content_img);
                         $('#preview').modal('show')
                     }else {
                         toastr.error(result.msg);

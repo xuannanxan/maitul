@@ -58,7 +58,7 @@ def login():
     # 如果没有超级管理员，就开始初始化数据
     count = Admin.query.filter().count()
     if count == 0 :
-        from app.init_data import init_ad,init_admin,init_adspace,init_auth,init_category,init_conf,init_menu,init_role
+        from app.init_data import init_ad,init_admin,init_adspace,init_auth,init_category,init_conf,init_menu,init_role,init_reptile
         Crud.auto_commit(init_admin)
         Crud.auto_commit(init_menu)
         Crud.auto_commit(init_auth)
@@ -67,6 +67,7 @@ def login():
         Crud.auto_commit(init_ad)
         Crud.auto_commit(init_adspace)
         Crud.auto_commit(init_conf)
+        Crud.auto_commit(init_reptile)
     form = LoginForm()
     if form.validate_on_submit():
         data = form.data
@@ -74,12 +75,19 @@ def login():
         if admin and admin.check_pwd(data["password"]):
             login_user(admin)
             adminlog = Adminlog(
-                    admin_id=admin.id,
-                    ip=request.remote_addr,
+                admin_id=admin.id,
+                ip=request.remote_addr,
+                info = '登录成功'
             )
             Crud.easy_add(adminlog)
             return redirect(request.args.get("next") or url_for("admin.index"))
         else:
+            adminlog = Adminlog(
+                admin_id=0,
+                ip=request.remote_addr,
+                info = '登录失败，账号：%s;密码%s'%(data["username"],data["password"])
+            )
+            Crud.easy_add(adminlog)
             flash("用户名或密码错误！")
             return redirect(url_for("admin.login"))
     return render_template("admin/login.html", form=form)

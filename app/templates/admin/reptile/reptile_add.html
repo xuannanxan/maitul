@@ -16,11 +16,17 @@
                         </div>
                         <div class="form-group">
                             <label>要爬取的页面</label>
-                              <div class="input-group">
-                                    <input type="text" class="col-sm-8 form-control" name="url" placeholder="请输入爬取地址，页码用{}表示">
-                                    <input type="number" class="col-sm-2 form-control" name="begin_page" placeholder="开始页码">
-                                    <input type="number" class="col-sm-2 form-control" name="end_page" placeholder="结束页码">
+                            <div class="row">
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" name="url" placeholder="请输入爬取地址，页码用{}表示">
                                 </div>
+                                <div class="col-xs-2">
+                                    <input type="number" class="form-control" name="begin_page" placeholder="开始页码">
+                                </div>
+                                <div class="col-xs-2">
+                                    <input type="number" class="form-control" name="end_page" placeholder="结束页码">
+                                </div>         
+                            </div>            
                         </div>
                         <div class="form-group">
                             <label>要爬取的列表</label>
@@ -41,6 +47,17 @@
                         <div class="form-group">
                             <label>内容图片定位</label>
                             <input type="text" class="form-control" name="content_img" placeholder="内容图片定位">
+                        </div>
+                        <div class="form-group">
+                                <label>说明</label>
+                                <p>//	从当前节点选取子孙节点</p>
+                                <p>nodename	选取此节点的所有子节点</p>
+                                <p>[@attrib='value']	选取给定属性具有给定值的所有元素</p>
+                                <p>/	从当前节点选取直接子节点</p>
+                                <p>@	选取属性</p>
+                                <p>child::*  获取全部子节点</p>
+                                <p>text() 文本内容</p>
+                                <p>//ul[@class="product_list"] / li /a/@href</p>
                         </div>
                     </div>
                     <!-- /.box-body -->
