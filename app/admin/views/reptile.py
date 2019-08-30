@@ -56,6 +56,7 @@ def reptile_list():
         page_data = Crud.get_data_paginate(ReptileList, ReptileList.create_time.desc(), page, 20)
     category_data = Crud.get_data(Category,Category.sort.desc())
     category_tree = build_tree(category_data, 0, 0)
+    print(category_tree)
     return render_template("admin/reptile/reptile_list.html",
                            request_data = request_data,
                            page_data=page_data,
@@ -168,8 +169,10 @@ def reptile_data_del():
     deldata = request.form
     data = ReptileList.query.filter_by(id=deldata['id']).first_or_404()
     result = Crud.delete(data)
-    op_log("删除爬虫数据-%s" % data.content_name)
-    return jsonify(result)
+    if result:
+        op_log("删除爬虫数据-%s" % data.content_name)
+        return {"code": 1, "data": '删除成功'}
+    return {"code": 0, "data": '删除失败'}
 
     # 导出数据到栏目
 @admin.route("/reptile/export", methods=['PUT'])

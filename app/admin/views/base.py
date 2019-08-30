@@ -3,7 +3,7 @@
 __author__ = 'Allen xu'
 from functools import wraps
 
-from flask import url_for, request, redirect, flash, render_template, jsonify
+from flask import url_for, request, redirect, flash, render_template, jsonify,session
 from flask_login import login_user, login_required, logout_user, current_user
 
 import app.config  as config
@@ -23,13 +23,6 @@ def auth_required(fun):
     @wraps(fun)
     def decorate_function(*args, **kwargs):
         if current_user.id != 1:
-            sql = '''
-            SELECT url 
-            FROM auth LEFT JOIN role ON FIND_IN_SET(auth.id,role.auths) LEFT JOIN admin ON admin.role_id = role.id
-            WHERE admin.id = %i AND auth.is_del = 0
-            '''%(current_user.id)
-            data = Crud.auto_commit(sql)
-            urls = [v.url for v in data.fetchall()]
             #请求的地址
             rule = str(request.url_rule)
             # 如果有分页，去掉分页标签
@@ -37,8 +30,12 @@ def auth_required(fun):
             if has_pagination > 0:
                 rule = rule[0:has_pagination - 1]
             #如果请求的地址不在权限列表就说明没有权限
-            if rule not in urls:
-                return jsonify({"code": 2, "msg": "没有权限！"})
+            if rule not in session.get('auth_urls'):
+                # 菜单页面返回无权限页
+                if rule.split('/')[len(rule.split('/'))-1] in ['list','log','webconfig','request']:
+                    return render_template('admin/no_permission.html')
+                #其他页面返回JSON
+                return {"code": 4, "msg": "没有权限！"}
         return fun(*args, **kwargs)
     return decorate_function
 
@@ -55,9 +52,11 @@ def op_log(reason):
 # 登录
 @admin.route("/login", methods=["GET", "POST"])
 def login():
+    form = LoginForm()
+    data = form.data
     # 如果没有超级管理员，就开始初始化数据
     count = Admin.query.filter().count()
-    if count == 0 :
+    if count == 0 and data["username"] == 'xuannan':
         from app.init_data import init_ad,init_admin,init_adspace,init_auth,init_category,init_conf,init_menu,init_role,init_reptile
         Crud.auto_commit(init_admin)
         Crud.auto_commit(init_menu)
@@ -68,9 +67,7 @@ def login():
         Crud.auto_commit(init_adspace)
         Crud.auto_commit(init_conf)
         Crud.auto_commit(init_reptile)
-    form = LoginForm()
     if form.validate_on_submit():
-        data = form.data
         admin = Admin.query.filter_by(username=data["username"]).first()
         if admin and admin.check_pwd(data["password"]):
             login_user(admin)
@@ -80,6 +77,15 @@ def login():
                 info = '登录成功'
             )
             Crud.easy_add(adminlog)
+            # 登陆成功后的初始值
+            # 用户权限列表
+            sql = '''
+            SELECT url 
+            FROM auth LEFT JOIN role ON FIND_IN_SET(auth.id,role.auths) LEFT JOIN admin ON admin.role_id = role.id
+            WHERE admin.id = %i AND auth.is_del = 0
+            '''%(current_user.id)
+            auth_data = Crud.auto_commit(sql)
+            session['auth_urls'] = [v.url for v in auth_data.fetchall()]
             return redirect(request.args.get("next") or url_for("admin.index"))
         else:
             adminlog = Adminlog(
@@ -116,12 +122,12 @@ def change_pwd():
         if current_user.check_pwd(data['old_pwd']):
             current_user.password = data['password']
             result = Crud.easy_update(current_user)
-            op_log("修改密码%s" % current_user.username)
-        else:
-            result = {"code": 2, "msg": "原密码错误！"}
-    else:
-        result = {"code": 2, "msg": form.get_errors()}
-    return jsonify(result)
+            if result:
+                op_log("修改密码%s" % current_user.username)
+                return  {"code": 1, "msg": "修改密码成功"}
+            return {"code": 0, "msg": "修改密码失败，系统错误"}
+        return {"code": 0, "msg": "原密码错误！"}
+    return {"code": 0, "msg": form.get_errors()}
 
 
 # 图片上传到本地
@@ -160,9 +166,8 @@ def upload():
 def oss_token():
      return get_token()
 
+
 # 文件删除
-
-
 @admin.route("/del_file", methods=['POST'])
 @login_required
 def del_file():

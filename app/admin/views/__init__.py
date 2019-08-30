@@ -3,7 +3,7 @@
 __author__ = 'Allen xu'
 from datetime import datetime
 from flask_login import current_user
-from flask import request
+from flask import request,session
 from app.expand.utils import build_tree,object_to_dict
 from app.models import Crud,Menu,Conf,Admin,Role,Auth
 from app.models.base import db
@@ -17,16 +17,8 @@ def tpl_extra():
     rule = str(request.url_rule)
     #用户权限列表
     auth_urls = []
-    if  hasattr(current_user, 'id'):
-        if current_user.id != 1:
-            sql = '''
-            SELECT url 
-            FROM auth LEFT JOIN role ON FIND_IN_SET(auth.id,role.auths) LEFT JOIN admin ON admin.role_id = role.id
-            WHERE admin.id = %i AND auth.is_del = 0
-            '''%(current_user.id)
-            data = Crud.auto_commit(sql)
-            #etchall() 获取所有的数据，返回类型  RowProxy 数组
-            auth_urls = [v.url for v in data.fetchall()]
+    if  hasattr(current_user, 'id') and current_user.id != 1:
+        auth_urls = session.get('auth_urls')
     # 如果有分页，去掉分页标签
     has_pagination = rule.find("<")
     if has_pagination>0:

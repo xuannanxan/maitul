@@ -45,9 +45,11 @@
                                     {% for category in category_tree%}
                                       {% if category.type==1 or category.type==2%}
                                       <li><a onclick="importData('{{category.id}}','{{category.type}}')">{{category.name}}</a></li>
+                                      {% else %}
+                                      <li><a style="color: darkgray">{{category.name}}</a></li>
                                       {%endif%}
-                                      {% if category['children'] %}
-                                          {% for category_child in category['children'] %}
+                                      {% if category.children %}
+                                          {% for category_child in category.children %}
                                             {% if category_child.type==1 or category_child.type==2%}
                                             <li><a  onclick="importData('{{category_child.id}}','{{category_child.type}}')">--{{category_child.name}}</a></li>
                                             {%endif%}
