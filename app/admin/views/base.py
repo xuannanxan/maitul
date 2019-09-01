@@ -160,13 +160,6 @@ def upload():
             return jsonify({"code": 1, "file_name": file_name})
 
 
-# 上传文件到OSS
-@admin.route("/oss_token", methods=['GET'])
-@login_required
-def oss_token():
-     return get_token()
-
-
 # 文件删除
 @admin.route("/del_file", methods=['POST'])
 @login_required

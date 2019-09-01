@@ -27,13 +27,15 @@ def about(nav_id=None):
 def message():
     data = request.form
     form = MessageForm(data)
-    ip=request.remote_addr
-
+    ip = request.remote_addr
+    # request 数据转为dict
+    dict_data = data.to_dict()
+    dict_data['ip'] = ip
     if form.validate():
-        add = Crud.add(Message,data)
-        if add['code']==1:
+        message_data = Crud.add(Message,dict_data)
+        if message_data:
             re_mail = MailObj()
-            re_mail.recipients.append(data['email'])
+            re_mail.recipients.append(message_data.email)
             send_email(re_mail)
             warn_mail = MailObj()
             warn_mail.subject = '您有新的询盘，请注意查收！'
@@ -41,11 +43,9 @@ def message():
                                 '<p>邮箱：%s</p>' \
                                 '<p>联系方式：%s</p>' \
                                 '<p>留言内容：%s</p>' \
-                                '<p>用户来源：%s</p>'% (data['name'], data['email'],data['contact'],data['info'],ip)
+                                '<p>用户来源：%s</p>'% (message_data.name, message_data.email,message_data.contact,message_data.info,message_data.ip)
             send_email(warn_mail)
-            result = {"code":1, "msg": "Message submitted successfully, thank you for your support, we will contact you as soon as possible!"}
-        else:
-            result = {"code": 2, "msg": 'System error, message submitted failure, please call our phone.'}
-    else:
-        result = {"code": 2, "msg": form.get_errors()}
-    return jsonify(result)
+            return {"code":1, "msg": "Message submitted successfully, thank you for your support, we will contact you as soon as possible!"}
+        return {"code": 0, "msg": 'System error, message submitted failure, please call our phone.'}
+    return {"code": 0, "msg": form.get_errors()}
+   

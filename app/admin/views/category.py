@@ -54,7 +54,7 @@ def category_edit():
     if request.method == 'GET':
         getdata = request.args
         data = Crud.get_data_by_id(Category, getdata['id'])
-        return jsonify({"code": 1, "data": object_to_dict(data)})
+        return {"code": 1, "data": object_to_dict(data)}
     elif request.method == "PUT":
         data = request.form
         form = CategoryForm(data)
@@ -73,7 +73,9 @@ def category_edit():
 @auth_required
 def category_del():
     deldata = request.form
-    child_category_count = Category.query.filter_by(pid=deldata['id']).count()
+    
+    child_category_count = Category.query.filter(Category.pid==deldata['id'], Category.is_del == 0).count()
+    
     if child_category_count>0:
         return {"code": 2, "msg": '当前分类包含子分类，删除失败！'}
     else:

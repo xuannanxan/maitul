@@ -21,28 +21,28 @@
             <div class="box-body no-padding skin-blue-light">
                 <ul class="sidebar-menu" data-widget="tree">
                 {% for category in category_tree %}
-                {% if category['children'] %}
+                {% if category.children %}
                 <li class="treeview">
-                    <a href="{{ url_for('admin.category_list',pid = category['id']) }}">
-                        <i class="fa {{ category['icon'] }}"></i>
+                    <a href="{{ url_for('admin.category_list',pid = category.id) }}">
+                        <i class="fa {{ category.icon }}"></i>
                         <span>{{ category['name'] }}</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-right pull-right"></i>
             </span>
                     </a>
                     <ul class="treeview-menu">
-                        {% for child_category in category['children'] %}
-                        <li class="{% if  child_category['id'] == category_id %}active{% endif %}">
-                            <a href="{{ url_for('admin.category_list',pid = child_category['id']) }}">
-                                <i class="fa {{ child_category['icon'] }}"></i> {{ child_category['name'] }}
+                        {% for child_category in category.children %}
+                        <li class="{% if  child_category.id == category_id %}active{% endif %}">
+                            <a href="{{ url_for('admin.category_list',pid = child_category.id) }}">
+                                <i class="fa {{ child_category.icon }}"></i> {{ child_category.name }}
                             </a></li>
                         {% endfor %}
                     </ul>
                 </li>
                 {% else %}
-                <li class="{% if category['id'] == category_id %}active{% endif %}">
-                    <a href="{{ url_for('admin.category_list',pid = category['id']) }}">
-                        <i class="fa {{ category['icon'] }}"></i> <span>{{ category['name'] }}</span>
+                <li class="{% if category.id == category_id %}active{% endif %}">
+                    <a href="{{ url_for('admin.category_list',pid = category.id) }}">
+                        <i class="fa {{ category.icon }}"></i> <span>{{ category.name }}</span>
                     </a>
                 </li>
                 {% endif %}

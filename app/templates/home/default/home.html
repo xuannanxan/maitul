@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<!--[if IE 9]>
+<html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <title>{{webconfig.webname+(("-"+active_nav.name) if active_nav.name else '')+(("-"+seo_data.title) if
+        seo_data.title else '')}}</title>
+    <meta name="keywords"
+          content="{{webconfig.webkeywords+(('-'+active_nav.keywords) if active_nav.keywords else '')+(('-'+seo_data.keywords) if seo_data.keywords else '')}}">
+    <meta name="description" content="
+    {% if seo_data.description %}
+        {{seo_data.description}}
+    {% elif active_nav.info %}
+        {{active_nav.info}}
+    {% else %}
+        {{webconfig.webdescription}}
+    {% endif %}
+    ">
+
+
+    <!-- Mobile Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{webconfig.webicon}}">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{{ url_for('static',filename = 'components/bootstrap/css/bootstrap.min.css') }}">
+    <!-- Plugins -->
+    <link rel="stylesheet" href="{{ url_for('static',filename = 'home/css/style.css') }}">
+    {% block css %}{% endblock %}
+    <!--[if lt IE 9]>
+    <script src="{{ url_for('static',filename = 'home/js/ie9/html5shiv.min.js') }}"></script>
+    <script src="{{ url_for('static',filename = 'home/js/ie9/respond.min.js') }}"></script>
+    <![endif]-->
+</head>
+
+<!-- body classes:
+        "boxed": boxed layout mode e.g. <body class="boxed">
+        "pattern-1 ... pattern-9": background patterns for boxed layout mode e.g. <body class="boxed pattern-1">
+-->
+<body class="front">
+<!-- scrollToTop -->
+<!-- ================ -->
+<div class="scrollToTop"><i class="fa fa-angle-up "></i></div>
+<!--LOGIN Modal -->
+<!-- page wrapper start -->
+<!-- ================ -->
+<div class="page-wrapper">
+    <!-- header-top start -->
+    <!-- ================ -->
+    <div class="header-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-2  col-sm-4">
+
+                    <!-- header-top-first start -->
+                    <!-- ================ -->
+                    <div class="header-top-first clearfix">
+                        <ul class="social-links clearfix hidden-xs">
+                            <li><a target="_blank" href="{{webconfig.weixin}}"><i class="fa fa-weixin"></i></a></li>
+                            <li><a target="_blank" href="{{webconfig.skype}}"><i class="fa fa-skype"></i></a></li>
+                            <li><a target="_blank" href="{{webconfig.linkedin}}"><i class="fa fa-linkedin"></i></a></li>
+                            <li><a target="_blank" onclick="window.location.href='mailto:{{webconfig.email}}'" title="{{webconfig.email}}"><i class="fa fa-envelope"></i></a></li>
+                            <li><a target="_blank" href="tel:{{webconfig.phone}}"  title="{{webconfig.phone}}"><i class="fa fa-phone"></i></a></li>
+                        </ul>
+                        <div class="social-links hidden-lg hidden-md hidden-sm">
+                            <div class="btn-group dropdown">
+                                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><i
+                                        class="fa fa-share-alt"></i></button>
+                                <ul class="dropdown-menu dropdown-animation">
+                                    <li><a target="_blank" href="{{webconfig.weixin}}"><i class="fa fa-weixin"></i></a></li>
+                                    <li><a target="_blank" href="{{webconfig.skype}}"><i class="fa fa-skype"></i></a></li>
+                                    <li><a target="_blank" href="{{webconfig.linkedin}}"><i class="fa fa-linkedin"></i></a></li>
+                                    <li><a target="_blank" onclick="window.location.href='mailto:{{webconfig.email}}'" title="{{webconfig.email}}"><i class="fa fa-envelope"></i></a></li>
+                                    <li><a target="_blank" href="tel:{{webconfig.phone}}"  title="{{webconfig.phone}}"><i class="fa fa-phone"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- header-top-first end -->
+
+                </div>
+                <div class="col-xs-10 col-sm-8">
+
+                    <!-- header-top-second start -->
+                    <!-- ================ -->
+                    <div id="header-top-second" class="clearfix">
+
+                        <!-- header top dropdowns start -->
+                        <!-- ================ -->
+                        <div class="header-top-dropdown">
+                            <div class="btn-group dropdown">
+                                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><i
+                                        class="fa fa-search"></i> Search
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right dropdown-animation">
+                                    <li>
+                                        <form role="search" class="search-box">
+                                            <div class="form-group has-feedback">
+                                                <input type="text" class="form-control" placeholder="Search">
+                                                <i class="fa fa-search form-control-feedback"></i>
+                                            </div>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="btn-group dropdown">
+                                <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Login</button>
+                                <ul class="dropdown-menu dropdown-menu-right dropdown-animation">
+                                    <li>
+                                        <form class="login-form">
+                                            <div class="form-group has-feedback">
+                                                <label class="control-label">Username</label>
+                                                <input type="text" class="form-control" placeholder="">
+                                                <i class="fa fa-user form-control-feedback"></i>
+                                            </div>
+                                            <div class="form-group has-feedback">
+                                                <label class="control-label">Password</label>
+                                                <input type="password" class="form-control" placeholder="">
+                                                <i class="fa fa-lock form-control-feedback"></i>
+                                            </div>
+                                            <button type="submit" class="btn btn-group btn-dark btn-sm">Log In</button>
+                                            <span>or</span>
+                                            <button type="submit" class="btn btn-group btn-default btn-sm">Sing Up</button>
+                                            <ul>
+                                                <li><a href="#">Forgot your password?</a></li>
+                                            </ul>
+                                            <!-- <div class="divider"></div>
+                                            <span class="text-center">Login with</span>
+                                            <ul class="social-links clearfix">
+                                                <li class="facebook"><a target="_blank" href="#"><i class="fa fa-facebook"></i></a></li>
+                                            </ul> -->
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!--  header top dropdowns end -->
+
+                    </div>
+                    <!-- header-top-second end -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- header-top end -->
+
+    <!-- header start (remove fixed class from header in order to disable fixed navigation mode) -->
+    <!-- ================ -->
+    <header class="header fixed clearfix">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 mini-logo">
+
+                    <!-- header-left start -->
+                    <!-- ================ -->
+                    <div class="header-left clearfix">
+
+                        <!-- logo -->
+                        <div class="logo">
+                            <a href="/"><img id="logo" src="{{webconfig.weblogo}}" alt="Maitul.com"></a>
+                        </div>
+
+                        <!-- name-and-slogan -->
+                        <div class="site-slogan">
+                            {{webconfig.slogan}}
+                        </div>
+
+                    </div>
+                    <!-- header-left end -->
+
+                </div>
+                <div class="col-md-9 mini-nav">
+
+                    <!-- header-right start -->
+                    <!-- ================ -->
+                    <div class="header-right clearfix">
+
+                        <!-- main-navigation start -->
+                        <!-- ================ -->
+                        <div class="main-navigation animated">
+
+                            <!-- navbar start -->
+                            <!-- ================ -->
+                            <nav class="navbar navbar-default" role="navigation">
+                                <div class="container-fluid">
+
+                                    <!-- Toggle get grouped for better mobile display -->
+                                    <div class="navbar-header">
+                                        <button type="button" class="navbar-toggle" data-toggle="collapse"
+                                                data-target="#navbar-collapse-1">
+                                            <span class="sr-only">Toggle navigation</span>
+                                            <span class="icon-bar"></span>
+                                            <span class="icon-bar"></span>
+                                            <span class="icon-bar"></span>
+                                        </button>
+                                    </div>
+
+                                    <!-- Collect the nav links, forms, and other content for toggling -->
+                                    <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                                        <ul class="nav navbar-nav navbar-right">
+                                            <li class="{% if top_nav == ''%}active{% endif %}">
+                                                <a href="{{url_for('home.index')}}">Home</a>
+                                            </li>
+                                            <!-- nav start -->
+                                
+                                            {% for nav in navs%}
+                                            {% if nav.children %}
+                                            <li class="dropdown mega-menu {% if top_nav.id == nav.id%}active{% endif %}">
+                                                <a href="{{nav.url+'/'+ nav.id | string}}" class="dropdown-toggle"
+                                                   data-toggle="dropdown">{{nav.name}}</a>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <div class="row">
+                                                            <div class="col-lg-4 col-md-3 hidden-sm">
+                                                                <p>{{nav.info}}</p>
+                                                                <img src="{{nav.cover}}" alt="{{nav.name}}">
+                                                            </div>
+                                                            <div class="col-lg-8 col-md-9">
+                                                                <h4>{{nav.name}}</h4>
+                                                                <div class="row">
+                                                                    <div class="col-sm-12">
+                                                                        <div class="divider"></div>
+                                                                        <ul class="menu">
+                                                                            {% for nav_child in nav.children%}
+                                                                            <li
+                                                                            {% if  active_nav.id == nav_child.id %}
+                                                                            class="active"
+                                                                            {% endif %}
+                                                                            >
+                                                                                <a href="{{nav.url+'/'+ nav_child.id | string}}"><i
+                                                                                        class="fa {{nav_child.icon}}"></i>{{nav_child.name}}</a>
+                                                                            </li>
+                                                                            {% endfor %}
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            {% else %}
+                                            <li class="{% if top_nav.id == nav.id%}active{% endif %}">
+                                                <a href="{{nav.url+'/'+ nav.id | string}}">{{nav.name}}</a>
+                                            </li>
+                                            {% endif %}
+                                            {% endfor %}
+                                            <!-- nav end -->
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </nav>
+                            <!-- navbar end -->
+
+                        </div>
+                        <!-- main-navigation end -->
+
+                    </div>
+                    <!-- header-right end -->
+
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- header end -->
+
+
+    <!-- footer start (Add "light" class to #footer in order to enable light footer) -->
+    <!-- ================ -->
+    <footer id="footer">
+
+        <!-- .footer start -->
+        <!-- ================ -->
+        <div class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6 col-md-6">
+                        <div class="footer-content">
+                            <div class="logo-footer"><img id="logo-footer" src="{{webconfig.weblogo_white}}" alt="Maitul.com" style="max-width: 50px ;"></div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p>{{webconfig.slogan}}</p>
+                                    <ul class="social-links circle">
+                                        <li><a target="_blank" href="{{webconfig.weixin}}"><i class="fa fa-weixin"></i></a></li>
+                                        <li><a target="_blank" href="{{webconfig.skype}}"><i class="fa fa-skype"></i></a></li>
+                                        <li><a target="_blank" href="{{webconfig.linkedin}}"><i class="fa fa-linkedin"></i></a></li>
+                                        <li><a target="_blank" onclick="window.location.href='mailto:{{webconfig.email}}'" title="{{webconfig.email}}"><i class="fa fa-envelope"></i></a></li>
+                                        <li ><a target="_blank" href="tel:{{webconfig.phone}}"  title="{{webconfig.phone}}"><i class="fa fa-phone"></i></a></li>
+                                    </ul>
+                                </div>
+                                <div class="col-sm-6">
+                                    <ul class="list-icons">
+                                        <li><i class="fa fa-map-marker pr-10"></i> {{webconfig.address}}</li>
+                                        <li><i class="fa fa-phone pr-10"></i> {{webconfig.phone}}</li>
+                                        <li onclick="window.location.href='mailto:{{webconfig.email}}'"><i
+                                            class="fa fa-envelope-o pr-10"></i> {{webconfig.email}}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="col-sm-6 col-md-3">
+                            <div class="footer-content">
+                                    <h2>QUICK LINKS</h2>
+                                    <nav>
+                                        <ul class="nav nav-pills nav-stacked">
+                                            <li><a href="{{url_for('home.index')}}">Home</a></li>
+                                            {% for nav in navs%}
+                                            <li><a href="{{nav.url+'/'+ nav.id | string}}">{{nav.name}}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </nav>
+                                </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3">
+                        <div class="footer-content">
+                            <h2>LEAVING MESSAGE</h2>
+                            <div class="comments-form">
+                                    <form role="form" id="contact-form">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                            <div class="form-group has-feedback">
+                                                <input type="email" class="form-control" placeholder="Email" name="email">
+                                                <i class="fa fa-envelope-o form-control-feedback"></i>
+                                            </div>
+
+                                            <div class="form-group has-feedback">
+                                                <textarea class="form-control" rows="2" placeholder="Message"
+                                                          name="info"></textarea>
+                                                <i class="fa fa-pencil form-control-feedback"></i>
+                                            </div>
+                                        
+                                        <div>
+                                            <a onclick="sendMessage(this,'contact-form')" class="btn btn-sm btn-dark" style="width:100%">Submit</a>
+                                        </div>
+                                    </form>
+                                </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="space-bottom hidden-lg hidden-xs"></div>
+            </div>
+        </div>
+        <!-- .footer end -->
+
+        <!-- .subfooter start -->
+        <!-- ================ -->
+        <div class="subfooter">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-1" style="padding-left:0px">
+                        <div class="col-md-12 col-sm-4">
+                                <img src="data:image/png;base64,{{url_code}}">
+                             </div>
+                    </div>
+                    <div class="col-md-4" style="line-height: 50px">
+                        <p>{{webconfig.copyright | safe}}</p>
+                    </div>
+                    <div class="col-md-6" style="line-height: 50px">
+                        <nav class="navbar navbar-default" role="navigation">
+                            <!-- Toggle get grouped for better mobile display -->
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                                        data-target="#navbar-collapse-2">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                            </div>
+                            <div class="collapse navbar-collapse" id="navbar-collapse-2">
+                                <ul class="nav navbar-nav">
+                                    <li><a href="{{url_for('home.index')}}">Home</a></li>
+                                    {% for nav in navs%}
+                                    <li><a href="{{nav.url+'/'+ nav.id | string}}">{{nav.name}}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- .subfooter end -->
+
+    </footer>
+    <!-- footer end -->
+
+</div>
+<!-- page-wrapper end -->
+
+<!-- JavaScript files placed at the end of the document so the pages load faster
+================================================== -->
+
+<!-- jQuery 3 -->
+<script type="text/javascript" src="{{ url_for('static',filename = 'components/jquery/jquery.min.js')}}"></script>
+<script type="text/javascript"
+        src="{{ url_for('static',filename = 'components/bootstrap/js/bootstrap.min.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename = 'components/owl/owl.carousel.min.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename = 'components/modernizr/modernizr.js')}}"></script>
+<script src="{{ url_for('static',filename = 'components/toastr/toastr.min.js')}}"></script>
+<script src="{{ url_for('static',filename = 'components/magnific-popup/jquery.magnific-popup.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static',filename = 'home/js/template.js')}}"></script>
+{% block js %}{% endblock %}
+</body>
+</html>

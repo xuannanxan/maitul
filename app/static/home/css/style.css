@@ -2028,16 +2028,16 @@ tbody {
 
 /* Dark Buttons */
 .btn-dark {
-	color: #f1f1f1;
+	color: #f1f1f1 !important;
 	background-color: #333333;
-	border-color: #333333;
+	border-color: #666;
 }
 .btn-dark:hover,
 .btn-dark:focus,
 .btn-dark:active,
 .btn-dark.active,
 .open .dropdown-toggle.btn-dark {
-	color: #ffffff;
+	color: #ffffff !important;
 	background-color: #666;
 	border-color: #666;
 }
@@ -3812,7 +3812,7 @@ a.overlay.small i {
 	margin-bottom: 20px;
 }
 .logo-footer {
-	margin: 25px 0 20px;
+	margin: 18px 0 15px;
 }
 
 /* Medium devices (desktops, tablets less than 991px) */
@@ -4106,9 +4106,7 @@ footer:not(.light) .footer-content .tag a,
 	display: block;
 	text-align: center;
 	font-size: 20px;
-	background: #e84c3d;
-	border: 1px solid #e84c3d;
-	color: #fff;
+
 }
 .social-links.large li a {
 	width: 60px;
@@ -4135,11 +4133,7 @@ footer:not(.light) .footer-content .tag a,
 	-moz-border-radius: 100%;
 	border-radius: 100%;
 }
-.social-links li a:hover {
-	background-color: transparent;
-	border-color: #cd3c2e;
-	color: #cd3c2e;
-}
+
 .social-links.dark li a:hover {
 	background: #fafafa;
 	border: 1px solid #acacac;
@@ -4180,9 +4174,7 @@ footer:not(.light) .footer-content .tag a,
 	background-color: transparent;
 	border-color: transparent;
 }
-.header-top .social-links li a:hover {
-	color: #cd3c2e;
-}
+
 .header-top .social-links li a i {
 	line-height: 30px;
 }
@@ -5663,8 +5655,8 @@ a.overlay i {
 /* Social icons block
 ---------------------------------- */
 .social-links li a {
-	background: #38c7f4;
-	border: 1px solid #38c7f4;
+	background: #38c7f400;
+	border: 1px solid #7d7d7d;
 	color: #fff;
 }
 .social-links li a:hover {
