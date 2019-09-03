@@ -17,5 +17,6 @@ import app.admin.views.ad
 import app.admin.views.conf
 import app.admin.views.reptile
 import app.admin.views.message
+import app.admin.views.template
 
 

@@ -16,7 +16,7 @@ from app.models.reptile import ReptileRequest,ReptileList
 from app.models.message import Message
 from app.models.favorite import Favorite
 from app.models.footmark import Footmark
-from app.models.page import PageSetup
+from app.models.template import Template
 Admin = Admin
 Role = Role
 Auth =Auth
@@ -38,5 +38,5 @@ Conf = Conf
 ReptileRequest=ReptileRequest
 ReptileList=ReptileList
 TagRelation =TagRelation
-PageSetup = PageSetup
+Template = Template
 and_ = and_

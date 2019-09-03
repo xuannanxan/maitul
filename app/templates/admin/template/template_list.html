@@ -1,0 +1,198 @@
+{% extends "admin/admin.html" %}
+{% import "admin/search.html" as search %}
+{% block css %}
+{% endblock %}
+{% block content %}
+{% include "admin/template/template_add.html" %}
+{% include "admin/template/template_edit.html" %}
+{% include "admin/filemanage.html" %}
+
+<div class="row">
+    <div class="col-lg-3 col-3">
+        <div class="box box-solid">
+            <div class="box-header with-border">
+                <h3 class="box-title">导航</h3>
+                <div class="box-tools">
+
+                </div>
+            </div>
+            <div class="box-body no-padding skin-blue-light">
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="{% if nav_id == 0 %}active{% endif %}">
+                        <a href="{{ url_for('admin.template_list',nav_id = 0) }}">
+                            <span>Home</span>
+                        </a>
+                    </li>
+                    {% for nav in nav_tree %}
+                    {% if nav.is_nav == 1 %}
+                    {% if nav.children %}
+                    <li class="treeview">
+                        <a href="{{ url_for('admin.template_list',nav_id = nav.id) }}">
+                            <i class="fa {{ nav.icon }}"></i>
+                            <span>{{ nav['name'] }}</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-right pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            {% for child_nav in nav.children %}
+                            <li class="{% if  child_nav.id == nav_id %}active{% endif %}">
+                                <a href="{{ url_for('admin.template_list',nav_id = child_nav.id) }}">
+                                    <i class="fa {{ child_nav.icon }}"></i> {{ child_nav.name }}
+                                </a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="{% if nav.id == nav_id %}active{% endif %}">
+                        <a href="{{ url_for('admin.template_list',nav_id = nav.id) }}">
+                            <i class="fa {{ nav.icon }}"></i> <span>{{ nav.name }}</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+    <div class="col-lg-9 col-9">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">
+                    <button type="button" class="btn btn-block btn-info btn-sm" data-toggle="modal"
+                        data-target="#template_add"><i class="fa fa-plus"></i> 新增
+                    </button>
+                </h3>
+                {{search}}
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body no-padding">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>模板名称</th>
+                            <th>模板页面</th>
+                            <th>添加时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for template in template_data %}
+                        <tr>
+                            <td>{{ template.id }}</td>
+                            <td>{{ template.name }}</td>
+                            <td>
+                                {{ template.template }}
+                            </td>
+                            <td>{{ template.create_time }}</td>
+                            <td>
+                                <button csrftoken="{{ csrf_token() }}" onclick="showEditForm('{{ template.id }}')"
+                                    type="button" class="btn btn-info btn-sm">
+                                    <i class="fa fa-edit"></i>编辑
+                                </button>
+                                <button id="{{ template.id }}" url="{{ url_for('admin.template_del') }}"
+                                    csrftoken="{{ csrf_token() }}" onclick="deleteFun(this)" type="button"
+                                    class="btn btn-default btn-sm">
+                                    <i class="fa fa-trash-o"></i> 删除
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+<script>
+    var csrftoken = "{{ csrf_token() }}"
+    function showEditForm(id) {
+        $.ajax({
+            type: "GET",//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "{{ url_for('admin.template_edit') }}",//url
+            headers: { "X-CSRFToken": csrftoken },
+            data: { "id": id },
+            success: function (result) {
+                if (result.code == 1) {
+                    var data = result.data;
+                    $("#template_edit_form input[name=id]").val(data.id);
+                    $("#template_edit_form input[name=name]").val(data.name);
+                    $("#template_edit_form select[name=nav_id]").val(data.nav_id).trigger('change');
+                    $("#template_edit_form input[name=template]").val(data.template);
+                    $("#template_edit_form select[name=data_type]").val(data.data_type).trigger('change');
+                    $("#template_edit_form select[name=data_id]").val(data.data_id).trigger('change');
+                    $("#template_edit_form select[name=pagination]").val(data.pagination).trigger('change');
+                    $("#template_edit_form input[name=data_num]").val(data.data_num);
+                    $("#template_edit_form input[name=sort]").val(data.sort);
+                    $('#template_edit').modal('show')
+                } else {
+                    toastr.error(result.msg);
+                }
+            },
+            error: function () {
+                toastr.error("服务器异常，请稍后重试！");
+            }
+        });
+    }
+    function changeType(obj) {
+        var pid = $(obj).parent().parent().parent().parent().parent().parent().find("select[name=pid]")
+        pid.select2()
+        pid.children().each(function () {
+            if ($(this).attr('type') == $(obj).val() || $(this).val() == 0 || $(this).attr('type') == '3') {
+                $(this).removeAttr("disabled");
+            } else {
+                $(this).attr("disabled", "true");
+            }
+
+        });
+    }
+
+    //下拉框连动
+    function getDataIds(formName) {
+        //获取下拉框主键
+        var data_type = $("#" + formName + " select[name=data_type]").val();
+        var data_ids = $("#" + formName + " select[name=data_id]");
+        data_ids.empty();     //清空二级目录 
+        var getDataUrl = "{{ url_for('admin.interface',model_name = '') }}";
+        switch (data_type) {
+            case '1':
+                getDataUrl = "{{ url_for('admin.interface',model_name = 'category') }}";
+                break;
+            case '2':
+                getDataUrl = "{{ url_for('admin.interface',model_name = 'adspace') }}";
+                break;
+        }
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+            url: getDataUrl,
+            success: function (data) {
+                if (data.length != "" && data.length != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        data_ids.append("<option value=" + data[i].id + ">" + data[i].name + "</option>");
+                        if (data[i].children) {
+                            var data_child = data[i].children
+                            for (var j = 0; j < data_child.length; j++) {
+                                data_ids.append("<option value=" + data_child[j].id + ">---" + data_child[j].name + "</option>");
+                            }
+                        }
+                    }
+                } else {
+                    data_ids.append("<option value=" + classifyId + ">---无---</option>");
+                }
+            }
+        });
+    }
+
+</script>
+{% endblock %}

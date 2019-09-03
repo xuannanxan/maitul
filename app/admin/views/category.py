@@ -63,7 +63,7 @@ def category_edit():
             if result:
                 op_log("修改分类#%s" %  data["id"])
                 return {"code": 1, "msg": '修改成功'}
-            return {"code": 0, "msg": '修改失败，系统错误或标签已存在'}
+            return {"code": 0, "msg": '修改失败，系统错误或名称已存在'}
         return {"code": 0, "msg": form.get_errors()}
 
 

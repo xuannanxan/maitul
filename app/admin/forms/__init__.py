@@ -13,6 +13,7 @@ from app.admin.forms.product import ProductForm
 from app.admin.forms.ad import AdForm,AdspaceForm
 from app.admin.forms.conf import ConfForm
 from app.admin.forms.reptile import ReptileForm
+from app.admin.forms.template import TemplateForm
 
 ChangepwdForm =ChangepwdForm
 LoginForm = LoginForm
@@ -29,3 +30,4 @@ AdForm = AdForm
 AdspaceForm = AdspaceForm
 ConfForm = ConfForm
 ReptileForm = ReptileForm
+TemplateForm = TemplateForm

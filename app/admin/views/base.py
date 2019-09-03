@@ -8,8 +8,8 @@ from flask_login import login_user, login_required, logout_user, current_user
 
 import app.config  as config
 from app.admin.forms import LoginForm, ChangepwdForm
-from app.expand.utils import save_file, allowed_file, delete_file,get_file_list
-from app.models import Admin, Adminlog, Operationlog, Crud, Role, Auth
+from app.expand.utils import save_file, allowed_file, delete_file,get_file_list,build_tree,object_to_dict
+from app.models import Admin, Adminlog, Operationlog, Crud, Role, Auth,Category,Adspace
 from .. import admin
 
 
@@ -175,3 +175,16 @@ def file_manage():
     if request.args.get('path'):
         path = str(request.args.get('path'))
     return jsonify(get_file_list(path))
+
+# 接口数据
+@admin.route("/interface/<string:model_name>", methods=['GET'])
+@login_required
+def interface(model_name=None):
+    data = {}
+    if model_name =='category':
+        category_data = Crud.get_data(Category,Category.sort.desc())
+        data = build_tree(category_data, 0, 0)
+    elif model_name == 'adspace':
+        adspace_data = Crud.get_data(Adspace,Adspace.create_time.desc())
+        data = [ object_to_dict(v) for v in adspace_data]
+    return jsonify(data)
