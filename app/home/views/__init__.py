@@ -83,9 +83,18 @@ def getWebConfig():
 # 获取菜单
 @cache.cached(timeout=600, key_prefix='navs')
 def getNavs():
-    category_data = Crud.search_data(Category, Category.is_nav == 1,Category.sort.desc())
-    navs = build_tree(category_data, 0, 0)
+    category_data = getCategory()
+    navs_data = [v for v in category_data if v.is_nav == 1]
+    navs = build_tree(navs_data, 0, 0)
     return navs
+
+
+# 获取全部栏目
+@cache.cached(timeout=600, key_prefix='category')
+def getCategory():
+    category_data = Crud.get_data(Category,Category.sort.desc())
+    return category_data
+
 
 # 获取网站模板
 @cache.cached(timeout=600, key_prefix='template')

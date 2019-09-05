@@ -19,7 +19,7 @@ def template_add():
     data = request.form
     form = TemplateForm(data)
     if form.validate():
-        result = Crud.add(Template,data,"name")
+        result = Crud.add(Template,data,"template")
         if result:
             op_log("添加模板-%s" % data["name"])
             return {"code": 1, "msg": '添加成功'}
@@ -28,10 +28,10 @@ def template_add():
 
 
 # 模板列表
-@login_required
-@auth_required
 @admin.route("/template/list", methods=['GET'])
 @admin.route("/template/list/<int:nav_id>", methods=['GET'])
+@login_required
+@auth_required
 def template_list(nav_id=None):
     data = Crud.get_data(Category, Category.sort.desc())
     nav_tree = build_tree(data, 0, 0)
@@ -59,7 +59,7 @@ def template_edit():
         data = request.form
         form = TemplateForm(data)
         if form.validate():
-            result = Crud.update(Template,data,"name")
+            result = Crud.update(Template,data,"template")
             if result:
                 op_log("修改模板#%s" %  data["id"])
                 return {"code": 1, "msg": '修改成功'}

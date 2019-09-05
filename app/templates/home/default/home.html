@@ -268,11 +268,10 @@
     </header>
     <!-- header end -->
     <!-- content start -->
-    
+    {% import "home/default/content.html" as content %}
     
     {% for temp in templates%}
-        {% import "home/default/index_banner.html" as index_banner %}
-        {{ index_banner.page(temp['data']) }}
+        {{ content[temp.template](temp['data']) }}
     {% endfor %}
   
     <!-- footer start (Add "light" class to #footer in order to enable light footer) -->

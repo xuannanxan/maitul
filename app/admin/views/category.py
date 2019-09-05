@@ -28,10 +28,10 @@ def category_add():
 
 
 # 分类列表
-@login_required
-@auth_required
 @admin.route("/category/list", methods=['GET'])
 @admin.route("/category/list/<int:pid>", methods=['GET'])
+@login_required
+@auth_required
 def category_list(pid=None):
     data = Crud.get_data(Category, Category.sort.desc())
     category_tree = build_tree(data, 0, 0)

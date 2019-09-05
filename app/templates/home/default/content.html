@@ -1,0 +1,102 @@
+{% import "home/default/pagination.html" as pagination %}
+{% macro banner(data) -%}
+{% if data %}
+<!-- banner start -->
+<div class="banner">
+
+    <!-- slideshow start -->
+    <!-- ================ -->
+    <div class="slideshow white-bg">
+
+        <!-- slider revolution start -->
+        <!-- ================ -->
+        <div class="owl-carousel home-slider-carousel">
+            {% for v in data %}
+            <div class="single-slide-item" style="background-image: url('{{v.img}}')">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="slider-text">
+                                <h3>{{v.title}}</h3>
+                                <a href="{{v.url}}" class="btn btn-info">LEARN MORE</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <!-- slider revolution end -->
+
+    </div>
+    <!-- slideshow end -->
+
+</div>
+<!-- banner end -->
+{% endif %}
+{% endmacro %}
+
+{% macro product(data) -%}
+{% if data %}
+<!-- product start -->
+<div class="section  clearfix object-non-visible animated object-visible fadeInUpSmall"
+     data-animation-effect="fadeInUpSmall" data-effect-delay="300">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-8">
+                    <h1 class="title">{{data.name}}</h1>
+                    <div class="separator-2"></div>
+                    <p>{{data.info}}</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group form-group" style="margin-top: 30px">
+                        <input type="text" name="productsSearch" data-url="{{url_for('home.index',nav_id=data.id)}}" class="form-control pull-right" placeholder="Search..." >
+                        <div class="input-group-addon"  onclick="btnSearch(this,'{{url_for('home.index',nav_id=data.id)}}')">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 search-filters" id="searchBar">
+                <div class="form-group">
+                    <div class="col-sm-12 col-md-12">
+                        <!-- isotope filters start -->
+                        <div class="filters margin-bottom-clear">
+                            <ul>
+                                {% for v in data.sub_data.items %}
+                                <li><a href="{{url_for('home.index',nav_id=v.id)}}"
+                                >{{v.title}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <!-- isotope filters end -->
+                    </div>
+                </div>
+            </div>
+                <!-- portfolio items start -->
+                <div class="isotope-container grid-space-20" style="display: block; position: relative;">
+                    {% for v in data.sub_data.items %}
+                    <div class="col-sm-6 col-md-3 isotope-item web-design">
+									<div class="image-box">
+										<div class="overlay-container">
+											<img src="{{v.cover}}" alt="{{v.title}}">
+											<a href="{{url_for('home.index',nav_id=v.category_id,id=v.id)}}" class="overlay small">
+												<i class="fa fa-search"></i>
+												<span>{{v.title | safe}}</span>
+											</a>
+										</div>
+										<a href="{{url_for('home.index',nav_id=v.category_id,id=v.id)}}" class="btn btn-light-gray btn-block">{{v.title}}</a>
+									</div>
+								</div>
+                    {% endfor %}
+                    {{ pagination.page(products,"home.index",nav_id=data.id) }}
+                </div>
+                <!-- portfolio items end -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- product end -->
+{% endif %}
+{% endmacro %}
+

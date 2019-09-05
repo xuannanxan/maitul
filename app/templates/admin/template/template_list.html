@@ -130,11 +130,14 @@
                     $("#template_edit_form select[name=nav_id]").val(data.nav_id).trigger('change');
                     $("#template_edit_form input[name=template]").val(data.template);
                     $("#template_edit_form select[name=data_type]").val(data.data_type).trigger('change');
-                    $("#template_edit_form select[name=data_id]").val(data.data_id).trigger('change');
                     $("#template_edit_form select[name=pagination]").val(data.pagination).trigger('change');
                     $("#template_edit_form input[name=data_num]").val(data.data_num);
                     $("#template_edit_form input[name=sort]").val(data.sort);
                     $('#template_edit').modal('show')
+                    setTimeout(function () {
+                        $("#template_edit_form select[name=data_id]").val(data.data_id).trigger('change');
+                    }, 500);
+                    
                 } else {
                     toastr.error(result.msg);
                 }
@@ -144,18 +147,7 @@
             }
         });
     }
-    function changeType(obj) {
-        var pid = $(obj).parent().parent().parent().parent().parent().parent().find("select[name=pid]")
-        pid.select2()
-        pid.children().each(function () {
-            if ($(this).attr('type') == $(obj).val() || $(this).val() == 0 || $(this).attr('type') == '3') {
-                $(this).removeAttr("disabled");
-            } else {
-                $(this).attr("disabled", "true");
-            }
 
-        });
-    }
 
     //下拉框连动
     function getDataIds(formName) {

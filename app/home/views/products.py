@@ -8,8 +8,8 @@ from sqlalchemy import or_,and_
 from app.expand.utils import object_to_dict
 
 
-@home.route("/products/<int:nav_id>", methods=['GET'])
-@home.route("/products", methods=['GET'])
+@home.route("/products1/<int:nav_id>", methods=['GET'])
+@home.route("/products1", methods=['GET'])
 @cache.cached(timeout=60, key_prefix=make_cache_key)
 def products(nav_id=None):
     if nav_id==None:
