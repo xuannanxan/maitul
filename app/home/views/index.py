@@ -3,7 +3,7 @@
 #从当前模块__init__导入蓝图对象
 from flask import render_template,g,request
 from app.expand.utils import object_to_dict
-from app.models import Crud,Product,Category,Template,Ad
+from app.models import Crud,Product,Category,Template,Ad,Article
 from . import home,seo_data,cache,getTemplate,getCategory
 
 
@@ -41,6 +41,9 @@ def index(nav=None):
             if data['type'] == 1:
                 product_data = Crud.get_data_paginate(Product,Product.sort.desc(),page,v.data_num)
                 data['sub_data'] = product_data
+            if data['type'] == 2:
+                article_data = Crud.get_data_paginate(Article,Article.sort.desc(),page,v.data_num)
+                data['sub_data'] = article_data
         elif v.data_type == 2:
             data = Crud.search_data(Ad,Ad.space_id == v.data_id,Ad.sort.desc(),v.data_num)
         temp_data['data'] = data
