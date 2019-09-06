@@ -179,6 +179,7 @@ def file_manage():
 
 # 接口数据
 @admin.route("/interface/<string:model_name>", methods=['GET'])
+@admin.route("/interface/", methods=['GET'])
 @login_required
 def interface(model_name=None):
     data = {}

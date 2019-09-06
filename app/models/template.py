@@ -11,6 +11,7 @@ class Template(Base):
     name = db.Column(db.String(200),nullable=False)
     nav_id = db.Column(db.Integer)  # 导航0为首页
     template = db.Column(db.String(255)) # 模板页面，如product.html,index.html
+    bgcolor = db.Column(db.String(255)) # 背景颜色，默认为白色
     data_type = db.Column(db.SmallInteger, default=1) # 数据类型，1栏目数据，2广告数据
     data_id = db.Column(db.Integer)  # 数据id，栏目数据就选择栏目，广告数据就选择广告位
     data_num = db.Column(db.Integer)  # 数据数量，如果分页就是每页数量

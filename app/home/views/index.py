@@ -48,7 +48,7 @@ def index(nav=None):
             data = Crud.search_data(Ad,Ad.space_id == v.data_id,Ad.sort.desc(),v.data_num)
         temp_data['data'] = data
         templates.append(temp_data)
-    print(templates)
+    
     return render_template("home/%s/home.html"%getTemplate(),
         seo_data = seo_data,
         templates = templates

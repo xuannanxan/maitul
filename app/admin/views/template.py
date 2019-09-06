@@ -36,9 +36,9 @@ def template_list(nav_id=None):
     data = Crud.get_data(Category, Category.sort.desc())
     nav_tree = build_tree(data, 0, 0)
     if nav_id == None:
-        template_data = Crud.get_data(Template,'sort')
+        template_data = Crud.get_data(Template,Template.sort.desc())
     else:
-        template_data = Crud.search_data(Template,Template.nav_id == nav_id,'sort')
+        template_data = Crud.search_data(Template,Template.nav_id == nav_id,Template.sort.desc())
     return render_template("admin/template/template_list.html",
                            nav_tree=nav_tree,
                            template_data=template_data,
