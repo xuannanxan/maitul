@@ -271,7 +271,7 @@
     {% import "home/default/content.html" as content %}
     
     {% for temp in templates%}
-        {{ content[temp.template](temp['data']) }}
+        {{ content[temp.template](temp['data'],temp['bgcolor']) }}
     {% endfor %}
   
     <!-- footer start (Add "light" class to #footer in order to enable light footer) -->
@@ -359,7 +359,7 @@
         <div class="subfooter">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-1" style="padding-left:0px">
+                    <div class="col-md-1 hidden-xs" style="padding-left:0px">
                         <div class="col-md-12 col-sm-4">
                                 <img src="data:image/png;base64,{{url_code}}">
                              </div>
@@ -412,5 +412,8 @@
 <script src="{{ url_for('static',filename = 'components/toastr/toastr.min.js')}}"></script>
 <script src="{{ url_for('static',filename = 'components/magnific-popup/jquery.magnific-popup.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename = 'home/js/template.js')}}"></script>
+<script>
+    enterSearch('input[name=productsSearch]',$('input[name=productsSearch]').attr('data-url'))
+</script>
 </body>
 </html>

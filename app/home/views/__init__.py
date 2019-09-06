@@ -3,7 +3,7 @@
 
 from flask import request,current_app,session
 from app.expand.utils import build_tree,object_to_dict,set_qrcode
-from app.models import Crud,Category,Conf,Ad,Product,Tag
+from app.models import Crud,Category,Conf,Ad,Product,Tag,Template
 from .. import home
 from app.extensions import cache
 
@@ -44,8 +44,7 @@ def tpl_extra():
     active_nav = session.get('active_nav')
     # 生成页面二维码
     try:
-        active_url = request.url
-        url_code = set_qrcode(active_url)
+        url_code = set_qrcode(url)
     except Exception as err:
             print(err)
     
@@ -70,9 +69,11 @@ def click_count():
     return 'count+1'
 
 
-# 获取站点配置信息
 @cache.cached(timeout=600, key_prefix='webconfig')
 def getWebConfig():
+    '''
+    获取站点配置信息
+    '''
     webconfig = {}
     conf_model_data = Crud.get_data(Conf,Conf.sort.desc())
     for v in conf_model_data:
@@ -80,28 +81,50 @@ def getWebConfig():
     return webconfig
 
 
-# 获取菜单
+
 @cache.cached(timeout=600, key_prefix='navs')
 def getNavs():
+    '''
+    获取菜单
+    '''
     category_data = getCategory()
     navs_data = [v for v in category_data if v.is_nav == 1]
-    navs = build_tree(navs_data, 0, 0)
-    return navs
+    return build_tree(navs_data, 0, 0)
 
 
-# 获取全部栏目
-@cache.cached(timeout=600, key_prefix='category')
+@cache.cached(timeout=600, key_prefix='categorys')
 def getCategory():
-    category_data = Crud.get_data(Category,Category.sort.desc())
-    return category_data
+    '''
+    获取全部栏目
+    '''
+    return Crud.get_data(Category,Category.sort.desc())
 
 
-# 获取网站模板
+
 @cache.cached(timeout=600, key_prefix='template')
 def getTemplate():
+    '''
+    网站模板配置
+    '''
     webconfig = getWebConfig()
     template = 'default'
     if 'templates' in webconfig:
         if webconfig['templates']:
             template = webconfig['templates']
     return template
+
+
+@cache.cached(timeout=600, key_prefix='templates')
+def getTemplates():
+    '''
+    获取网站模板页面设置
+    '''
+    return Crud.get_data(Template,Template.sort.desc())
+
+
+@cache.cached(timeout=600, key_prefix='tags')
+def getTag():
+    '''
+    获取网站模板
+    '''
+    return Crud.get_data(Tag,Tag.sort.desc())

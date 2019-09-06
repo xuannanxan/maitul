@@ -56,7 +56,6 @@ def reptile_list():
         page_data = Crud.get_data_paginate(ReptileList, ReptileList.create_time.desc(), page, 20)
     category_data = Crud.get_data(Category,Category.sort.desc())
     category_tree = build_tree(category_data, 0, 0)
-    
     return render_template("admin/reptile/reptile_list.html",
                            request_data = request_data,
                            page_data=page_data,

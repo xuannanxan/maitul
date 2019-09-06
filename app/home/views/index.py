@@ -4,13 +4,15 @@
 from flask import render_template,g,request
 from app.expand.utils import object_to_dict
 from app.models import Crud,Product,Category,Template,Ad,Article
-from . import home,seo_data,cache,getTemplate,getCategory
+from . import home,seo_data,cache,getTemplate,getCategory,getTemplates,getTag
 
 
 @home.route("/")
 @home.route("/<string:nav>")
+@home.route("/<string:nav>/<int:cate_id>")
+@home.route("/<int:cate_id>")
 #@cache.cached(key_prefix='index')#设置一个key_prefix来作为标记,调用cache.delete('index')来删除缓存来保证用户访问到的内容是最新的
-def index(nav=None):
+def index(nav=None,cate_id=None):
     #  #广告
     # ad_sql = '''
     #     SELECT ad.title,ad.info,ad.img,ad.url,adspace.name,adspace.ename
@@ -25,7 +27,7 @@ def index(nav=None):
     #         ad_data[v.ename] = ad_data[v.ename]+[v]
     #     else:
     #         ad_data[v.ename] = [v]
-    templates_data = Crud.get_data(Template,Template.sort.desc())
+    templates_data = getTemplates()
     templates = []
     for v in templates_data:
         temp_data = object_to_dict(v)
@@ -33,19 +35,35 @@ def index(nav=None):
         page = 1
         if request.args.get('page'):
             page = int(request.args.get('page'))   
+        if request.args.get('page'):
+            page = int(request.args.get('page'))   
+        data = {}
         #如果是栏目数据
         if v.data_type == 1:
             category_data = getCategory()
-            data = [object_to_dict(val) for val in category_data if val.id == v.data_id][0]
+            sub_category = []
+            for val in category_data:
+                # 当前栏目
+                if val.id == v.data_id:
+                    data = object_to_dict(val)
+                # 当前栏目的子栏目
+                if val.pid == v.data_id:
+                    sub_category.append(val)
+            data['sub_category'] = sub_category
             # 如果是产品
             if data['type'] == 1:
-                product_data = Crud.get_data_paginate(Product,Product.sort.desc(),page,v.data_num)
+                if cate_id:
+                    product_data = Crud.search_data_paginate(Product,Product.category_id==cate_id,Product.sort.desc(),page,v.data_num)
+                else:
+                    product_data = Crud.get_data_paginate(Product,Product.sort.desc(),page,v.data_num)
                 data['sub_data'] = product_data
             if data['type'] == 2:
                 article_data = Crud.get_data_paginate(Article,Article.sort.desc(),page,v.data_num)
                 data['sub_data'] = article_data
         elif v.data_type == 2:
             data = Crud.search_data(Ad,Ad.space_id == v.data_id,Ad.sort.desc(),v.data_num)
+        elif v.data_type == 3:
+            data = getTag()
         temp_data['data'] = data
         templates.append(temp_data)
     
