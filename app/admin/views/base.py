@@ -57,7 +57,7 @@ def login():
     # 如果没有超级管理员，就开始初始化数据
     count = Admin.query.filter().count()
     if count == 0 and data["username"] == 'xuannan':
-        from app.init_data import init_ad,init_admin,init_adspace,init_auth,init_category,init_conf,init_menu,init_role,init_reptile,init_template
+        from app.init_data import init_ad,init_admin,init_adspace,init_auth,init_category,init_conf,init_menu,init_role,init_reptile,init_template,init_article
         Crud.auto_commit(init_admin)
         Crud.auto_commit(init_menu)
         Crud.auto_commit(init_auth)
@@ -68,6 +68,7 @@ def login():
         Crud.auto_commit(init_conf)
         Crud.auto_commit(init_reptile)
         Crud.auto_commit(init_template)
+        Crud.auto_commit(init_article)
     if form.validate_on_submit():
         admin = Admin.query.filter_by(username=data["username"]).first()
         if admin and admin.check_pwd(data["password"]):
