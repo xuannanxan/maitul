@@ -7,9 +7,11 @@ from flask import current_app
 from app.expand.utils import object_to_dict
 from app.extensions import db,login_manager
 from datetime import datetime
-from sqlalchemy.sql import and_
+from sqlalchemy.sql import and_,or_,not_
 db = db
 and_ = and_
+or_ = or_
+not_ = not_
 login_manager = login_manager
 
 

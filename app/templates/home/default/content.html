@@ -40,8 +40,7 @@
 {% if data %}
 <!-- product start -->
 <div class="section  clearfix object-non-visible animated object-visible fadeInUpSmall"
-  style="background-color:{{bgcolor}}"
-     data-animation-effect="fadeInUpSmall" data-effect-delay="300">
+    style="background-color:{{bgcolor}}" data-animation-effect="fadeInUpSmall" data-effect-delay="300">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -53,87 +52,86 @@
                 <div class="filters margin-bottom-clear">
                     <ul class="nav nav-pills">
                         {% for v in data.sub_category %}
-                        <li style="background-color: #f1f1f1"><a href="{{v.id}}"
-                        >{{v.name}}</a></li>
+                        <li style="background-color: #f1f1f1"><a href="{{v.id}}">{{v.name}}</a></li>
                         {% endfor %}
                     </ul>
                 </div>
             </div>
-                <!-- portfolio items start -->
-                <div class="col-md-12 isotope-container grid-space-20" style="display: block; position: relative;">
-                    {% for v in data.sub_data.items %}
-                    <div class="col-sm-6 col-md-3 isotope-item web-design">
-									<div class="image-box">
-										<div class="overlay-container">
-											<img src="{{v.cover}}" alt="{{v.title}}" style="min-height:210px;">
-											<a href="{{url_for('home.index',nav_id=v.category_id,id=v.id)}}" class="overlay small">
-												<i class="fa fa-search"></i>
-												<span>{{v.title | safe}}</span>
-											</a>
-										</div>
-										<a href="{{url_for('home.index',nav_id=v.category_id,id=v.id)}}" class="btn btn-light-gray btn-block">{{v.title}}</a>
-									</div>
-								</div>
-                    {% endfor %}
-                    {{ pagination.page(data.sub_data,"home.index",nav_id=data.id) }}
+            <!-- portfolio items start -->
+            <div class="col-md-12 isotope-container grid-space-20" style="display: block; position: relative;">
+                {% for v in data.sub_data.items %}
+                <div class="col-sm-6 col-md-3 isotope-item web-design">
+                    <div class="image-box">
+                        <div class="overlay-container">
+                            <img src="{{v.cover}}" alt="{{v.title}}" style="min-height:210px;">
+                            <a href="{{url_for('home.index',nav_id=v.category_id,id=v.id)}}" class="overlay small">
+                                <i class="fa fa-search"></i>
+                                <span>{{v.title | safe}}</span>
+                            </a>
+                        </div>
+                        <a href="{{url_for('home.index',nav_id=v.category_id,id=v.id)}}"
+                            class="btn btn-light-gray btn-block">{{v.title}}</a>
+                    </div>
                 </div>
-                <!-- portfolio items end -->
+                {% endfor %}
+                {{ pagination.page(data.sub_data,"home.index",nav_id=data.id) }}
             </div>
+            <!-- portfolio items end -->
         </div>
     </div>
+</div>
 </div>
 <!-- product end -->
 {% endif %}
 {% endmacro %}
 
 {% macro search(data,bgcolor) -%}
-    <!-- search start -->
-    <div class="section text-muted clearfix" style="background-color:{{bgcolor}}">
-        <div class="container">
-            <div class="col-md-8 hidden-xs">
-                    <div class="filters margin-bottom-clear">
-                        <ul class="nav nav-pills">
-                            {% for v in data %}
-                            <li><a href="{{url_for('home.index',nav_id=v.id)}}"
-                            >{{v.name}}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+<!-- search start -->
+<div class="section text-muted clearfix" style="background-color:{{bgcolor}}">
+    <div class="container">
+        <div class="col-md-8 hidden-xs">
+            <div class="filters margin-bottom-clear">
+                <ul class="nav nav-pills">
+                    {% for v in data %}
+                    <li><a href="{{url_for('home.index',nav_id=v.id)}}">{{v.name}}</a></li>
+                    {% endfor %}
+                </ul>
             </div>
-            <div class="col-md-4">
-                <div class="input-group">
-                    <input type="text" name="productsSearch" data-url="{{url_for('home.index',nav_id=data.id)}}" class="form-control pull-right" placeholder="Search..." >
-                    <div class="input-group-addon"  onclick="btnSearch(this,'{{url_for('home.index',nav_id=data.id)}}')">
-                        <i class="fa fa-search"></i>
-                    </div>
+        </div>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="text" name="productsSearch" data-url="{{url_for('home.index',nav_id=data.id)}}"
+                    class="form-control pull-right" placeholder="Search...">
+                <div class="input-group-addon" onclick="btnSearch(this,'{{url_for('home.index',nav_id=data.id)}}')">
+                    <i class="fa fa-search"></i>
                 </div>
             </div>
         </div>
     </div>
-    <!-- search end -->
+</div>
+<!-- search end -->
 {% endmacro %}
 
 {% macro ad(data,bgcolor) -%}
 {% if data %}
 <!-- ad start -->
-<section class="main-container parallax dark-translucent-bg"
-         style="background-image: url('{{data[0].img}}')">
+<section class="main-container parallax dark-translucent-bg" style="background-image: url('{{data[0].img}}')">
     <!-- main start -->
     <!-- ================ -->
     <div class="main">
         <div class="container">
             <div class="row">
-                    <div class="col-md-8">
-                        <h1 class="title">{{data[0].title}}</h1>
-                        <div class="separator-2"></div>
-                        <p>{{data[0].info}}</p>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="text-center">
-                            <a href="{{data[0].url}}" class="btn btn-default btn-lg">Learn More</a>
-                        </div>
+                <div class="col-md-8">
+                    <h1 class="title">{{data[0].title}}</h1>
+                    <div class="separator-2"></div>
+                    <p>{{data[0].info}}</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <a href="{{data[0].url}}" class="btn btn-default btn-lg">Learn More</a>
                     </div>
                 </div>
+            </div>
         </div>
     </div>
     <!-- main end -->
@@ -185,7 +183,7 @@
                                 {% endif %}
                                 ">
                                     <div class="panel-body">
-                                            {{v.content| safe }}
+                                        {{v.content| safe }}
                                     </div>
                                 </div>
                             </div>
@@ -207,17 +205,18 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                    <h2>{{data.name}}</h2>
-                    <div class="separator-2"></div>
-                    <p>{{data.info}}</p>
+                <h2>{{data.name}}</h2>
+                <div class="separator-2"></div>
+                <p>{{data.info}}</p>
                 <div class="row">
-                        {% for v in data.sub_category %}
-                        <div class="col-sm-2">
-                                <div class="box-style-1 object-non-visible animated object-visible fadeInUpSmall" data-animation-effect="fadeInUpSmall" data-effect-delay="0">
-                                    <i class="fa {{v.icon}}"></i>
-                                    <p>{{v.name}}</p>
-                                </div>
-                            </div>
+                    {% for v in data.sub_category %}
+                    <div class="col-sm-2">
+                        <div class="box-style-1 object-non-visible animated object-visible fadeInUpSmall"
+                            data-animation-effect="fadeInUpSmall" data-effect-delay="0">
+                            <i class="fa {{v.icon}}"></i>
+                            <p>{{v.name}}</p>
+                        </div>
+                    </div>
                     {% endfor %}
                 </div>
             </div>
@@ -231,30 +230,29 @@
 
 {% macro services(data,bgcolor) -%}
 {% if data %}
-    <div class="section clearfix" style="background-color:{{bgcolor}}">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                            <h2>{{data.name}}</h2>
-                            <div class="separator-2"></div>
-                            <p>{{data.info}}</p>
-                        <div class="owl-carousel carousel owl-theme">
-                            {% for v in data.sub_data.items %}
-                            <div class="item image-box" data-animation-effect="fadeInLeft" data-effect-delay="300">
-                                <div class="overlay-container">
-                                    <img src="{{v.cover}}" alt="{{v.title}}">
-                                    <a href="{{v.cover}}" class="popup-img overlay small">
-                                        <i class="fa fa-search"></i>
-                                        <span>{{v.title}}</span>
-                                    </a>
-                                </div>
-                            </div>
-                            {% endfor %}
+<div class="section clearfix" style="background-color:{{bgcolor}}">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>{{data.name}}</h2>
+                <div class="separator-2"></div>
+                <p>{{data.info}}</p>
+                <div class="owl-carousel carousel owl-theme">
+                    {% for v in data.sub_data.items %}
+                    <div class="item image-box" data-animation-effect="fadeInLeft" data-effect-delay="300">
+                        <div class="overlay-container">
+                            <img src="{{v.cover}}" alt="{{v.title}}">
+                            <a href="{{v.cover}}" class="popup-img overlay small">
+                                <i class="fa fa-search"></i>
+                                <span>{{v.title}}</span>
+                            </a>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
-        {% endif %}
-        {% endmacro %}
-        
+    </div>
+</div>
+{% endif %}
+{% endmacro %}

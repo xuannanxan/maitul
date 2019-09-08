@@ -41,7 +41,7 @@ def index(nav=None,cate_id=None):
         #如果是栏目数据
         if v.data_type == 1:
             category_data = getCategory()
-            sub_category = []
+            sub_category,cates = [],[v.data_id]
             for val in category_data:
                 # 当前栏目
                 if val.id == v.data_id:
@@ -49,17 +49,19 @@ def index(nav=None,cate_id=None):
                 # 当前栏目的子栏目
                 if val.pid == v.data_id:
                     sub_category.append(val)
+                    # 当前栏目和子栏目，用于筛选当前栏目下的所有信息
+                    cates.append(val.id)
             data['sub_category'] = sub_category
             # 如果是产品
             if data['type'] == 1:
                 if cate_id:
-                    product_data = Crud.search_data_paginate(Product,Product.category_id==cate_id,Product.sort.desc(),page,v.data_num)
-                else:
-                    product_data = Crud.get_data_paginate(Product,Product.sort.desc(),page,v.data_num)
-                data['sub_data'] = product_data
+                    cates.append(cate_id)
+                    cates = cates+[cate.id for cate in category_data if cate.pid == cate_id]
+                sub_data = Crud.search_data_paginate(Product,Product.category_id.in_(cates),Product.sort.desc(),page,v.data_num)
+            # 如果是文章
             if data['type'] == 2:
-                article_data = Crud.get_data_paginate(Article,Article.sort.desc(),page,v.data_num)
-                data['sub_data'] = article_data
+                sub_data = Crud.search_data_paginate(Article,Article.category_id.in_(cates),Article.sort.desc(),page,v.data_num)
+            data['sub_data'] = sub_data
         elif v.data_type == 2:
             data = Crud.search_data(Ad,Ad.space_id == v.data_id,Ad.sort.desc(),v.data_num)
         elif v.data_type == 3:

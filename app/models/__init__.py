@@ -3,7 +3,7 @@
 __author__ = 'Allen xu'
 from app.models.role import Role,Auth
 from app.models.log import Adminlog,Operationlog,Userlog
-from app.models.base import Crud,and_
+from app.models.base import Crud,and_,or_,not_
 from app.models.category import Category
 from app.models.article import Article
 from app.models.product import Product
@@ -40,3 +40,5 @@ ReptileList=ReptileList
 TagRelation =TagRelation
 Template = Template
 and_ = and_
+or_ = or_
+not_ = not_
