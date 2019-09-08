@@ -200,3 +200,61 @@
 </div>
 {% endif %}
 {% endmacro %}
+
+{% macro icon_box(data,bgcolor) -%}
+{% if data %}
+<div class="section" style="background-color:{{bgcolor}}">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                    <h2>{{data.name}}</h2>
+                    <div class="separator-2"></div>
+                    <p>{{data.info}}</p>
+                <div class="row">
+                        {% for v in data.sub_category %}
+                        <div class="col-sm-2">
+                                <div class="box-style-1 object-non-visible animated object-visible fadeInUpSmall" data-animation-effect="fadeInUpSmall" data-effect-delay="0">
+                                    <i class="fa {{v.icon}}"></i>
+                                    <p>{{v.name}}</p>
+                                </div>
+                            </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endmacro %}
+
+
+
+{% macro services(data,bgcolor) -%}
+{% if data %}
+    <div class="section clearfix" style="background-color:{{bgcolor}}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                            <h2>{{data.name}}</h2>
+                            <div class="separator-2"></div>
+                            <p>{{data.info}}</p>
+                        <div class="owl-carousel carousel owl-theme">
+                            {% for v in data.sub_data.items %}
+                            <div class="item image-box" data-animation-effect="fadeInLeft" data-effect-delay="300">
+                                <div class="overlay-container">
+                                    <img src="{{v.cover}}" alt="{{v.title}}">
+                                    <a href="{{v.cover}}" class="popup-img overlay small">
+                                        <i class="fa fa-search"></i>
+                                        <span>{{v.title}}</span>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endmacro %}
+        
