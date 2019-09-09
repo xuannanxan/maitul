@@ -8,11 +8,11 @@ from . import home,seo_data,cache,getTemplate,getCategory,getTemplates,getTag
 
 
 @home.route("/")
-@home.route("/<string:nav>")
-@home.route("/<string:nav>/<int:cate_id>")
-@home.route("/<int:cate_id>")
+@home.route("/<int:nav_id>")
+@home.route("/<int:nav_id>/<int:cate_id>")
+@home.route("/<int:nav_id>/<int:cate_id>/<int:content_id>")
 #@cache.cached(key_prefix='index')#设置一个key_prefix来作为标记,调用cache.delete('index')来删除缓存来保证用户访问到的内容是最新的
-def index(nav=None,cate_id=None):
+def index(nav_id=None,cate_id=None,content_id=None):
     #  #广告
     # ad_sql = '''
     #     SELECT ad.title,ad.info,ad.img,ad.url,adspace.name,adspace.ename
@@ -27,16 +27,20 @@ def index(nav=None,cate_id=None):
     #         ad_data[v.ename] = ad_data[v.ename]+[v]
     #     else:
     #         ad_data[v.ename] = [v]
-    templates_data = getTemplates()
+    all_templates = getTemplates()
+    if nav_id:
+        templates_data = [v for v in all_templates if v.nav_id==nav_id]
+    else:
+        templates_data = [v for v in all_templates if v.nav_id==0]
     templates = []
+    # 页码
+    page = 1
+    if request.args.get('page'):
+        page = int(request.args.get('page'))   
+    if request.args.get('page'):
+        page = int(request.args.get('page'))  
     for v in templates_data:
         temp_data = object_to_dict(v)
-        # 页码
-        page = 1
-        if request.args.get('page'):
-            page = int(request.args.get('page'))   
-        if request.args.get('page'):
-            page = int(request.args.get('page'))   
         data = {}
         #如果是栏目数据
         if v.data_type == 1:
@@ -67,6 +71,7 @@ def index(nav=None,cate_id=None):
         elif v.data_type == 3:
             data = getTag()
         temp_data['data'] = data
+        # 全部页面数据压入数组
         templates.append(temp_data)
     
     return render_template("home/%s/home.html"%getTemplate(),

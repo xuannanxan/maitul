@@ -3173,7 +3173,7 @@ ul.pagination li > a:focus {
 	margin: 0;
 }
 a.overlay {
-	background-color: rgba(255, 255, 255, 0.7);
+	background-color: rgba(255, 255, 255, 0.3);
 	cursor: pointer;
 }
 .listing-item a.overlay {
@@ -3234,6 +3234,19 @@ a.overlay.small i {
 	filter: alpha(opacity=100);
 	-webkit-transform: scale(1);
 	transform: scale(1);
+}
+
+.image-box:hover .overlay-container .overlay,
+.image-box:hover .overlay-container .overlay-links {
+	opacity: 1;
+	filter: alpha(opacity=100);
+	-webkit-transform: scale(1);
+	transform: scale(1);
+}
+.image-box:hover .btn-light-gray {
+    color: #ffffff;
+    background-color: #38c7f4;
+    border-color: #38c7f4;
 }
 
 /* Responsive iframe
@@ -5616,7 +5629,8 @@ a.overlay i {
 .box.default-bg:hover * {
 	color: #38c7f4;
 }
-.box-style-1:not(.team-member):hover i {
+.box-style-1:not(.team-member):hover i,
+.box-style-1:not(.team-member):hover p {
 	color: #38c7f4;
 }
 .box-style-1.default-bg:hover i,
