@@ -19,7 +19,7 @@ def template_add():
     data = request.form
     form = TemplateForm(data)
     if form.validate():
-        result = Crud.add(Template,data,"template")
+        result = Crud.add(Template,data,"name")
         if result:
             op_log("添加模板-%s" % data["name"])
             return {"code": 1, "msg": '添加成功'}
@@ -59,7 +59,7 @@ def template_edit():
         data = request.form
         form = TemplateForm(data)
         if form.validate():
-            result = Crud.update(Template,data,"template")
+            result = Crud.update(Template,data,"name")
             if result:
                 op_log("修改模板#%s" %  data["id"])
                 return {"code": 1, "msg": '修改成功'}

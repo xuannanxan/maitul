@@ -3101,8 +3101,8 @@ ul.pagination li > a:focus {
 	overflow: hidden;
 	opacity: 0;
 	filter: alpha(opacity=0);
-	-webkit-transform: scale(0.8);
-	transform: scale(0.8);
+	/* -webkit-transform: scale(0.8);
+	transform: scale(0.8); */
 	-webkit-transition: all linear 0.2s;
 	-moz-transition: all linear 0.2s;
 	-ms-transition: all linear 0.2s;
@@ -3173,7 +3173,7 @@ ul.pagination li > a:focus {
 	margin: 0;
 }
 a.overlay {
-	background-color: rgba(255, 255, 255, 0.3);
+	background-color: rgba(0, 0, 0, 0.3);
 	cursor: pointer;
 }
 .listing-item a.overlay {
@@ -4048,6 +4048,9 @@ a.overlay.small i {
 .image-box {
 	background-color: #fafafa;
 	border: 1px solid #f3f3f3;
+}
+.web-design .image-box:hover{
+	box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
 }
 .grid-space-0 .image-box {
 	border: none;
@@ -6123,4 +6126,27 @@ a.overlay i {
 }
 .product-interaction ul.links li a:hover {
 	color: #e84c3d;
+}
+
+.warp-mask {
+	height:100%;
+    width:100%;
+	position: absolute;
+    top: 0;
+    bottom: -1px;
+    left: 0;
+    right: -1px;
+}
+.warp-mask span {
+	position: absolute;
+    display: block;
+    line-height: 198px;
+    text-align: center;
+    width: 100%;
+	color: #fff;
+	background-color: rgba(0, 0, 0, 0.45);
+}
+.warp-mask span:hover {
+	color: #38c7f4;
+	background-color: rgba(0,0, 0, 0.65);
 }

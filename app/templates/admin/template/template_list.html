@@ -25,31 +25,11 @@
                     </li>
                     {% for nav in nav_tree %}
                     {% if nav.is_nav == 1 %}
-                    {% if nav.children %}
-                    <li class="treeview">
-                        <a href="{{ url_for('admin.template_list',nav_id = nav.id) }}">
-                            <i class="fa {{ nav.icon }}"></i>
-                            <span>{{ nav['name'] }}</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-right pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            {% for child_nav in nav.children %}
-                            <li class="{% if  child_nav.id == nav_id %}active{% endif %}">
-                                <a href="{{ url_for('admin.template_list',nav_id = child_nav.id) }}">
-                                    <i class="fa {{ child_nav.icon }}"></i> {{ child_nav.name }}
-                                </a></li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                    {% else %}
                     <li class="{% if nav.id == nav_id %}active{% endif %}">
                         <a href="{{ url_for('admin.template_list',nav_id = nav.id) }}">
                             <i class="fa {{ nav.icon }}"></i> <span>{{ nav.name }}</span>
                         </a>
                     </li>
-                    {% endif %}
                     {% endif %}
                     {% endfor %}
                 </ul>
@@ -133,6 +113,7 @@
                     $("#template_edit_form select[name=data_type]").val(data.data_type).trigger('change');
                     $("#template_edit_form select[name=pagination]").val(data.pagination).trigger('change');
                     $("#template_edit_form input[name=data_num]").val(data.data_num);
+                    $("#template_edit_form select[name=show_title]").val(data.show_title).trigger('change');
                     $("#template_edit_form input[name=sort]").val(data.sort);
                     $('#template_edit').modal('show')
                     setTimeout(function () {
@@ -181,7 +162,7 @@
                         }
                     }
                 } else {
-                    data_ids.append("<option value=" + classifyId + ">---无---</option>");
+                    console.log('无数据');
                 }
             }
         });

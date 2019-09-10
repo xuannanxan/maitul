@@ -205,11 +205,16 @@
                                                 <a href="{{url_for('home.index')}}">Home</a>
                                             </li>
                                             <!-- nav start -->
-                                
                                             {% for nav in navs%}
                                             {% if nav.children %}
                                             <li class="dropdown mega-menu {% if top_nav.id == nav.id%}active{% endif %}">
-                                                <a href="{{url_for('home.index',nav_id = nav.id)}}" class="dropdown-toggle"
+                                                <a href="
+                                                {% if nav.type ==3 %}
+                                                {{nav.url}}
+                                                {% else %}
+                                                {{url_for('home.index',nav_id = nav.id)}}
+                                                {% endif %}
+                                                " class="dropdown-toggle"
                                                    data-toggle="dropdown">{{nav.name}}</a>
                                                 <ul class="dropdown-menu">
                                                     <li>
@@ -230,7 +235,13 @@
                                                                             class="active"
                                                                             {% endif %}
                                                                             >
-                                                                                <a href="{{url_for('home.index',nav_id = nav.id,cate_id = nav_child.id)}}"><i
+                                                                                <a href="
+                                                                                {% if nav.type ==3 %}
+                                                                                {{nav_child.url}}
+                                                                                {% else %}
+                                                                                {{url_for('home.index',nav_id = nav.id,cate_id = nav_child.id)}}
+                                                                                {% endif %}
+                                                                                "><i
                                                                                         class="fa {{nav_child.icon}}"></i>{{nav_child.name}}</a>
                                                                             </li>
                                                                             {% endfor %}
@@ -244,7 +255,13 @@
                                             </li>
                                             {% else %}
                                             <li class="{% if top_nav.id == nav.id%}active{% endif %}">
-                                                <a href="{{url_for('home.index',nav_id = nav.id)}}">{{nav.name}}</a>
+                                                <a href="
+                                                {% if nav.type ==3 %}
+                                                {{nav.url}}
+                                                {% else %}
+                                                {{url_for('home.index',nav_id = nav.id)}}
+                                                {% endif %}
+                                                ">{{nav.name}}</a>
                                             </li>
                                             {% endif %}
                                             {% endfor %}
@@ -270,8 +287,8 @@
     <!-- content start -->
     {% import "home/default/content.html" as content %}
     
-    {% for temp in templates%}
-        {{ content[temp.template](temp.data,temp.bgcolor) }}
+    {% for v in templates%}
+        {{ content[v.temp.template](v.data,v.temp,param) }}
     {% endfor %}
   
     <!-- footer start (Add "light" class to #footer in order to enable light footer) -->

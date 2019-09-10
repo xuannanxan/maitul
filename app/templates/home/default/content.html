@@ -1,13 +1,20 @@
+
+<!-- banner 带滑动效果的banner大图 -->
+<!-- search 带标签快捷搜索的搜索条 -->
+<!-- product 带分类导航的产品，可开关分页 -->
+<!-- ad 广告，单张广告图片 -->
+<!-- about 图文+文字列表 -->
+<!-- icon_box 图标列表 -->
+<!-- img_box 图片列表，可左右滚动 -->
+<!-- cate_banner 栏目banner，用栏目数据作为数据来源 -->
 {% import "home/default/pagination.html" as pagination %}
-{% macro banner(data,bgcolor) -%}
+{% macro banner(data,temp,param) -%}
 {% if data %}
 <!-- banner start -->
 <div class="banner">
-
     <!-- slideshow start -->
     <!-- ================ -->
-    <div class="slideshow" style="background-color:{{bgcolor}}">
-
+    <div class="slideshow" style="background-color:{{temp.bgcolor}}">
         <!-- slider revolution start -->
         <!-- ================ -->
         <div class="owl-carousel home-slider-carousel">
@@ -16,10 +23,13 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12">
+                            {% if temp.show_title%}
                             <div class="slider-text">
                                 <h3>{{v.title}}</h3>
+                                <p>{{v.info}}</p>
                                 <a href="{{v.url}}" class="btn btn-info">LEARN MORE</a>
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -36,17 +46,19 @@
 {% endif %}
 {% endmacro %}
 
-{% macro product(data,bgcolor) -%}
+{% macro product(data,temp,param) -%}
 {% if data %}
 <!-- product start -->
 <div class="section  clearfix object-non-visible animated object-visible fadeInUpSmall"
-    style="background-color:{{bgcolor}}" data-animation-effect="fadeInUpSmall" data-effect-delay="300">
+    style="background-color:{{temp.bgcolor}}" data-animation-effect="fadeInUpSmall" data-effect-delay="300">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
+                {% if temp.show_title%}
                 <h1 class="text-center title">{{data.name}}</h1>
                 <div class="separator"></div>
-                <p class="text-center">{{data.info}}</p>
+                <p class="text-center lead">{{data.info}}</p>
+                {% endif %}
             </div>
             <div class="col-md-12 hidden-xs form-group">
                 <div class="filters margin-bottom-clear">
@@ -61,18 +73,17 @@
             <div class="col-md-12 isotope-container grid-space-20" style="display: block; position: relative;">
                 {% for v in data.sub_data.items %}
                 <div class="col-sm-6 col-md-3 isotope-item web-design">
-                    <div class="image-box" onClick="window.location.href='{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}'">
+                    <div class="image-box">
                         <div class="overlay-container">
                             <img src="{{v.cover}}" alt="{{v.title}}" style="min-height:210px;">
-                            <a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}" class="overlay small">
-                            </a>
+                            <a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}" class="overlay"></a>
                         </div>
                         <a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}"
                             class="btn btn-light-gray btn-block">{{v.title}}</a>
                     </div>
                 </div>
                 {% endfor %}
-                {{ pagination.page(data.sub_data,"home.index",nav_id=data.id) }}
+                {{ pagination.page(data.sub_data,"home.index",nav_id = param.nav_id,cate_id = param.cate_id,content_id = param.content_id) }}
             </div>
             <!-- portfolio items end -->
         </div>
@@ -83,9 +94,9 @@
 {% endif %}
 {% endmacro %}
 
-{% macro search(data,bgcolor) -%}
+{% macro search(data,temp,param) -%}
 <!-- search start -->
-<div class="section text-muted clearfix" style="background-color:{{bgcolor}}">
+<div class="section text-muted clearfix" style="background-color:{{temp.bgcolor}}">
     <div class="container">
         <div class="col-md-8 hidden-xs">
             <div class="filters margin-bottom-clear">
@@ -110,7 +121,7 @@
 <!-- search end -->
 {% endmacro %}
 
-{% macro ad(data,bgcolor) -%}
+{% macro ad(data,temp,param) -%}
 {% if data %}
 <!-- ad start -->
 <section class="main-container parallax dark-translucent-bg" style="background-image: url('{{data[0].img}}')">
@@ -119,6 +130,7 @@
     <div class="main">
         <div class="container">
             <div class="row">
+                {% if temp.show_title%}
                 <div class="col-md-8">
                     <h1 class="title">{{data[0].title}}</h1>
                     <div class="separator-2"></div>
@@ -129,9 +141,11 @@
                         <a href="{{data[0].url}}" class="btn btn-default btn-lg">Learn More</a>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
+   
     <!-- main end -->
 </section>
 <!--ad end -->
@@ -139,16 +153,17 @@
 {% endmacro %}
 
 
-{% macro about(data,bgcolor) -%}
+{% macro about(data,temp,param) -%}
 {% if data %}
-<div class="section clearfix" style="background-color:{{bgcolor}}">
+<div class="section clearfix" style="background-color:{{temp.bgcolor}}">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
+                {% if temp.show_title%}
                 <h1 class="text-center">{{data.name}}</h1>
                 <div class="separator"></div>
                 <p class="lead text-center">{{data.info}}</p>
-                <br>
+                {% endif%}
                 <div class="row">
                     <div class="col-md-6">
                         <div class="row">
@@ -197,15 +212,17 @@
 {% endif %}
 {% endmacro %}
 
-{% macro icon_box(data,bgcolor) -%}
+{% macro icon_box(data,temp,param) -%}
 {% if data %}
-<div class="section" style="background-color:{{bgcolor}}">
+<div class="section" style="background-color:{{temp.bgcolor}}">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
+                {% if temp.show_title%}
                 <h2>{{data.name}}</h2>
                 <div class="separator-2"></div>
                 <p>{{data.info}}</p>
+                {% endif %}
                 <div class="row">
                     {% for v in data.sub_category %}
                     <div class="col-sm-2">
@@ -227,25 +244,27 @@
 
 
 
-{% macro services(data,bgcolor) -%}
+{% macro img_box(data,temp,param) -%}
 {% if data %}
-<div class="section clearfix" style="background-color:{{bgcolor}}">
+<div class="section clearfix" style="background-color:{{temp.bgcolor}}">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
+                {% if temp.show_title%}
                 <h2>{{data.name}}</h2>
                 <div class="separator-2"></div>
                 <p>{{data.info}}</p>
+                {% endif %}
                 <div class="owl-carousel carousel owl-theme">
                     {% for v in data.sub_data.items %}
                     <div class="item image-box" data-animation-effect="fadeInLeft" data-effect-delay="300" style="max-height:198px;">
                         <div class="overlay-container">
                             <img src="{{v.cover}}" alt="{{v.title}}">
-                            <a href="{{v.cover}}" class="popup-img overlay small">
-                                <i class="fa fa-search"></i>
+                            <a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}" class="warp-mask">
                                 <span>{{v.title}}</span>
                             </a>
                         </div>
+                        
                     </div>
                     {% endfor %}
                 </div>
@@ -254,4 +273,24 @@
     </div>
 </div>
 {% endif %}
+{% endmacro %}
+
+{% macro cate_banner(data,temp,param) -%}
+<!-- product_banner start -->
+<div class="section parallax dark-translucent-bg" style=" background-image: url('{{data.cover}}');">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <ol class="breadcrumb breadcrumb-banner">
+                        <li><i class="fa fa-home pr-10"></i><a href="{{url_for('home.index')}}">Home</a></li>
+                        <li class="active">{{data.name}}</li>
+                    </ol>
+                    <div class="separator-2"></div>
+                    {{data.info | safe}}
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- product_banner end -->
 {% endmacro %}

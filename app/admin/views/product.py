@@ -3,7 +3,6 @@
 __author__ = 'Allen xu'
 from flask import  request,jsonify,render_template
 from flask_login import login_required
-
 from app.admin.forms import ProductForm
 from app.admin.views.base import op_log,auth_required
 from app.expand.utils import object_to_dict,build_tree
