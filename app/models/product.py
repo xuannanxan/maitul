@@ -14,6 +14,7 @@ class Product(Base):
     cover = db.Column(db.String(255))
     pictures = db.Column(db.Text)
     price = db.Column(db.Float,default=0)
+    keywords = db.Column(db.String(200))
     description = db.Column(db.String(255))# 用于seo的描述信息
     info = db.Column(db.Text)
     content = db.Column(db.Text)

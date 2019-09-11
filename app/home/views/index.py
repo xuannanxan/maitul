@@ -13,55 +13,53 @@ from . import home,seo_data,cache,getTemplate,getCategory,getTemplates,getTag
 @home.route("/<int:nav_id>/<int:cate_id>/<int:content_id>", methods=['GET'])
 #@cache.cached(key_prefix='index')#设置一个key_prefix来作为标记,调用cache.delete('index')来删除缓存来保证用户访问到的内容是最新的
 def index(nav_id=None,cate_id=None,content_id=None):
-    #  #广告
-    # ad_sql = '''
-    #     SELECT ad.title,ad.info,ad.img,ad.url,adspace.name,adspace.ename
-    #     FROM ad LEFT JOIN adspace on ad.space_id = adspace.id
-    #     WHERE ad.is_del = 0
-    #     ORDER BY ad.sort DESC
-    # '''
-    # ads = Crud.auto_commit(ad_sql)
-    # ad_data = {}
-    # for v in ads.fetchall():
-    #     if v.ename in ad_data:
-    #         ad_data[v.ename] = ad_data[v.ename]+[v]
-    #     else:
-    #         ad_data[v.ename] = [v]
-        # 页码
+    # 页码
     page,artpage = 1,1
+    nav_data,cate_data,content_data = {'id':nav_id},{'id':cate_id},{'id':content_id}
+    category_data = getCategory()
+    all_templates = getTemplates()
     if request.args.get('page'):
         page = int(request.args.get('page'))   
     if request.args.get('artpage'):
-        page = int(request.args.get('artpage'))     
+        page = int(request.args.get('artpage'))   
+    if nav_id:
+        nav_data = [v for v in category_data if v.id == nav_id][0]
+        seo_data.description = nav_data.info
+        seo_data.keywords = nav_data.keywords
+        seo_data.title = nav_data.name
+    if cate_id:
+        cate_data = [v for v in category_data if v.id == cate_id][0]
+        seo_data.description = cate_data.info
+        seo_data.keywords = cate_data.keywords
+        seo_data.title = cate_data.name
     param = {
-        'nav_id':nav_id,
-        'cate_id':cate_id,
-        'content_id':content_id
+        'nav_data':nav_data,
+        'cate_data':cate_data,
+        'content_data':content_data
     }
-    all_templates = getTemplates()
     if nav_id:
         templates_data = [v for v in all_templates if v.nav_id==nav_id]
     else:
         templates_data = [v for v in all_templates if v.nav_id==0]
     templates = []
-    category_data = getCategory()
     for v in templates_data:
         temp_data,data = {},{}
         temp_data['temp'] = object_to_dict(v)
         sub_category,cates = [],[]
         for val in category_data:   
-            if v.data_id:
-                # 如果分配了数据当前栏目的数据就是分配的栏目
+            if v.data_id :
                 if val.id == v.data_id:
+                    # 如果分配了数据当前栏目的数据就是分配的栏目
                     data = object_to_dict(val)
-                # 当前栏目的子栏目
-                if val.pid == v.data_id:
-                    sub_category.append(val)
-                data['sub_category'] = sub_category
-            # 如果没有数据，赋值菜单数据
-            else:
-                if val.id == v.nav_id:
-                    data = object_to_dict(val)
+                if v.relation:
+                    # 如果是关联数据，直接取当前栏目的子栏目
+                    if val.pid == nav_id:
+                        sub_category.append(val)
+                else:
+                    # 当前栏目的子栏目
+                    if val.pid == v.data_id:
+                        sub_category.append(val)
+        data['sub_category'] = sub_category
         #如果是栏目数据
         if v.data_type == 1: 
             if cate_id:
@@ -74,10 +72,16 @@ def index(nav_id=None,cate_id=None,content_id=None):
                 cates = cates+[cate.id for cate in sub_category]        
             # 如果是产品
             if data['type'] == 1:
-                sub_data = Crud.search_data_paginate(Product,Product.category_id.in_(cates),Product.sort.desc(),page,v.data_num)
+                if v.relation:
+                    sub_data = Crud.search_data_paginate(Product,Product.relation_id.in_(cates),Product.sort.desc(),page,v.data_num)
+                else:
+                    sub_data = Crud.search_data_paginate(Product,Product.category_id.in_(cates),Product.sort.desc(),page,v.data_num)
             # 如果是文章
             if data['type'] == 2:
-                sub_data = Crud.search_data_paginate(Article,Article.category_id.in_(cates),Article.sort.desc(),artpage,v.data_num)
+                if v.relation:
+                    sub_data = Crud.search_data_paginate(Article,Article.relation_id.in_(cates),Article.sort.desc(),artpage,v.data_num)
+                else:
+                    sub_data = Crud.search_data_paginate(Article,Article.category_id.in_(cates),Article.sort.desc(),artpage,v.data_num)
             data['sub_data'] = sub_data
         elif v.data_type == 2:
             data = Crud.search_data(Ad,Ad.space_id == v.data_id,Ad.sort.desc(),v.data_num)

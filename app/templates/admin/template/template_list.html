@@ -20,17 +20,15 @@
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="{% if nav_id == 0 %}active{% endif %}">
                         <a href="{{ url_for('admin.template_list',nav_id = 0) }}">
-                            <span>Home</span>
+                            <i class="fa fa-home"></i> <span> Home</span>
                         </a>
                     </li>
                     {% for nav in nav_tree %}
-                    {% if nav.is_nav == 1 %}
                     <li class="{% if nav.id == nav_id %}active{% endif %}">
                         <a href="{{ url_for('admin.template_list',nav_id = nav.id) }}">
                             <i class="fa {{ nav.icon }}"></i> <span>{{ nav.name }}</span>
                         </a>
                     </li>
-                    {% endif %}
                     {% endfor %}
                 </ul>
             </div>
@@ -113,6 +111,7 @@
                     $("#template_edit_form select[name=data_type]").val(data.data_type).trigger('change');
                     $("#template_edit_form select[name=pagination]").val(data.pagination).trigger('change');
                     $("#template_edit_form input[name=data_num]").val(data.data_num);
+                    $("#template_edit_form select[name=relation]").val(data.relation).trigger('change');
                     $("#template_edit_form select[name=show_title]").val(data.show_title).trigger('change');
                     $("#template_edit_form input[name=sort]").val(data.sort);
                     $('#template_edit').modal('show')

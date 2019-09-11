@@ -8,6 +8,7 @@ class Article(Base):
     __tablename__ = "article"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100),nullable=False)
+    keywords = db.Column(db.String(200))
     description = db.Column(db.String(255))# 用于seo的描述信息
     info = db.Column(db.Text)
     content = db.Column(db.Text)

@@ -16,7 +16,8 @@ class Template(Base):
     data_id = db.Column(db.Integer)  # 数据id，栏目数据就选择栏目，广告数据就选择广告位
     data_num = db.Column(db.Integer)  # 数据数量，如果分页就是每页数量
     pagination = db.Column(db.SmallInteger, default=0) # 是否分页，0不分页，1分页
-    show_title = db.Column(db.SmallInteger, default=0) # 是否显示标题，0不显示，1显示
+    show_title = db.Column(db.SmallInteger, default=1) # 是否显示标题，0不显示，1显示
+    relation = db.Column(db.SmallInteger, default=0) # 是否取关联数据，0不取，1取关联数据
     sort = db.Column(db.Integer, default=0)  # 排序
     
     def __repr__(self):

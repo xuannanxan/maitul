@@ -201,13 +201,13 @@
                                     <!-- Collect the nav links, forms, and other content for toggling -->
                                     <div class="collapse navbar-collapse" id="navbar-collapse-1">
                                         <ul class="nav navbar-nav navbar-right">
-                                            <li class="{% if top_nav == ''%}active{% endif %}">
+                                            <li class="{% if not param.nav_data.id %}active{% endif %}">
                                                 <a href="{{url_for('home.index')}}">Home</a>
                                             </li>
                                             <!-- nav start -->
                                             {% for nav in navs%}
                                             {% if nav.children %}
-                                            <li class="dropdown mega-menu {% if top_nav.id == nav.id%}active{% endif %}">
+                                            <li class="dropdown mega-menu {% if param.nav_data.id == nav.id%}active{% endif %}">
                                                 <a href="
                                                 {% if nav.type ==3 %}
                                                 {{nav.url}}
@@ -231,7 +231,7 @@
                                                                         <ul class="menu">
                                                                             {% for nav_child in nav.children%}
                                                                             <li
-                                                                            {% if  active_nav.id == nav_child.id %}
+                                                                            {% if  param.cate_data.id == nav_child.id %}
                                                                             class="active"
                                                                             {% endif %}
                                                                             >
@@ -254,7 +254,7 @@
                                                 </ul>
                                             </li>
                                             {% else %}
-                                            <li class="{% if top_nav.id == nav.id%}active{% endif %}">
+                                            <li class="{% if param.nav_data.id == nav.id%}active{% endif %}">
                                                 <a href="
                                                 {% if nav.type ==3 %}
                                                 {{nav.url}}
@@ -333,7 +333,7 @@
                                         <ul class="nav nav-pills nav-stacked">
                                             <li><a href="{{url_for('home.index')}}">Home</a></li>
                                             {% for nav in navs%}
-                                            <li><a href="{{nav.url+'/'+ nav.id | string}}">{{nav.name}}</a></li>
+                                            <li><a href="{{url_for('home.index',nav_id=nav.id)}}">{{nav.name}}</a></li>
                                             {% endfor %}
                                         </ul>
                                     </nav>
@@ -400,7 +400,7 @@
                                 <ul class="nav navbar-nav">
                                     <li><a href="{{url_for('home.index')}}">Home</a></li>
                                     {% for nav in navs%}
-                                    <li><a href="{{nav.url+'/'+ nav.id | string}}">{{nav.name}}</a></li>
+                                    <li><a href="{{url_for('home.index',nav_id=nav.id)}}">{{nav.name}}</a></li>
                                     {% endfor %}
                                 </ul>
                             </div>

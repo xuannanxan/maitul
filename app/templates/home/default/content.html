@@ -26,7 +26,9 @@
                             {% if temp.show_title%}
                             <div class="slider-text">
                                 <h3>{{v.title}}</h3>
+                                {% if v.info %}
                                 <p>{{v.info}}</p>
+                                {% endif %}
                                 <a href="{{v.url}}" class="btn btn-info">LEARN MORE</a>
                             </div>
                             {% endif %}
@@ -60,15 +62,38 @@
                 <p class="text-center lead">{{data.info}}</p>
                 {% endif %}
             </div>
+            {% if temp.relation%}
+            <div class="row">
+                {% for v in data.sub_category %}
+                <div class="col-sm-2">
+                    <div class="box-style-1 animated object-visible fadeInUpSmall
+                    {% if v.id == param.cate_data.id %}
+                    box-active
+                    {% endif %}
+                    "
+                        data-animation-effect="fadeInUpSmall" data-effect-delay="0"
+                        onClick="window.location.href='{{url_for('home.index',nav_id=param.nav_data.id,cate_id=v.id)}}'">
+                        <i class="fa {{v.icon}}"></i>
+                        <p>{{v.name}}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
             <div class="col-md-12 hidden-xs form-group">
                 <div class="filters margin-bottom-clear">
                     <ul class="nav nav-pills">
                         {% for v in data.sub_category %}
-                        <li style="background-color: #f1f1f1"><a href="{{url_for('home.index',nav_id = data.id,cate_id = v.id)}}">{{v.name}}</a></li>
+                        <li style="background-color: #f1f1f1"
+                        {% if param.cate_data.id == v.id%}
+                        class="active"
+                        {% endif %}
+                        ><a href="{{url_for('home.index',nav_id = data.id,cate_id = v.id)}}">{{v.name}}</a></li>
                         {% endfor %}
                     </ul>
                 </div>
             </div>
+            {% endif %}
             <!-- portfolio items start -->
             <div class="col-md-12 isotope-container grid-space-20" style="display: block; position: relative;">
                 {% for v in data.sub_data.items %}
@@ -83,7 +108,7 @@
                     </div>
                 </div>
                 {% endfor %}
-                {{ pagination.page(data.sub_data,"home.index",nav_id = param.nav_id,cate_id = param.cate_id,content_id = param.content_id) }}
+                {{ pagination.page(data.sub_data,"home.index",nav_id = param.nav_data.id,cate_id = param.cate_data.id,content_id = param.content_data.id) }}
             </div>
             <!-- portfolio items end -->
         </div>
@@ -223,7 +248,7 @@
                 <div class="separator-2"></div>
                 <p>{{data.info}}</p>
                 {% endif %}
-                <div class="row">
+                <div class="row" style="margin-bottom: 10px;">
                     {% for v in data.sub_category %}
                     <div class="col-sm-2">
                         <div class="box-style-1 animated object-visible fadeInUpSmall"
@@ -277,13 +302,28 @@
 
 {% macro cate_banner(data,temp,param) -%}
 <!-- product_banner start -->
-<div class="section parallax dark-translucent-bg" style=" background-image: url('{{data.cover}}');">
+<div class="section parallax dark-translucent-bg" 
+{% if param.cate_data.id %}
+style=" background-image: url('{{param.cate_data.cover}}');"
+{% else %}
+style=" background-image: url('{{param.nav_data.cover}}');"
+{% endif %}
+>
         <div class="container">
             <div class="row">
                 <div class="col-md-8">
                     <ol class="breadcrumb breadcrumb-banner">
                         <li><i class="fa fa-home pr-10"></i><a href="{{url_for('home.index')}}">Home</a></li>
-                        <li class="active">{{data.name}}</li>
+                        {% if param.nav_data.id %}
+                            {% if param.cate_data.id %}
+                            <li ><a href="{{url_for('home.index',nav_id = param.nav_data.id)}}">{{param.nav_data.name}}</a></li>
+                            {% else %}
+                            <li class="active">{{param.nav_data.name}}</li>
+                            {% endif %}
+                        {% endif %}
+                        {% if param.cate_data.id %}
+                        <li class="active">{{param.cate_data.name}}</li>
+                        {% endif %}
                     </ol>
                     <div class="separator-2"></div>
                     {{data.info | safe}}

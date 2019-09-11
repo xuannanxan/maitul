@@ -3306,15 +3306,6 @@ a.overlay.small i {
 	transition: all 0.2s ease-out;
 }
 
-/* first level active menu items on hover/focus */
-.navbar-default .navbar-nav > .active > a,
-.navbar-default .navbar-nav > .active > a:focus {
-	color: #e84c3d;
-	background-color: transparent;
-}
-.navbar-default .navbar-nav > .active > a:hover {
-	background-color: transparent;
-}
 
 /* first level active menu items when opened */
 .main-navigation .navbar-nav > .open > a,
@@ -3643,14 +3634,7 @@ a.overlay.small i {
 		box-shadow: none;
 	}
 
-	/* first level items hover and focus states */
-	.navbar-default .navbar-nav > li > a:hover,
-	.navbar-default .navbar-nav > li > a:focus,
-	.navbar-default .navbar-nav > .active > a:hover,
-	.navbar-default .navbar-nav > .active > a:focus {
-		color: #e84c3d;
-		background-color: #fff;
-	}
+	
 
 	/* second level menu */
 	.navbar-default .navbar-nav .open .dropdown-menu {
@@ -3816,7 +3800,7 @@ a.overlay.small i {
 }
 .site-slogan {
 	font-size: 13px;
-	font-style: italic;
+	/* font-style: italic; */
 	color: #999999;
 }
 .main-container .site-slogan {
@@ -3910,14 +3894,14 @@ a.overlay.small i {
 }
 .box-style-1 {
 	text-align: center;
-	padding: 20px;
-	margin: 20px 0;
+	margin-bottom: 10px;
+	padding: 10px;
 }
 .grid-space-10 .box-style-1 {
 	margin: 10px 0;
 }
 .box-style-1 i {
-	font-size: 90px;
+	font-size: 60px;
 	margin: 15px 0 5px;
 	text-align: center;
 }
@@ -5531,7 +5515,14 @@ a.overlay i {
 	color: #38c7f4;
 	background-color: transparent;
 }
-
+.navbar-default .navbar-nav>.active>a:hover{
+	color: #38c7f4;
+	background-color: transparent;
+}
+.navbar-default .navbar-nav > li > a:hover{
+	color: #38c7f4;
+	background-color: transparent;
+}
 .main-navigation .navbar-nav > .open > a,
 .main-navigation .navbar-nav > .open > a:hover,
 .main-navigation .navbar-nav > .open > a:focus {
@@ -5599,7 +5590,7 @@ a.overlay i {
 	.navbar-default .navbar-nav > .active > a:hover,
 	.navbar-default .navbar-nav > .active > a:focus {
 		color: #38c7f4;
-		background-color: #fff;
+		background-color: transparent;
 	}
 
 	/* second level items on hover/focus */
@@ -5635,7 +5626,15 @@ a.overlay i {
 .box-style-1:not(.team-member):hover i,
 .box-style-1:not(.team-member):hover p {
 	color: #38c7f4;
+	cursor: pointer;
 }
+
+.box-active:not(.team-member) i,
+.box-active:not(.team-member) p {
+	color: #38c7f4;
+	cursor: pointer;
+}
+
 .box-style-1.default-bg:hover i,
 .box-style-1.dark-bg:hover i {
 	color: inherit;
