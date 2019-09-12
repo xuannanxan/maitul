@@ -345,3 +345,11 @@ function user_login() {
     });
 
 }
+
+function getColor(){
+	colors = ['#660099','#096000','#0021CC','#ff9933','#cc0033','#7e0023','#999', '#00a5bb','#38c7f4','#003366', '#006699', '#4cabce', '#e5323e']
+	var x = colors.length-1;
+    var y = 0;
+	var rand = parseInt(Math.random() * (x - y + 1) + y);
+	return colors[rand]
+}

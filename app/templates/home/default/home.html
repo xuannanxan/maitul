@@ -431,6 +431,10 @@
 <script type="text/javascript" src="{{ url_for('static',filename = 'home/js/template.js')}}"></script>
 <script>
     enterSearch('input[name=productsSearch]',$('input[name=productsSearch]').attr('data-url'))
+    $(".product_tag").find('a').each(function(){
+    $(this).css({'background-color':getColor()});
+  });
+    
 </script>
 </body>
 </html>

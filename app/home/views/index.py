@@ -2,9 +2,9 @@
 # Created by xuannan on 2019-01-01.
 #从当前模块__init__导入蓝图对象
 from flask import render_template,g,request
-from app.expand.utils import object_to_dict
+from app.expand.utils import object_to_dict,Pagination
 from app.models import Crud,Product,Category,Template,Ad,Article
-from . import home,seo_data,cache,getTemplate,getCategory,getTemplates,getTag
+from . import home,seo_data,cache,getWebTemplate,getCategory,getTemplates,getTag
 
 
 @home.route("/", methods=['GET'])
@@ -21,7 +21,7 @@ def index(nav_id=None,cate_id=None,content_id=None):
     if request.args.get('page'):
         page = int(request.args.get('page'))   
     if request.args.get('artpage'):
-        page = int(request.args.get('artpage'))   
+        artpage = int(request.args.get('artpage'))   
     if nav_id:
         nav_data = [v for v in category_data if v.id == nav_id][0]
         seo_data.description = nav_data.info
@@ -75,22 +75,37 @@ def index(nav_id=None,cate_id=None,content_id=None):
                 if v.relation:
                     sub_data = Crud.search_data_paginate(Product,Product.relation_id.in_(cates),Product.sort.desc(),page,v.data_num)
                 else:
-                    sub_data = Crud.search_data_paginate(Product,Product.category_id.in_(cates),Product.sort.desc(),page,v.data_num)
+                    sql='''
+                    SELECT p.create_time,p.id,p.cover,p.price, p.click,p.category_id,GROUP_CONCAT(t.id,':',t.name SEPARATOR ',') as tags
+                    FROM product as p
+                        left join tag_relation as r on p.id = r.relation_id
+                        left join tag as t on t.id = r.tag_id
+                    WHERE p.category_id in (%s)
+                    GROUP BY p.id
+                    ORDER BY p.sort DESC
+                    LIMIT %d,%d;
+                    '''%((','.join([str(v) for v in  cates])),(page-1)*v.data_num+1,v.data_num)
+                    sql_data = Crud.auto_commit(sql)
+                    if sql_data:
+                        count = (Crud.auto_commit("SELECT FOUND_ROWS() as count;")).fetchall()[0].count
+                        sub_data = Pagination(page,v.data_num,count,sql_data.fetchall())
+                   
+                    #sub_data = Crud.search_data_paginate(Product,Product.category_id.in_(cates),Product.sort.desc(),page,v.data_num)
             # 如果是文章
             if data['type'] == 2:
                 if v.relation:
                     sub_data = Crud.search_data_paginate(Article,Article.relation_id.in_(cates),Article.sort.desc(),artpage,v.data_num)
                 else:
+                    
                     sub_data = Crud.search_data_paginate(Article,Article.category_id.in_(cates),Article.sort.desc(),artpage,v.data_num)
             data['sub_data'] = sub_data
         elif v.data_type == 2:
-            data = Crud.search_data(Ad,Ad.space_id == v.data_id,Ad.sort.desc(),v.data_num)
-        elif v.data_type == 3:
-            data = getTag()
+            data['sub_data'] = Crud.search_data(Ad,Ad.space_id == v.data_id,Ad.sort.desc(),v.data_num)
+        data['tags'] = getTag()
         temp_data['data'] = data
         # 全部页面数据压入数组
         templates.append(temp_data)
-    return render_template("home/%s/home.html"%getTemplate(),
+    return render_template("home/%s/home.html"%getWebTemplate(),
         seo_data = seo_data,
         templates = templates,
         param = param

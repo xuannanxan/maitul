@@ -6149,3 +6149,44 @@ a.overlay i {
 	color: #38c7f4;
 	background-color: rgba(0,0, 0, 0.65);
 }
+
+.product_tag{
+	position: absolute;
+	right: 11px;
+	top: 5px;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	-webkit-justify-content: center;
+	justify-content: center;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-ms-flex-direction: column;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	visibility: hidden;
+	text-align: right;
+	opacity: 0;
+	
+}
+.product_tag >li{
+	position:relative;
+	margin-top: 5px;
+	display:inline-block;
+}
+.product_tag >li >a{
+	padding: 1px 5px;
+	font-size: 14px;
+	color: white;
+	text-decoration:none;
+	cursor: pointer;
+	border-radius: 10px 0 0 10px ;
+}
+
+.image-box:hover .product_tag{
+    opacity: 1;
+    visibility: visible;
+}

@@ -2,6 +2,7 @@
 <!-- banner 带滑动效果的banner大图 -->
 <!-- search 带标签快捷搜索的搜索条 -->
 <!-- product 带分类导航的产品，可开关分页 -->
+<!-- article 带分类导航的文字列表，可开关分页 -->
 <!-- ad 广告，单张广告图片 -->
 <!-- about 图文+文字列表 -->
 <!-- icon_box 图标列表 -->
@@ -18,7 +19,7 @@
         <!-- slider revolution start -->
         <!-- ================ -->
         <div class="owl-carousel home-slider-carousel">
-            {% for v in data %}
+            {% for v in (data.sub_data) %}
             <div class="single-slide-item" style="background-image: url('{{v.img}}')">
                 <div class="container">
                     <div class="row">
@@ -105,6 +106,13 @@
                         </div>
                         <a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}"
                             class="btn btn-light-gray btn-block">{{v.title}}</a>
+                        <div class="product_tag">
+                            {% for tag in data.tags%}
+                            
+                            <li><a>{{tag.name}}</a></li>
+                           
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
@@ -119,6 +127,70 @@
 {% endif %}
 {% endmacro %}
 
+{% macro article(data,temp,param) -%}
+{% if data %}
+<!-- article start -->
+<div class="section  clearfix object-non-visible animated object-visible fadeInUpSmall"
+    style="background-color:{{temp.bgcolor}}" data-animation-effect="fadeInUpSmall" data-effect-delay="300">
+    <div class="container">
+        <div class="row">
+                <div class="col-md-12">
+                        {% if temp.show_title%}
+                        <h1 class="text-center title">{{data.name}}</h1>
+                        <div class="separator"></div>
+                        <p class="text-center lead">{{data.info}}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-12 hidden-xs form-group">
+                            <div class="filters margin-bottom-clear">
+                                <ul class="nav nav-pills">
+                                    {% for v in data.sub_category %}
+                                    <li style="background-color: #f1f1f1"
+                                    {% if param.cate_data.id == v.id%}
+                                    class="active"
+                                    {% endif %}
+                                    ><a href="{{url_for('home.index',nav_id = data.id,cate_id = v.id)}}">{{v.name}}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+           <div class="main col-md-12">
+               {% for v in data.sub_data.items %}
+							<article class="clearfix blogpost object-non-visible animated object-visible fadeInUpSmall" data-animation-effect="fadeInUpSmall" data-effect-delay="200">
+								<div class="blogpost-body">
+									<div class="post-info">
+										<span class="day">{{v.create_time.strftime('%d')}}</span>
+										<span class="month">{{v.create_time.strftime('%m/%y')}}</span>
+									</div>
+									<div class="blogpost-content">
+										<header>
+											<h2 class="title"><a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}">{{v.title}}</a></h2>
+										</header>
+										<p>{{v.info|safe}}</p>
+									</div>
+								</div>
+								<footer class="clearfix">
+									<ul class="links pull-left">
+										<li><i class="fa fa-tags pr-5"></i>
+                                            {% for v in v.tags %}
+                                            <a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}"> {{v.name}} </a>
+                                            {% endfor %}
+                                        </li>
+									</ul>
+									<a class="pull-right link" href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}"><span>Read more</span></a>
+								</footer>
+							</article>
+               {% endfor%}
+               {{ pagination.page(data.sub_data,"home.index",nav_id = param.nav_data.id,cate_id = param.cate_data.id,content_id = param.content_data.id) }}
+						</div>
+        </div>
+    </div>
+
+</div>
+{% endif %}
+{% endmacro %}
+
+
 {% macro search(data,temp,param) -%}
 <!-- search start -->
 <div class="section text-muted clearfix" style="background-color:{{temp.bgcolor}}">
@@ -126,7 +198,7 @@
         <div class="col-md-8 hidden-xs">
             <div class="filters margin-bottom-clear">
                 <ul class="nav nav-pills">
-                    {% for v in data %}
+                    {% for v in data.tags %}
                     <li><a href="{{url_for('home.index',nav_id=v.id)}}">{{v.name}}</a></li>
                     {% endfor %}
                 </ul>
@@ -149,7 +221,7 @@
 {% macro ad(data,temp,param) -%}
 {% if data %}
 <!-- ad start -->
-<section class="main-container parallax dark-translucent-bg" style="background-image: url('{{data[0].img}}')">
+<section class="main-container parallax dark-translucent-bg" style="background-image: url('{{(data.sub_data)[0].img}}')">
     <!-- main start -->
     <!-- ================ -->
     <div class="main">
@@ -157,13 +229,13 @@
             <div class="row">
                 {% if temp.show_title%}
                 <div class="col-md-8">
-                    <h1 class="title">{{data[0].title}}</h1>
+                    <h1 class="title">{{(data.sub_data)[0].title}}</h1>
                     <div class="separator-2"></div>
-                    <p>{{data[0].info}}</p>
+                    <p>{{(data.sub_data)[0].info}}</p>
                 </div>
                 <div class="col-md-4">
                     <div class="text-center">
-                        <a href="{{data[0].url}}" class="btn btn-default btn-lg">Learn More</a>
+                        <a href="{{(data.sub_data)[0].url}}" class="btn btn-default btn-lg">Learn More</a>
                     </div>
                 </div>
                 {% endif %}
@@ -334,3 +406,5 @@ style=" background-image: url('{{param.nav_data.cover}}');"
     </div>
     <!-- product_banner end -->
 {% endmacro %}
+
+

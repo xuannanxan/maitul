@@ -40,7 +40,7 @@ def admin_log(page=None):
         WHERE adminlog.is_del = 0 
         ORDER BY adminlog.create_time DESC
         LIMIT %d,%d
-    '''%(page*10-9,10)
+    '''%((page-1)*10+1,10)
     data = Crud.auto_commit(sql)
     count = Adminlog.query.filter(Adminlog.is_del == 0).count()
     page_data = Pagination(page,10,count,data.fetchall())

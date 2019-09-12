@@ -102,7 +102,7 @@ def getCategory():
 
 
 @cache.cached(timeout=600, key_prefix='template')
-def getTemplate():
+def getWebTemplate():
     '''
     网站模板配置
     '''
@@ -125,6 +125,6 @@ def getTemplates():
 @cache.cached(timeout=600, key_prefix='tags')
 def getTag():
     '''
-    获取网站模板
+    获取标签信息
     '''
     return Crud.get_data(Tag,Tag.sort.desc())
