@@ -21,11 +21,10 @@ def operation_log(page=None):
         ORDER BY operationlog.create_time DESC
         LIMIT %d,%d
     '''%(page*10-9,10)
-    data = Crud.auto_commit(sql)
+    data = Crud.auto_select(sql)
     count = Operationlog.query.filter(Operationlog.is_del == 0).count()
     page_data = Pagination(page,10,count,data.fetchall())
     return render_template("admin/log/operation_log.html", page_data=page_data)
-
 
 # 管理员登录日志
 @admin.route("/admin/log/<int:page>", methods=["GET"])
@@ -41,7 +40,7 @@ def admin_log(page=None):
         ORDER BY adminlog.create_time DESC
         LIMIT %d,%d
     '''%((page-1)*10+1,10)
-    data = Crud.auto_commit(sql)
+    data = Crud.auto_select(sql)
     count = Adminlog.query.filter(Adminlog.is_del == 0).count()
     page_data = Pagination(page,10,count,data.fetchall())
  

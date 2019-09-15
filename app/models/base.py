@@ -43,6 +43,24 @@ class Crud:
             db.session.rollback()
             current_app.logger.info(e)
             return False
+
+
+    def auto_select(sql):
+        """
+        提交sql语句
+        :sql :
+        :return: 提示信息
+        """
+        try:
+            data = db.session.execute(sql)
+            return data
+        except Exception as e:
+            db.session.rollback()
+            current_app.logger.info(e)
+            return False
+
+
+
     def easy_add(data):
         try:
             db.session.add(data)

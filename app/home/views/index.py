@@ -75,8 +75,9 @@ def index(nav_id=None,cate_id=None,content_id=None):
                 if v.relation:
                     sub_data = Crud.search_data_paginate(Product,Product.relation_id.in_(cates),Product.sort.desc(),page,v.data_num)
                 else:
+                    count = Product.query.filter(Product.is_del == 0,Product.category_id.in_(cates)).count()
                     sql='''
-                    SELECT p.create_time,p.id,p.cover,p.price, p.click,p.category_id,GROUP_CONCAT(t.id,':',t.name SEPARATOR ',') as tags
+                    SELECT p.create_time,p.id,p.cover,p.title,p.price, p.click,p.category_id,GROUP_CONCAT(t.id,':',t.name SEPARATOR ',') as tags
                     FROM product as p
                         left join tag_relation as r on p.id = r.relation_id
                         left join tag as t on t.id = r.tag_id
@@ -85,11 +86,11 @@ def index(nav_id=None,cate_id=None,content_id=None):
                     ORDER BY p.sort DESC
                     LIMIT %d,%d;
                     '''%((','.join([str(v) for v in  cates])),(page-1)*v.data_num+1,v.data_num)
-                    sql_data = Crud.auto_commit(sql)
-                    if sql_data:
-                        count = (Crud.auto_commit("SELECT FOUND_ROWS() as count;")).fetchall()[0].count
-                        sub_data = Pagination(page,v.data_num,count,sql_data.fetchall())
-                   
+                    if count>0:
+                        sql_data = Crud.auto_select(sql)
+                        if sql_data:
+                            sub_data = Pagination(page,v.data_num,count,sql_data.fetchall())
+                            
                     #sub_data = Crud.search_data_paginate(Product,Product.category_id.in_(cates),Product.sort.desc(),page,v.data_num)
             # 如果是文章
             if data['type'] == 2:

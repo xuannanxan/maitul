@@ -86,7 +86,7 @@ def login():
             FROM auth LEFT JOIN role ON FIND_IN_SET(auth.id,role.auths) LEFT JOIN admin ON admin.role_id = role.id
             WHERE admin.id = %i AND auth.is_del = 0
             '''%(current_user.id)
-            auth_data = Crud.auto_commit(sql)
+            auth_data = Crud.auto_select(sql)
             session['auth_urls'] = [v.url for v in auth_data.fetchall()]
             return redirect(request.args.get("next") or url_for("admin.index"))
         else:
