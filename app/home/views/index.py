@@ -19,9 +19,7 @@ def index(nav_id=None,cate_id=None,content_id=None):
     category_data = getCategory()
     all_templates = getTemplates()
     if request.args.get('page'):
-        page = int(request.args.get('page'))   
-    if request.args.get('artpage'):
-        artpage = int(request.args.get('artpage'))   
+        page = int(request.args.get('page'))     
     if nav_id:
         nav_data = [v for v in category_data if v.id == nav_id][0]
         seo_data.description = nav_data.info
@@ -44,6 +42,17 @@ def index(nav_id=None,cate_id=None,content_id=None):
     templates = []
     for v in templates_data:
         temp_data,data = {},{}
+        '''
+        temp_data{
+            temp:模板设置内容
+            data：{当前栏目数据
+                sub_category：子栏目数据 
+                sub_data：子栏目数据 
+                tag:所有标签数据
+            }
+        }
+
+        '''
         temp_data['temp'] = object_to_dict(v)
         sub_category,cates = [],[]
         for val in category_data:   
@@ -72,34 +81,17 @@ def index(nav_id=None,cate_id=None,content_id=None):
                 cates = cates+[cate.id for cate in sub_category]        
             # 如果是产品
             if data['type'] == 1:
-                if v.relation:
-                    sub_data = Crud.search_data_paginate(Product,Product.relation_id.in_(cates),Product.sort.desc(),page,v.data_num)
-                else:
-                    count = Product.query.filter(Product.is_del == 0,Product.category_id.in_(cates)).count()
-                    sql='''
-                    SELECT p.create_time,p.id,p.cover,p.title,p.price, p.click,p.category_id,GROUP_CONCAT(t.id,':',t.name SEPARATOR ',') as tags
-                    FROM product as p
-                        left join tag_relation as r on p.id = r.relation_id
-                        left join tag as t on t.id = r.tag_id
-                    WHERE p.category_id in (%s)
-                    GROUP BY p.id
-                    ORDER BY p.sort DESC
-                    LIMIT %d,%d;
-                    '''%((','.join([str(v) for v in  cates])),(page-1)*v.data_num+1,v.data_num)
-                    if count>0:
-                        sql_data = Crud.auto_select(sql)
-                        if sql_data:
-                            sub_data = Pagination(page,v.data_num,count,sql_data.fetchall())
-                            
-                    #sub_data = Crud.search_data_paginate(Product,Product.category_id.in_(cates),Product.sort.desc(),page,v.data_num)
+                tableName = 'product'
             # 如果是文章
             if data['type'] == 2:
-                if v.relation:
-                    sub_data = Crud.search_data_paginate(Article,Article.relation_id.in_(cates),Article.sort.desc(),artpage,v.data_num)
-                else:
-                    
-                    sub_data = Crud.search_data_paginate(Article,Article.category_id.in_(cates),Article.sort.desc(),artpage,v.data_num)
-            data['sub_data'] = sub_data
+                tableName = 'article'
+            # 如果是关联查询，就是通过   relation_id 进行搜索 
+            if v.relation:
+                selectColumn = 'relation_id'
+            # 如果不是关联查询，就是通过   category_id 进行搜索 
+            else:
+                selectColumn = 'category_id'
+            data['sub_data'] = selectSubData(tableName,selectColumn,cates,page,v.data_num)
         elif v.data_type == 2:
             data['sub_data'] = Crud.search_data(Ad,Ad.space_id == v.data_id,Ad.sort.desc(),v.data_num)
         data['tags'] = getTag()
@@ -112,3 +104,29 @@ def index(nav_id=None,cate_id=None,content_id=None):
         param = param
     )
 
+
+
+def selectSubData(tableName,selectColumn,selectList,page,num):
+    '''
+    tableName:表名
+    selectColumn：筛选的字段
+    selectList：IN查询的数组
+    page:页面
+    num:页面数量
+    '''
+    sql='''
+        SELECT SQL_CALC_FOUND_ROWS p.*,GROUP_CONCAT(t.id SEPARATOR ',') as tags
+        FROM %s as p
+            left join tag_relation as r on p.id = r.relation_id
+            left join tag as t on t.id = r.tag_id
+        WHERE p.%s in (%s)
+        GROUP BY p.id
+        ORDER BY p.sort DESC
+        LIMIT %d,%d;
+        '''%(tableName,selectColumn,(','.join([str(v) for v in  selectList])),(page-1)*num,num)
+    sql_data = Crud.auto_select(sql)
+    count_num = Crud.auto_select("SELECT FOUND_ROWS() as countnum")
+    count = int((count_num.fetchone()).countnum)
+    if sql_data:
+        return Pagination(page,num,count,sql_data.fetchall())
+    return {}

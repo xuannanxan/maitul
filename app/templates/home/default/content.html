@@ -107,11 +107,13 @@
                         <a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}"
                             class="btn btn-light-gray btn-block">{{v.title}}</a>
                         <div class="product_tag">
-                            {% for tag in data.tags%}
-                            
-                            <li><a>{{tag.name}}</a></li>
-                           
-                            {% endfor %}
+                            {% if v.tags %}
+                                {% for tag in data.tags%}
+                                {% if tag.id | string in v.tags.split(',') %}
+                                <li><a>{{tag.name}}</a></li>
+                                {% endif %}
+                                {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -171,10 +173,14 @@
 								</div>
 								<footer class="clearfix">
 									<ul class="links pull-left">
-										<li><i class="fa fa-tags pr-5"></i>
-                                            {% for v in v.tags %}
-                                            <a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}"> {{v.name}} </a>
+                                        <li><i class="fa fa-tags pr-5"></i>
+                                            {% if v.tags %}
+                                            {% for tag in data.tags%}
+                                            {% if tag.id | string in v.tags.split(',') %}
+                                            <a href="#"> {{tag.name}} </a>
+                                            {% endif %}
                                             {% endfor %}
+                                            {% endif %}
                                         </li>
 									</ul>
 									<a class="pull-right link" href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}"><span>Read more</span></a>
