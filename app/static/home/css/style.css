@@ -5675,11 +5675,7 @@ a.overlay i {
 	border: 1px solid #7d7d7d;
 	color: #fff;
 }
-.social-links li a:hover {
-	background-color: transparent;
-	border-color: #17b5e5;
-	color: #17b5e5;
-}
+
 .social-links .dropdown.open>button>i:before {
 	content: "\f00d";
 	color: #38c7f4;
@@ -5757,10 +5753,6 @@ a.overlay i {
 	background: #38c7f4;
 }
 
-.comments-form .form-control{
-	background: #0000000a;
-	color: #CCCCCC;
-}
 
 /* Owl Carousel Nav Style */
 .home-slider-carousel.owl-carousel:hover .owl-nav button {
@@ -6189,4 +6181,14 @@ a.overlay i {
 .image-box:hover .product_tag{
     opacity: 1;
     visibility: visible;
+}
+
+.title >a{
+	text-decoration:none;
+}
+.about >p{
+	padding: 0 20px;
+}
+.no-border >li >a{
+	border: 0px solid #7d7d7d;
 }

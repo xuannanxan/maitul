@@ -219,7 +219,7 @@
                                                 <ul class="dropdown-menu">
                                                     <li>
                                                         <div class="row">
-                                                            <div class="col-lg-4 col-md-3 hidden-sm">
+                                                            <div class="col-lg-4 col-md-3 hidden-sm hidden-xs">
                                                                 <p>{{nav.info}}</p>
                                                                 <img src="{{nav.cover}}" alt="{{nav.name}}">
                                                             </div>
@@ -288,7 +288,7 @@
     {% import "home/default/content.html" as content %}
     
     {% for v in templates%}
-        {{ content[v.temp.template](v.data,v.temp,param) }}
+        {{ content[v.temp.template](v.data,v.temp,param,webconfig) }}
     {% endfor %}
   
     <!-- footer start (Add "light" class to #footer in order to enable light footer) -->
@@ -300,7 +300,7 @@
         <div class="footer">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-6 col-md-6">
+                    <div class="col-sm-12 col-md-6">
                         <div class="footer-content">
                             <div class="logo-footer"><img id="logo-footer" src="{{webconfig.weblogo_white}}" alt="Maitul.com" style="max-width: 50px ;"></div>
                             <div class="row">
@@ -311,7 +311,7 @@
                                         <li><a target="_blank" href="{{webconfig.skype}}"><i class="fa fa-skype"></i></a></li>
                                         <li><a target="_blank" href="{{webconfig.linkedin}}"><i class="fa fa-linkedin"></i></a></li>
                                         <li><a target="_blank" onclick="window.location.href='mailto:{{webconfig.email}}'" title="{{webconfig.email}}"><i class="fa fa-envelope"></i></a></li>
-                                        <li ><a target="_blank" href="tel:{{webconfig.phone}}"  title="{{webconfig.phone}}"><i class="fa fa-phone"></i></a></li>
+                                        <li ><a target="_blank" onclick="window.location.href='tel:{{webconfig.phone}}'"  title="{{webconfig.phone}}"><i class="fa fa-phone"></i></a></li>
                                     </ul>
                                 </div>
                                 <div class="col-sm-6">
@@ -343,7 +343,7 @@
                         <div class="footer-content">
                             <h2>LEAVING MESSAGE</h2>
                             <div class="comments-form">
-                                    <form role="form" id="contact-form">
+                                    <form role="form" id="message-form">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                             <div class="form-group has-feedback">
                                                 <input type="email" class="form-control" placeholder="Email" name="email">
@@ -357,7 +357,7 @@
                                             </div>
                                         
                                         <div>
-                                            <a onclick="sendMessage(this,'contact-form')" class="btn btn-sm btn-dark" style="width:100%">Submit</a>
+                                            <a onclick="sendMessage(this,'message-form')" class="btn btn-sm btn-dark" style="width:100%">Submit</a>
                                         </div>
                                     </form>
                                 </div>

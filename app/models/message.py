@@ -19,6 +19,7 @@ class Message(Base):
     show = db.Column(db.SmallInteger, default=0)  # 是否展示，1为展示，0为不展示
     message_type = db.Column(db.SmallInteger)  # 留言类型，1为产品咨询，2为文章互动,''为其他
     relation_id = db.Column(db.Integer)  # 关联id
+    url = db.Column(db.String(200))  # 所在页面
     def __repr__(self):
         return '<Message %r>' % self.id
 

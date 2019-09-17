@@ -1,4 +1,3 @@
-
 <!-- banner 带滑动效果的banner大图 -->
 <!-- search 带标签快捷搜索的搜索条 -->
 <!-- product 带分类导航的产品，可开关分页 -->
@@ -8,8 +7,10 @@
 <!-- icon_box 图标列表 -->
 <!-- img_box 图片列表，可左右滚动 -->
 <!-- cate_banner 栏目banner，用栏目数据作为数据来源 -->
+<!-- cate_page 栏目单页，用栏目数据作为数据来源 -->3
+<!-- message 留言表单 -->
 {% import "home/default/pagination.html" as pagination %}
-{% macro banner(data,temp,param) -%}
+{% macro banner(data,temp,param,webconfig) -%}
 {% if data %}
 <!-- banner start -->
 <div class="banner">
@@ -49,7 +50,7 @@
 {% endif %}
 {% endmacro %}
 
-{% macro product(data,temp,param) -%}
+{% macro product(data,temp,param,webconfig) -%}
 {% if data %}
 <!-- product start -->
 <div class="section  clearfix object-non-visible animated object-visible fadeInUpSmall"
@@ -64,15 +65,14 @@
                 {% endif %}
             </div>
             {% if temp.relation%}
-            <div class="row">
+            <div class="row hidden-xs">
                 {% for v in data.sub_category %}
                 <div class="col-sm-2">
                     <div class="box-style-1 animated object-visible fadeInUpSmall
                     {% if v.id == param.cate_data.id %}
                     box-active
                     {% endif %}
-                    "
-                        data-animation-effect="fadeInUpSmall" data-effect-delay="0"
+                    " data-animation-effect="fadeInUpSmall" data-effect-delay="0"
                         onClick="window.location.href='{{url_for('home.index',nav_id=param.nav_data.id,cate_id=v.id)}}'">
                         <i class="fa {{v.icon}}"></i>
                         <p>{{v.name}}</p>
@@ -85,11 +85,9 @@
                 <div class="filters margin-bottom-clear">
                     <ul class="nav nav-pills">
                         {% for v in data.sub_category %}
-                        <li style="background-color: #f1f1f1"
-                        {% if param.cate_data.id == v.id%}
-                        class="active"
-                        {% endif %}
-                        ><a href="{{url_for('home.index',nav_id = data.id,cate_id = v.id)}}">{{v.name}}</a></li>
+                        <li style="background-color: #f1f1f1" {% if param.cate_data.id == v.id%} class="active"
+                            {% endif %}><a
+                                href="{{url_for('home.index',nav_id = data.id,cate_id = v.id)}}">{{v.name}}</a></li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -102,17 +100,18 @@
                     <div class="image-box">
                         <div class="overlay-container">
                             <img src="{{v.cover}}" alt="{{v.title}}" style="min-height:210px;">
-                            <a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}" class="overlay"></a>
+                            <a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}"
+                                class="overlay"></a>
                         </div>
                         <a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}"
                             class="btn btn-light-gray btn-block">{{v.title}}</a>
                         <div class="product_tag">
                             {% if v.tags %}
-                                {% for tag in data.tags%}
-                                {% if tag.id | string in v.tags.split(',') %}
-                                <li><a>{{tag.name}}</a></li>
-                                {% endif %}
-                                {% endfor %}
+                            {% for tag in data.tags%}
+                            {% if tag.id | string in v.tags.split(',') %}
+                            <li><a>{{tag.name}}</a></li>
+                            {% endif %}
+                            {% endfor %}
                             {% endif %}
                         </div>
                     </div>
@@ -129,66 +128,69 @@
 {% endif %}
 {% endmacro %}
 
-{% macro article(data,temp,param) -%}
+{% macro article(data,temp,param,webconfig) -%}
 {% if data %}
 <!-- article start -->
 <div class="section  clearfix object-non-visible animated object-visible fadeInUpSmall"
     style="background-color:{{temp.bgcolor}}" data-animation-effect="fadeInUpSmall" data-effect-delay="300">
     <div class="container">
         <div class="row">
-                <div class="col-md-12">
-                        {% if temp.show_title%}
-                        <h1 class="text-center title">{{data.name}}</h1>
-                        <div class="separator"></div>
-                        <p class="text-center lead">{{data.info}}</p>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-12 hidden-xs form-group">
-                            <div class="filters margin-bottom-clear">
-                                <ul class="nav nav-pills">
-                                    {% for v in data.sub_category %}
-                                    <li style="background-color: #f1f1f1"
-                                    {% if param.cate_data.id == v.id%}
-                                    class="active"
-                                    {% endif %}
-                                    ><a href="{{url_for('home.index',nav_id = data.id,cate_id = v.id)}}">{{v.name}}</a></li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
+            <div class="col-md-12">
+                {% if temp.show_title%}
+                <h1 class="text-center title">{{data.name}}</h1>
+                <div class="separator"></div>
+                <p class="text-center lead">{{data.info}}</p>
+                {% endif %}
+            </div>
+            <div class="col-md-12 hidden-xs form-group">
+                <div class="filters margin-bottom-clear">
+                    <ul class="nav nav-pills">
+                        {% for v in data.sub_category %}
+                        <li style="background-color: #f1f1f1" {% if param.cate_data.id == v.id%} class="active"
+                            {% endif %}><a
+                                href="{{url_for('home.index',nav_id = data.id,cate_id = v.id)}}">{{v.name}}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="main col-md-12">
+                {% for v in data.sub_data.items %}
+                <article class="clearfix blogpost object-non-visible animated object-visible fadeInUpSmall"
+                    data-animation-effect="fadeInUpSmall" data-effect-delay="200">
+                    <div class="blogpost-body">
+                        <div class="post-info">
+                            <span class="day">{{v.create_time.strftime('%d')}}</span>
+                            <span class="month">{{v.create_time.strftime('%m/%y')}}</span>
                         </div>
-           <div class="main col-md-12">
-               {% for v in data.sub_data.items %}
-							<article class="clearfix blogpost object-non-visible animated object-visible fadeInUpSmall" data-animation-effect="fadeInUpSmall" data-effect-delay="200">
-								<div class="blogpost-body">
-									<div class="post-info">
-										<span class="day">{{v.create_time.strftime('%d')}}</span>
-										<span class="month">{{v.create_time.strftime('%m/%y')}}</span>
-									</div>
-									<div class="blogpost-content">
-										<header>
-											<h2 class="title"><a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}">{{v.title}}</a></h2>
-										</header>
-										<p>{{v.info|safe}}</p>
-									</div>
-								</div>
-								<footer class="clearfix">
-									<ul class="links pull-left">
-                                        <li><i class="fa fa-tags pr-5"></i>
-                                            {% if v.tags %}
-                                            {% for tag in data.tags%}
-                                            {% if tag.id | string in v.tags.split(',') %}
-                                            <a href="#"> {{tag.name}} </a>
-                                            {% endif %}
-                                            {% endfor %}
-                                            {% endif %}
-                                        </li>
-									</ul>
-									<a class="pull-right link" href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}"><span>Read more</span></a>
-								</footer>
-							</article>
-               {% endfor%}
-               {{ pagination.page(data.sub_data,"home.index",nav_id = param.nav_data.id,cate_id = param.cate_data.id,content_id = param.content_data.id) }}
-						</div>
+                        <div class="blogpost-content">
+                            <header>
+                                <h2 class="title"><a
+                                        href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}">{{v.title}}</a>
+                                </h2>
+                            </header>
+                            <p>{{v.info|safe}}</p>
+                        </div>
+                    </div>
+                    <footer class="clearfix">
+                        <ul class="links pull-left">
+                            <li><i class="fa fa-tags pr-5"></i>
+                                {% if v.tags %}
+                                {% for tag in data.tags%}
+                                {% if tag.id | string in v.tags.split(',') %}
+                                <a href="#"> {{tag.name}} </a>
+                                {% endif %}
+                                {% endfor %}
+                                {% endif %}
+                            </li>
+                        </ul>
+                        <a class="pull-right link"
+                            href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}"><span>Read
+                                more</span></a>
+                    </footer>
+                </article>
+                {% endfor%}
+                {{ pagination.page(data.sub_data,"home.index",nav_id = param.nav_data.id,cate_id = param.cate_data.id,content_id = param.content_data.id) }}
+            </div>
         </div>
     </div>
 
@@ -197,7 +199,7 @@
 {% endmacro %}
 
 
-{% macro search(data,temp,param) -%}
+{% macro search(data,temp,param,webconfig) -%}
 <!-- search start -->
 <div class="section text-muted clearfix" style="background-color:{{temp.bgcolor}}">
     <div class="container">
@@ -224,10 +226,11 @@
 <!-- search end -->
 {% endmacro %}
 
-{% macro ad(data,temp,param) -%}
+{% macro ad(data,temp,param,webconfig) -%}
 {% if data %}
 <!-- ad start -->
-<section class="main-container parallax dark-translucent-bg" style="background-image: url('{{(data.sub_data)[0].img}}')">
+<section class="main-container parallax dark-translucent-bg"
+    style="background-image: url('{{(data.sub_data)[0].img}}')">
     <!-- main start -->
     <!-- ================ -->
     <div class="main">
@@ -248,7 +251,7 @@
             </div>
         </div>
     </div>
-   
+
     <!-- main end -->
 </section>
 <!--ad end -->
@@ -256,7 +259,7 @@
 {% endmacro %}
 
 
-{% macro about(data,temp,param) -%}
+{% macro about(data,temp,param,webconfig) -%}
 {% if data %}
 <div class="section clearfix" style="background-color:{{temp.bgcolor}}">
     <div class="container">
@@ -269,11 +272,11 @@
                 {% endif%}
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-md-6">
+                        <div class="row about">
+                            <div class="col-md-6 col-sm-6">
                                 <img src="{{data.cover}}" alt="">
                             </div>
-                            {{data.content| safe }}
+                            <p>{{data.content| striptags }}</p>
                         </div>
                         <a href="{{url_for('home.index',nav_id=data.id)}}" class="btn btn-white">Learn More</a>
                         <div class="space hidden-md hidden-lg"></div>
@@ -315,12 +318,12 @@
 {% endif %}
 {% endmacro %}
 
-{% macro icon_box(data,temp,param) -%}
+{% macro icon_box(data,temp,param,webconfig) -%}
 {% if data %}
 <div class="section" style="background-color:{{temp.bgcolor}}">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12 col-xs-12">
                 {% if temp.show_title%}
                 <h2>{{data.name}}</h2>
                 <div class="separator-2"></div>
@@ -328,7 +331,7 @@
                 {% endif %}
                 <div class="row" style="margin-bottom: 10px;">
                     {% for v in data.sub_category %}
-                    <div class="col-sm-2">
+                    <div class="col-sm-2 col-xs-6">
                         <div class="box-style-1 animated object-visible fadeInUpSmall"
                             data-animation-effect="fadeInUpSmall" data-effect-delay="0"
                             onClick="window.location.href='{{url_for('home.index',nav_id=data.id,cate_id=v.id)}}'">
@@ -347,7 +350,7 @@
 
 
 
-{% macro img_box(data,temp,param) -%}
+{% macro img_box(data,temp,param,webconfig) -%}
 {% if data %}
 <div class="section clearfix" style="background-color:{{temp.bgcolor}}">
     <div class="container">
@@ -360,14 +363,16 @@
                 {% endif %}
                 <div class="owl-carousel carousel owl-theme">
                     {% for v in data.sub_data.items %}
-                    <div class="item image-box" data-animation-effect="fadeInLeft" data-effect-delay="300" style="max-height:198px;">
+                    <div class="item image-box" data-animation-effect="fadeInLeft" data-effect-delay="300"
+                        style="max-height:198px;">
                         <div class="overlay-container">
                             <img src="{{v.cover}}" alt="{{v.title}}">
-                            <a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}" class="warp-mask">
+                            <a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}"
+                                class="warp-mask">
                                 <span>{{v.title}}</span>
                             </a>
                         </div>
-                        
+
                     </div>
                     {% endfor %}
                 </div>
@@ -378,39 +383,144 @@
 {% endif %}
 {% endmacro %}
 
-{% macro cate_banner(data,temp,param) -%}
+{% macro cate_banner(data,temp,param,webconfig) -%}
 <!-- product_banner start -->
-<div class="section parallax dark-translucent-bg" 
-{% if param.cate_data.id %}
-style=" background-image: url('{{param.cate_data.cover}}');"
-{% else %}
-style=" background-image: url('{{param.nav_data.cover}}');"
-{% endif %}
->
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8">
-                    <ol class="breadcrumb breadcrumb-banner">
-                        <li><i class="fa fa-home pr-10"></i><a href="{{url_for('home.index')}}">Home</a></li>
-                        {% if param.nav_data.id %}
-                            {% if param.cate_data.id %}
-                            <li ><a href="{{url_for('home.index',nav_id = param.nav_data.id)}}">{{param.nav_data.name}}</a></li>
-                            {% else %}
-                            <li class="active">{{param.nav_data.name}}</li>
-                            {% endif %}
-                        {% endif %}
-                        {% if param.cate_data.id %}
-                        <li class="active">{{param.cate_data.name}}</li>
-                        {% endif %}
-                    </ol>
-                    <div class="separator-2"></div>
-                    {{data.info | safe}}
+<div class="section parallax dark-translucent-bg" {% if param.cate_data.id %}
+    style=" background-image: url('{{param.cate_data.cover}}');" {% else %}
+    style=" background-image: url('{{param.nav_data.cover}}');" {% endif %}>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <ol class="breadcrumb breadcrumb-banner">
+                    <li><i class="fa fa-home pr-10"></i><a href="{{url_for('home.index')}}">Home</a></li>
+                    {% if param.nav_data.id %}
+                    {% if param.cate_data.id %}
+                    <li><a href="{{url_for('home.index',nav_id = param.nav_data.id)}}">{{param.nav_data.name}}</a></li>
+                    {% else %}
+                    <li class="active">{{param.nav_data.name}}</li>
+                    {% endif %}
+                    {% endif %}
+                    {% if param.cate_data.id %}
+                    <li class="active">{{param.cate_data.name}}</li>
+                    {% endif %}
+                </ol>
+                <div class="separator-2"></div>
+                {{data.info | safe}}
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- product_banner end -->
+{% endmacro %}
+
+{% macro cate_page(data,temp,param,webconfig) -%}
+<!-- cate_page start -->
+<section class="main-container" style="background-color:{{temp.bgcolor}}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-sm-8">
+                {{data.content | safe}}
+            </div>
+            <div class="hidden-xs col-lg-4 col-md-12 col-sm-8 col-sm-offset-4 col-md-offset-0">
+                <div class="vertical-divider-left-lg side">
+                    <h2 class="title">Contact Us</h2>
+                    <ul class="list-icons">
+                        <li><i class="fa fa-phone pr-5"></i>{{webconfig.phone}}</li>
+                        <li><i class="fa fa-envelope pr-5"></i><a
+                                href="mailto:{{webconfig.email}}">{{webconfig.email}}</a></li>
+                    </ul>
+                    <ul class="social-links no-border circle">
+                        <li><a style="background-color: green;" target="_blank" href="{{webconfig.weixin}}"><i class="fa fa-weixin"></i></a></li>
+                        <li><a style="background-color: #55acee;" target="_blank" href="{{webconfig.skype}}"><i class="fa fa-skype"></i></a></li>
+                        <li><a style="background-color: #0c66c1;" target="_blank" href="{{webconfig.linkedin}}"><i class="fa fa-linkedin"></i></a></li>
+                        <li><a style="background-color: #999;" target="_blank" onclick="window.location.href='mailto:{{webconfig.email}}'" title="{{webconfig.email}}"><i class="fa fa-envelope"></i></a></li>
+                        <li><a style="background-color: #666;" target="_blank" onclick="window.location.href='tel:{{webconfig.phone}}'"  title="{{webconfig.phone}}"><i class="fa fa-phone"></i></a></li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
-    </div>
-    <!-- product_banner end -->
+</section>
+<!-- cate_page end -->
 {% endmacro %}
 
+
+{% macro message(data,temp,param,webconfig) -%}
+<!-- message start -->
+<section class="main-container" style="background-color:{{temp.bgcolor}}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-sm-8">
+                {{data.content | safe}}
+                <div class="comments-form">
+                    <form role="form" id="contact-form">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <div class="col-sm-12">
+                            <div class="form-group has-feedback">
+                                <label for="name">Name*</label>
+                                <input type="text" class="form-control" placeholder="Name"
+                                       name="name">
+                                <i class="fa fa-user form-control-feedback"></i>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group has-feedback">
+                                <label for="email">Email*</label>
+                                <input type="email" class="form-control" placeholder="Email" name="email">
+                                <i class="fa fa-envelope-o form-control-feedback"></i>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group has-feedback">
+                                <label for="contact">Contact</label>
+                                <input type="text" class="form-control" placeholder="Contact"
+                                       name="contact">
+                                <i class="fa fa-phone form-control-feedback"></i>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <div class="form-group has-feedback">
+                                <label for="info">Message</label>
+                                <textarea class="form-control" rows="2" placeholder="Message"
+                                          name="info"></textarea>
+                                <i class="fa fa-pencil form-control-feedback"></i>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                            <p style="margin-top: 25px;">Or send us an email:
+                                <a onclick="window.location.href='mailto:{{webconfig.email}}'">
+                                    <i class="fa fa-envelope-o"> {{webconfig.email}}</i>
+                                </a></p>
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                            <a onclick="sendMessage(this,'contact-form')" class="btn btn-default btn-lg">Submit</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="hidden-xs col-lg-4 col-md-12 col-sm-8 col-sm-offset-4 col-md-offset-0">
+                <div class="vertical-divider-left-lg side">
+                    <h2 class="title">Contact Us</h2>
+                    <ul class="list-icons">
+                        <li><i class="fa fa-phone pr-5"></i>{{webconfig.phone}}</li>
+                        <li><i class="fa fa-envelope pr-5"></i><a
+                                href="mailto:{{webconfig.email}}">{{webconfig.email}}</a></li>
+                    </ul>
+                    <ul class="social-links no-border circle">
+                        <li><a style="background-color: green;" target="_blank" href="{{webconfig.weixin}}"><i class="fa fa-weixin"></i></a></li>
+                        <li><a style="background-color: #55acee;" target="_blank" href="{{webconfig.skype}}"><i class="fa fa-skype"></i></a></li>
+                        <li><a style="background-color: #0c66c1;" target="_blank" href="{{webconfig.linkedin}}"><i class="fa fa-linkedin"></i></a></li>
+                        <li><a style="background-color: #999;" target="_blank" onclick="window.location.href='mailto:{{webconfig.email}}'" title="{{webconfig.email}}"><i class="fa fa-envelope"></i></a></li>
+                        <li><a style="background-color: #666;" target="_blank" onclick="window.location.href='tel:{{webconfig.phone}}'"  title="{{webconfig.phone}}"><i class="fa fa-phone"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- message end -->
+{% endmacro %}
 
