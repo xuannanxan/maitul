@@ -6192,3 +6192,15 @@ a.overlay i {
 .no-border >li >a{
 	border: 0px solid #7d7d7d;
 }
+.box-style-2 .body >h3{
+	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.box-style-2 .body >p{
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+	min-height: 44px;
+}

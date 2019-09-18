@@ -4,14 +4,16 @@
 <!-- article 带分类导航的文字列表，可开关分页 -->
 <!-- ad 广告，单张广告图片 -->
 <!-- about 图文+文字列表 -->
-<!-- icon_box 图标列表 -->
+<!-- accordions 手风琴 -->
+<!-- cate_icon 栏目的图标列表 -->
+<!-- content_icon 内容的图标列表 -->
 <!-- img_box 图片列表，可左右滚动 -->
 <!-- cate_banner 栏目banner，用栏目数据作为数据来源 -->
 <!-- cate_page 栏目单页，用栏目数据作为数据来源 -->3
 <!-- message 留言表单 -->
 {% import "home/default/pagination.html" as pagination %}
 {% macro banner(data,temp,param,webconfig) -%}
-{% if data %}
+{% if data.sub_data %}
 <!-- banner start -->
 <div class="banner">
     <!-- slideshow start -->
@@ -51,7 +53,7 @@
 {% endmacro %}
 
 {% macro product(data,temp,param,webconfig) -%}
-{% if data %}
+{% if data.sub_data.items %}
 <!-- product start -->
 <div class="section  clearfix object-non-visible animated object-visible fadeInUpSmall"
     style="background-color:{{temp.bgcolor}}" data-animation-effect="fadeInUpSmall" data-effect-delay="300">
@@ -129,7 +131,7 @@
 {% endmacro %}
 
 {% macro article(data,temp,param,webconfig) -%}
-{% if data %}
+{% if data.sub_data.items %}
 <!-- article start -->
 <div class="section  clearfix object-non-visible animated object-visible fadeInUpSmall"
     style="background-color:{{temp.bgcolor}}" data-animation-effect="fadeInUpSmall" data-effect-delay="300">
@@ -227,7 +229,7 @@
 {% endmacro %}
 
 {% macro ad(data,temp,param,webconfig) -%}
-{% if data %}
+{% if data.sub_data %}
 <!-- ad start -->
 <section class="main-container parallax dark-translucent-bg"
     style="background-image: url('{{(data.sub_data)[0].img}}')">
@@ -271,17 +273,41 @@
                 <p class="lead text-center">{{data.info}}</p>
                 {% endif%}
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="row about">
-                            <div class="col-md-6 col-sm-6">
+                            <div class="col-md-4 col-sm-4">
                                 <img src="{{data.cover}}" alt="">
                             </div>
-                            <p>{{data.content| striptags }}</p>
+                            <div class="col-md-8 col-sm-8">
+                                <p>{{data.content| striptags }}</p>
+                                <a href="{{url_for('home.index',nav_id=data.id)}}" class="btn btn-white"
+                                style="float: right;"
+                                >Learn More</a>
+                            </div>
                         </div>
-                        <a href="{{url_for('home.index',nav_id=data.id)}}" class="btn btn-white">Learn More</a>
-                        <div class="space hidden-md hidden-lg"></div>
                     </div>
-                    <div class="col-md-6">
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endmacro %}
+
+{% macro accordions(data,temp,param,webconfig) -%}
+{% if data.sub_data.items %}
+<div class="section clearfix" style="background-color:{{temp.bgcolor}}">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                {% if temp.show_title%}
+                <h1 class="text-center">{{data.name}}</h1>
+                <div class="separator"></div>
+                <p class="lead text-center">{{data.info}}</p>
+                {% endif%}
+                <div class="row">
+                    <div class="col-md-12">
                         <div class="panel-group panel-dark" id="accordion">
                             {% for v in data.sub_data.items %}
                             <div class="panel panel-default">
@@ -318,8 +344,8 @@
 {% endif %}
 {% endmacro %}
 
-{% macro icon_box(data,temp,param,webconfig) -%}
-{% if data %}
+{% macro cate_icon(data,temp,param,webconfig) -%}
+{% if data.sub_category %}
 <div class="section" style="background-color:{{temp.bgcolor}}">
     <div class="container">
         <div class="row">
@@ -348,10 +374,46 @@
 {% endif %}
 {% endmacro %}
 
-
+{% macro content_icon(data,temp,param,webconfig) -%}
+{% if data.sub_data.items %}
+<div class="section" style="background-color:{{temp.bgcolor}}">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                {% if temp.show_title%}
+                <h2>{{data.name}}</h2>
+                <div class="separator-2"></div>
+                <p>{{data.info}}</p>
+                {% endif %}
+                <div class="row" style="margin-bottom: 10px;">
+                    {% for v in data.sub_data.items %}
+                    <div class="col-sm-4">
+                        <div class="box-style-2">
+                            <div class="icon-container default-bg">
+                                <i class="fa {{v.cover}}"></i>
+                            </div>
+                            <div class="body">
+                                <h3>{{v.title}}</h3>
+                                <p>{{v.content |striptags}}</p>
+                                <div class="col-sm-6 col-md-6 col-xs-6"></div>
+                                <div class="col-sm-6 col-md-6 col-xs-6">
+                                <a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}" class="link"
+                                ><span>Read More</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endmacro %}
 
 {% macro img_box(data,temp,param,webconfig) -%}
-{% if data %}
+{% if data.sub_data.items %}
 <div class="section clearfix" style="background-color:{{temp.bgcolor}}">
     <div class="container">
         <div class="row">
@@ -489,13 +551,8 @@
                                 <i class="fa fa-pencil form-control-feedback"></i>
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-8">
-                            <p style="margin-top: 25px;">Or send us an email:
-                                <a onclick="window.location.href='mailto:{{webconfig.email}}'">
-                                    <i class="fa fa-envelope-o"> {{webconfig.email}}</i>
-                                </a></p>
-                        </div>
-                        <div class="col-sm-12 col-md-4">
+                        <div class="col-sm-8 col-md-8"></div>
+                        <div class="col-sm-4 col-md-4">
                             <a onclick="sendMessage(this,'contact-form')" class="btn btn-default btn-lg">Submit</a>
                         </div>
                     </form>
