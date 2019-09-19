@@ -5455,6 +5455,22 @@ ul.pagination li.active a,
 	color: #38c7f4;
 	background-color: #fafafa00;
 }
+
+.tabs > li.active > a,
+.tabs > li.active > a:hover,
+.tabs > li.active > a:focus,
+.tabs > li > a:hover,
+.tabs > li > a:focus {
+	border-bottom: 2px solid #38c7f4;
+	color: #38c7f4;
+	background-color: #fafafa;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+}
+.tabs > li > a{
+	border:none;
+}
 .nav-pills > li.active > a:after {
 	color: #38c7f4;
 }
