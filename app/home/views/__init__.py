@@ -10,10 +10,11 @@ from app.extensions import cache
 # cache的运行数量，通过request来进行不同cache的计数
 CLICKS_COUNT = {}
 
-class seo_data():
-    keywords = ''
-    description = ''
-    title = ''
+class seoData(object):
+    def __init__(self, keywords,description,title):
+        self.keywords = keywords
+        self.description = description
+        self.title = title
 
 #获取当前栏目的最上级栏目
 def getTopColumn(data,id):

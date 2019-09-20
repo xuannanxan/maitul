@@ -5,14 +5,14 @@ from flask import render_template, request,jsonify
 from app.expand.mail import MailObj,send_email
 from app.home.forms import MessageForm
 from app.models import Crud, Category,Message
-from . import home,seo_data,cache
+from . import home,seoData,cache
 
 @home.route("/contact/<int:nav_id>", methods=['GET'])
 @home.route("/contact", methods=['GET'])
 @cache.memoize(60)
 def contact(nav_id=None):
     return render_template('home/contact.html',
-                           seo_data =seo_data,
+                           seo_data =seoData,
                            )
 
 @home.route("/about/<int:nav_id>", methods=['GET'])
@@ -20,7 +20,7 @@ def contact(nav_id=None):
 @cache.memoize(60)
 def about(nav_id=None):
     return render_template('home/about.html',
-                           seo_data =seo_data,
+                           seo_data =seoData,
                            )
 
 @home.route("/message", methods=['POST'])

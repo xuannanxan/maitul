@@ -322,8 +322,7 @@ tbody {
 	padding: 10px 0;
 	-webkit-box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.06) inset;
 	box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.06) inset;
-	background-color: #fafafa;
-	border-bottom: 1px solid #dadada;
+	background-color: #fafafa50;
 }
 .banner + .page-intro {
 	margin-top: -56px !important;

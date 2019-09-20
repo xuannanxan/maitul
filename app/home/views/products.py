@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*- 
 # Created by xuannan on 2019-01-01.
 #从当前模块__init__导入蓝图对象
-from . import home,seo_data,cache,make_cache_key,CLICKS_COUNT
+from . import home,seoData,cache,make_cache_key,CLICKS_COUNT
 from app.models import Crud,Category,Product,Tag,TagRelation
 from flask import render_template, redirect, url_for,flash,session,request,g
 from sqlalchemy import or_,and_
