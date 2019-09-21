@@ -5161,18 +5161,23 @@ ul.tweets li span {
 	-ms-transition: all 0.2s ease-in-out;
 	transition: all 0.2s ease-in-out;
 }
+.content-slider-with-controls-bottom .owl-prev,
 .carousel .owl-prev {
 	left: 0;
 	background-color: #38c7f4!important;
 	color: #f1f1f1!important;
 	border-radius: 0px!important;
 }
+
+.content-slider-with-controls-bottom .owl-next,
 .carousel .owl-next {
 	left: 30px;
 	background-color: #f1f1f1!important;
 	color: #38c7f4!important;
 	border-radius: 0px!important;
 }
+.content-slider-with-controls-bottom .owl-prev:hover,
+.content-slider-with-controls-bottom .owl-next:hover,
 .carousel .owl-prev:hover,
 .carousel .owl-next:hover,
 .gray-bg .owl-next:hover {
@@ -6218,4 +6223,7 @@ a.overlay i {
 	-webkit-line-clamp: 2;
 	overflow: hidden;
 	min-height: 44px;
+}
+.owl-nav >button{
+	z-index: 999;
 }

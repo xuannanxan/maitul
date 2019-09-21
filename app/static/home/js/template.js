@@ -114,11 +114,15 @@
 				pagination: true
 			});
 			$(".owl-carousel.content-slider-with-controls-bottom").owlCarousel({
-				singleItem: true,
-				autoPlay: false,
-				navigation: true,
-				navigationText: false,
-				pagination: true
+				items:1,
+				loop: true,
+				nav: true,
+				dots: true,
+				navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
+				smartSpeed: 1000,
+				autoplay: true,
+				autoplayTimeout: 3000,
+				autoplayHoverPause: true
 			});
 			$(".owl-carousel.home-slider-carousel ").owlCarousel({
 				items: 1,
