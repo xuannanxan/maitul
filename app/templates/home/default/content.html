@@ -278,8 +278,8 @@
                             </div>
                             <div class="col-md-8 col-sm-8">
                                 {{data.content| safe }}
-                                <a href="{{url_for('home.index',nav_id=data.id)}}" class="btn btn-white"
-                                    style="float: right;">Learn More</a>
+                                <a href="{{url_for('home.index',nav_id=data.id)}}" class="btn btn-white pull-right"
+                                    >Learn More</a>
                             </div>
                         </div>
                     </div>
@@ -392,11 +392,9 @@
                             <div class="body">
                                 <h3>{{v.title}}</h3>
                                 <p>{{v.content |striptags}}</p>
-                                <div class="col-sm-6 col-md-6 col-xs-6"></div>
-                                <div class="col-sm-6 col-md-6 col-xs-6">
-                                    <a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}"
-                                        class="link"><span>Read More</span></a>
-                                </div>
+                                <a href="{{url_for('home.index',nav_id = data.id,cate_id = v.category_id,content_id = v.id)}}"
+                                        class="link pull-right"><span>Read More</span></a>
+                                <div class="clearfix"></div>
                             </div>
                         </div>
                     </div>
@@ -571,7 +569,7 @@
                         </div>
                         <div class="col-sm-8 col-md-8"></div>
                         <div class="col-sm-4 col-md-4">
-                            <a onclick="sendMessage(this,'contact-form')" class="btn btn-default btn-lg">Submit</a>
+                            <a onclick="sendMessage(this,'contact-form')" class="btn btn-default btn-lg" style="width:100%">Submit</a>
                         </div>
                     </form>
                 </div>
@@ -653,30 +651,30 @@
                         </div>
                             <hr>
                             <div class="elements-list pull-right clearfix">
-                                    <span><i class="fa fa-star text-default"></i><i class="fa fa-star text-default"></i><i class="fa fa-star text-default"></i><i class="fa fa-star text-default"></i><i class="fa fa-star"></i></span>
-                                    <a href="#" class="wishlist"><i class="fa fa-heart-o pr-5"></i>Wishlist</a>
+                                    <a href="#" title="favorite"><i class="fa fa-star"></i></a>
+                                    <a href="#" title="message"><i class="fa fa-commenting-o"></i></a>
+                                    {% if data.relation_data %}
+                                        <a href="{{url_for('home.index',nav_id=data.relation_data.pid,cate_id=data.relation_data.id)}}">
+                                            <i class="fa {{data.relation_data.icon}}"
+                                                            title="{{data.relation_data.name}}"></i> {{data.relation_data.name}} </a>
+                                    {% endif %}
+                                    
                                 </div>
+                                <div class="clearfix"></div>
+                                <hr>
                     </div>
                     <aside class="col-md-8">
                             <div class="sidebar">
                                 <div class="side product-item vertical-divider-left">
                                         {% if data.content_data.tags %}
                                         <div class="product-interaction clearfix">
-                                            <ul class="links pull-left">
-                                                <li>
-                                                    {% if data.relation_data %}
-                                                    <a href="{{url_for('home.index',nav_id=data.relation_data.pid,cate_id=data.relation_data.id)}}"><i
-                                                            class="fa {{data.relation_data.icon}}"
-                                                            title="{{data.relation_data.name}}"></i>{{data.relation_data.name}} </a>
-                                                    {% endif %}
-                                                    
+                                                <div class="elements-list">
                                                     {% for tag in data.tags%}
                                                     {% if tag.id | string in data.content_data.tags.split(',') %}
-                                                    | <a href="#">{{tag.name}} </a>
+                                                     <a href="#">{{tag.name}} </a>
                                                     {% endif %}
                                                     {% endfor %}
-                                                </li>
-                                            </ul>
+                                                </div>
                                         </div>
                                         {% endif %}
                                         <p>{{data.content_data.info|safe}}</p>
