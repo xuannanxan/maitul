@@ -243,3 +243,4 @@ class Crud:
             db.session.rollback()
             current_app.logger.info(e)
             return False
+

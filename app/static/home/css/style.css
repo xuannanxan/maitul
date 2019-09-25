@@ -1742,11 +1742,14 @@ tbody {
 	margin-right: 0;
 	padding-right: 0;
 }
-.elements-list >a >i{
-	color: #666666;
-}
-.elements-list >a:hover >i{
+
+.elements-list >a{
 	color: #38c7f4;
+	text-decoration:none;
+}
+.elements-list >a:hover{
+	color: #0ea4b7;
+	font-weight:400;
 }
 .price {
 	font-size: 22px;

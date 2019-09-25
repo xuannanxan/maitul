@@ -3,8 +3,8 @@
 #从当前模块__init__导入蓝图对象
 from flask import render_template,g,request
 from app.expand.utils import object_to_dict,Pagination
-from app.models import Crud,Product,Category,Template,Ad,Article
-from . import home,seoData,cache,getWebTemplate,getCategory,getTemplates,getTag
+from app.models import Crud,Product,Category,Template,Ad,Article,TagRelation
+from . import home,seoData,cache,getWebTemplate,getCategory,getTemplates,getTag,getQrcode
 
 
 @home.route("/", methods=['GET'])
@@ -14,10 +14,17 @@ from . import home,seoData,cache,getWebTemplate,getCategory,getTemplates,getTag
 #@cache.cached(key_prefix='index')#设置一个key_prefix来作为标记,调用cache.delete('index')来删除缓存来保证用户访问到的内容是最新的
 def index(nav_id=None,cate_id=None,content_id=None):
     # 页码
-    page,artpage,seo_data,templates, category_data,all_templates= 1,1,{},[],getCategory(),getTemplates()
+    url = request.url
+    page,artpage,seo_data,templates, category_data,all_templates,tag,search= 1,1,{},[],getCategory(),getTemplates(),'',''
     nav_data,cate_data,content_data = {'id':nav_id},{'id':cate_id},{'id':content_id}
     if request.args.get('page'):
-        page = int(request.args.get('page'))     
+        page = int(request.args.get('page'))
+    if request.args.get('tag'):
+        tag = int(request.args.get('tag'))    
+    if request.args.get('search'):
+        tag = int(request.args.get('search'))  
+    if tag or search:
+        print(1123123123)        
     if nav_id:
         nav_data = [v for v in category_data if v.id == nav_id][0]
         seo_data = seoData(nav_data.keywords,nav_data.info,nav_data.name) 
@@ -28,19 +35,30 @@ def index(nav_id=None,cate_id=None,content_id=None):
         cate_data = [v for v in category_data if v.id == cate_id][0]
         seo_data = seoData(cate_data.keywords,cate_data.info,cate_data.name) 
     if content_id:
+        # 详情页
         tableName = getTableName(int(cate_data.type))
-        relation_data = []
+        relation_cate,relation_data = {},[]   
         if tableName:
             content_data = getSubData(tableName,content_id)
+            if not content_data.id:
+                return render_template('admin/404.html')
             seo_data = seoData(content_data.keywords,content_data.description,content_data.title) 
             if content_data.relation_id:
-                relation_data = [v for v in category_data if v.id == content_data.relation_id][0]
+                relation_cate = [v for v in category_data if v.id == content_data.relation_id][0]
+            # 当前产品tag对应的产品
+            str_tag_content=''
+            if content_data.tags:
+                tag_content = Crud.search_data(TagRelation,TagRelation.tag_id.in_((content_data.tags).split(',')),'tag_id')
+                #关联数据
+                str_tag_content = ','.join([str(x) for x in [v.relation_id for v in tag_content if v.tag_type==cate_data.type]])
+            relation_data = selectSubData(tableName,'{tableName}.relation_id={0} OR {tableName}.id in ({1}) AND {tableName}.id<>{2}'.format(noneToZero(content_data.relation_id),str_tag_content,content_data.id,tableName=tableName),1,8)
             temp_data = {
                 "temp": {"template":getContentTemplate(int(cate_data.type))},
                 "data": {
                     "cate_data":cate_data,
                     "content_data":content_data,
                     "tags":getTag(),
+                    "relation_cate":relation_cate,
                     "relation_data":relation_data
                 }
             }
@@ -92,7 +110,8 @@ def index(nav_id=None,cate_id=None,content_id=None):
                 # 如果不是关联查询，就是通过   category_id 进行搜索 
                 else:
                     selectColumn = 'category_id'
-                data['sub_data'] = selectSubData(tableName,selectColumn,cates,page,v.data_num)
+                str_cats = ','.join([str(x) for x in cates])
+                data['sub_data'] = selectSubData(tableName,"%s.%s in (%s)"%(tableName,selectColumn,str_cats),page,v.data_num)
             elif v.data_type == 2:
                 data['sub_data'] = Crud.search_data(Ad,Ad.space_id == v.data_id,Ad.sort.desc(),v.data_num)
             data['tags'] = getTag()
@@ -112,35 +131,35 @@ def index(nav_id=None,cate_id=None,content_id=None):
 
 
 
-def selectSubData(tableName,selectColumn,selectList,page,num):
+def selectSubData(tableName,query,page,num):
     '''
+    多个信息筛选
     tableName:表名
-    selectColumn：筛选的字段
-    selectList：IN查询的数组
+    query:查询语句，表名全部略为P
     page:页面
     num:页面数量
     '''
     sql='''
-        SELECT SQL_CALC_FOUND_ROWS p.*,GROUP_CONCAT(t.id SEPARATOR ',') as tags
-        FROM %s as p
-            left join tag_relation as r on p.id = r.relation_id
-            left join tag as t on t.id = r.tag_id
-        WHERE p.%s in (%s)
-        GROUP BY p.id
-        ORDER BY p.sort DESC
-        LIMIT %d,%d;
-        '''%(tableName,selectColumn,(','.join([str(v) for v in  selectList])),(page-1)*num,num)
+        SELECT SQL_CALC_FOUND_ROWS {tableName}.*,GROUP_CONCAT(tag.id SEPARATOR ',') as tags
+        FROM {tableName} 
+            left join tag_relation on {tableName}.id = tag_relation.relation_id
+            left join tag on tag.id = tag_relation.tag_id
+        WHERE {0} AND {tableName}.is_del = 0
+        GROUP BY {tableName}.id
+        ORDER BY {tableName}.sort DESC
+        LIMIT {1},{2};
+        '''.format(query,(page-1)*num,num,tableName=tableName)
     sql_data = Crud.auto_select(sql)
     count_num = Crud.auto_select("SELECT FOUND_ROWS() as countnum")
-    count = int((count_num.fetchone()).countnum)
+    count = int((count_num.first()).countnum)
     if sql_data:
         return Pagination(page,num,count,sql_data.fetchall())
-    return {}
-
+    return False
 
 
 def getSubData(tableName,id):
     '''
+    单个信息查询
     tableName:表名
     id:查询的id
     '''
@@ -153,8 +172,8 @@ def getSubData(tableName,id):
         '''%(tableName,int(id))
     sql_data = Crud.auto_select(sql)
     if sql_data:
-        return (sql_data.fetchall())[0]
-    return {}
+        return sql_data.first()
+    return False
 
 
 def getTableName(type):
@@ -177,3 +196,30 @@ def getContentTemplate(type):
         return 'article_page'
     else:
         return False
+
+def noneToZero(data):
+    '''
+    如果data==None,retun 0
+    '''
+    if data:
+        return data
+    else:
+        return 0
+
+def searchData(tag,search):
+    '''
+    数据查询
+    '''
+    sql = '''select SQL_CALC_FOUND_ROWS b.* ,c.type,GROUP_CONCAT(t.id,':',t.name SEPARATOR ',') as tags FROM
+	(select p.id,p.title,p.cover,p.info,p.content,p.click,p.category_id,p.create_time,p.sort,p.is_del
+	from product as p  
+	union all 
+	select a.id,a.title,a.cover,a.info,a.content,a.click,a.category_id,a.create_time,a.sort,a.is_del
+	from article  as a) as b
+    left join tag_relation as r on b.id = r.relation_id
+    left join tag as t on t.id = r.tag_id
+    left join category as c on c.id = b.category_id
+    WHERE b.id>3
+    GROUP BY b.id
+    ORDER BY b.sort DESC
+    '''

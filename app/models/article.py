@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*- 
 # Created by xuannan on 2019-01-26.
 __author__ = 'Allen xu'
-from  app.models.base import db,Base
-
+from app.models.base import db,Base
+from app.expand.utils import diyId
 # 内容
 class Article(Base):
     __tablename__ = "article"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(32), primary_key=True,default=diyId)
     title = db.Column(db.String(100),nullable=False)
     keywords = db.Column(db.String(200))
     description = db.Column(db.String(255))# 用于seo的描述信息

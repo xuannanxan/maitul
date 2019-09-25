@@ -111,7 +111,7 @@
                             {% if v.tags %}
                             {% for tag in data.tags%}
                             {% if tag.id | string in v.tags.split(',') %}
-                            <li><a>{{tag.name}}</a></li>
+                            <li><a href="{{url_for('home.index',tag=tag.id)}}">{{tag.name}}</a></li>
                             {% endif %}
                             {% endfor %}
                             {% endif %}
@@ -177,7 +177,7 @@
                                 {% if v.tags %}
                                 {% for tag in data.tags%}
                                 {% if tag.id | string in v.tags.split(',') %}
-                                <a href="#"> {{tag.name}} </a>
+                                <a href="{{url_for('home.index',tag=tag.id)}}"> {{tag.name}} </a>
                                 {% endif %}
                                 {% endfor %}
                                 {% endif %}
@@ -206,20 +206,19 @@
                 <ul class="nav nav-pills">
 
                     {% for v in data.tags[:5] %}
-                    <li><a href="{{url_for('home.index',nav_id=v.id)}}">{{v.name}}</a></li>
+                    <li><a href="{{url_for('home.index',tag=v.id)}}">{{v.name}}</a></li>
                     {% endfor %}
 
                 </ul>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="input-group">
-                <input type="text" name="productsSearch" data-url="{{url_for('home.index')}}"
-                    class="form-control pull-right" placeholder="Search...">
-                <div class="input-group-addon" onclick="btnSearch(this,'{{url_for('home.index')}}')">
-                    <i class="fa fa-search"></i>
-                </div>
-            </div>
+                <form role="search" class="search-box" style="margin:0;">
+                        <div class="form-group has-feedback" style="margin-bottom: 0px;">
+                            <input type="text" class="form-control" placeholder="Search"  name="search">
+                            <i class="fa fa-search form-control-feedback"></i>
+                        </div>
+                    </form>
         </div>
     </div>
 </div>
@@ -429,7 +428,6 @@
                                 <span>{{v.title}}</span>
                             </a>
                         </div>
-
                     </div>
                     {% endfor %}
                 </div>
@@ -606,6 +604,7 @@
 
 
 {% macro product_page(data,temp,param,webconfig) -%}
+{% if data.content_data.id%}
 <!-- product_page start -->
 <div class="page-intro" style="margin-top: 0px;">
     <div class="container">
@@ -623,7 +622,7 @@
         </div>
     </div>
 </div>
-<section class="main-container" style="background-color:{{temp.bgcolor}}">
+<section class="main-container" style="background-color:#fff">
     <div class="container">
         <div class="row">
             <div class="main col-md-12">
@@ -650,15 +649,17 @@
                                     </div>
                         </div>
                             <hr>
-                            <div class="elements-list pull-right clearfix">
-                                    <a href="#" title="favorite"><i class="fa fa-star"></i></a>
-                                    <a href="#" title="message"><i class="fa fa-commenting-o"></i></a>
-                                    {% if data.relation_data %}
-                                        <a href="{{url_for('home.index',nav_id=data.relation_data.pid,cate_id=data.relation_data.id)}}">
-                                            <i class="fa {{data.relation_data.icon}}"
-                                                            title="{{data.relation_data.name}}"></i> {{data.relation_data.name}} </a>
-                                    {% endif %}
-                                    
+                            <div class="elements-list pull-left clearfix">
+                                {% if data.relation_cate %}
+                                <a href="{{url_for('home.index',nav_id=data.relation_cate.pid,cate_id=data.relation_cate.id)}}">
+                                    <i class="fa {{data.relation_cate.icon}}"
+                                                    title="{{data.relation_cate.name}}"></i> More {{data.relation_cate.name}} </a>
+                            {% endif %}
+                                </div>
+                                <div class="elements-list pull-right clearfix">
+                                    <a onclick="window.location.href='mailto:{{webconfig.email}}'"
+                                        title="{{webconfig.email}}"><i class="fa fa-envelope-o"></i></a>
+                                    <a href="#" title="Inquiry now"><i class="fa fa-commenting-o"></i> Inquiry now</a>
                                 </div>
                                 <div class="clearfix"></div>
                                 <hr>
@@ -671,7 +672,7 @@
                                                 <div class="elements-list">
                                                     {% for tag in data.tags%}
                                                     {% if tag.id | string in data.content_data.tags.split(',') %}
-                                                     <a href="#">{{tag.name}} </a>
+                                                     <a href="{{url_for('home.index',tag=tag.id)}}">{{tag.name}} </a>
                                                     {% endif %}
                                                     {% endfor %}
                                                 </div>
@@ -680,43 +681,61 @@
                                         <p>{{data.content_data.info|safe}}</p>
                                 </div>
                             </div>
-                        </aside>
-                    
+                        </aside>                   
                 </div>
-
                 <div class="col-lg-12 col-sm-12 col-md-12">
                     {{data.content_data.content | safe}}
-                </div>
-
-                <div class="hidden-xs col-lg-4 col-md-12 col-sm-8 col-sm-offset-4 col-md-offset-0">
-                    <div class="vertical-divider-left-lg side">
-                        <h2 class="title">Contact Us</h2>
-                        <ul class="list-icons">
-                            <li><i class="fa fa-phone pr-5"></i>{{webconfig.phone}}</li>
-                            <li><i class="fa fa-envelope pr-5"></i><a
-                                    href="mailto:{{webconfig.email}}">{{webconfig.email}}</a></li>
-                        </ul>
-                        <ul class="social-links no-border circle">
-                            <li><a style="background-color: green;" target="_blank" href="{{webconfig.weixin}}"><i
-                                        class="fa fa-weixin"></i></a></li>
-                            <li><a style="background-color: #55acee;" target="_blank" href="{{webconfig.skype}}"><i
-                                        class="fa fa-skype"></i></a></li>
-                            <li><a style="background-color: #0c66c1;" target="_blank" href="{{webconfig.linkedin}}"><i
-                                        class="fa fa-linkedin"></i></a></li>
-                            <li><a style="background-color: #999;" target="_blank"
-                                    onclick="window.location.href='mailto:{{webconfig.email}}'"
-                                    title="{{webconfig.email}}"><i class="fa fa-envelope"></i></a></li>
-                            <li><a style="background-color: #666;" target="_blank"
-                                    onclick="window.location.href='tel:{{webconfig.phone}}'"
-                                    title="{{webconfig.phone}}"><i class="fa fa-phone"></i></a></li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+{% if data.relation_data.items %}
+<div class="section clearfix" style="background-color:#fff">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Related</h2>
+                <div class="separator-2"></div>
+                <div class="owl-carousel carousel owl-theme">
+                    {% for v in data.relation_data.items %}
+                    <div class="item image-box" data-animation-effect="fadeInLeft" data-effect-delay="300">
+                        <div class="overlay-container">
+                            <img src="{{v.cover}}" alt="{{v.title}}" style="min-height:210px;">
+                            <a href="{{url_for('home.index',nav_id = v.id,cate_id = v.category_id,content_id = v.id)}}"
+                                class="overlay"></a>
+                        </div>
+                        <a href="{{url_for('home.index',nav_id = v.id,cate_id = v.category_id,content_id = v.id)}}"
+                            class="btn btn-light-gray btn-block">{{v.title}}</a>
+                        <div class="product_tag">
+                            {% if v.tags %}
+                            {% for tag in data.tags%}
+                            {% if tag.id | string in v.tags.split(',') %}
+                            <li><a href="{{url_for('home.index',tag=tag.id)}}">{{tag.name}}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 <!-- product_page end -->
+{% else %}
+<div class="page-intro" style="margin-top: 0px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12" style="padding: 200px">
+                        Error!The information does not exist.
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
 {% endmacro %}
 
 

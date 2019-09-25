@@ -446,3 +446,7 @@ class Pagination(object):
                     yield None
                 yield num
                 last = num
+
+def diyId():
+    id = time.strftime('%Y%m%d%H%M%S') + '%d' % random.randint(100,999)
+    return id

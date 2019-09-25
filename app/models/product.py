@@ -2,14 +2,14 @@
 # Created by xuannan on 2019-01-26.
 __author__ = 'Allen xu'
 from  app.models.base import db, Base
-
+from app.expand.utils import diyId
 
 
 
 # 内容
 class Product(Base):
     __tablename__ = "product"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(32), primary_key=True,default=diyId)
     title = db.Column(db.String(100), nullable=False)
     cover = db.Column(db.String(255))
     pictures = db.Column(db.Text)

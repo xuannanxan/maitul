@@ -44,11 +44,7 @@ def tpl_extra():
     top_nav = session.get('top_nav')
     active_nav = session.get('active_nav')
     # 生成页面二维码
-    try:
-        url_code = set_qrcode(url)
-    except Exception as err:
-            print(err)
-    
+    url_code = getQrcode(url)
     data = dict(
         navs = getNavs(),
         webconfig = getWebConfig(),
@@ -129,3 +125,11 @@ def getTag():
     获取标签信息
     '''
     return Crud.get_data(Tag,Tag.sort.desc())
+
+
+def getQrcode(url):
+    try:
+        return set_qrcode(url)
+    except Exception as err:
+        print(err)
+        return False

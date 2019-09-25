@@ -98,7 +98,7 @@
                                     <li>
                                         <form role="search" class="search-box">
                                             <div class="form-group has-feedback">
-                                                <input type="text" class="form-control" placeholder="Search">
+                                                <input type="text" class="form-control" placeholder="Search"  name="search">
                                                 <i class="fa fa-search form-control-feedback"></i>
                                             </div>
                                         </form>
@@ -430,7 +430,6 @@
 <script src="{{ url_for('static',filename = 'components/magnific-popup/jquery.magnific-popup.js')}}"></script>
 <script type="text/javascript" src="{{ url_for('static',filename = 'home/js/template.js')}}"></script>
 <script>
-    enterSearch('input[name=productsSearch]',$('input[name=productsSearch]').attr('data-url'))
     $(".product_tag").find('a').each(function(){
     $(this).css({'background-color':getColor()});
   });
