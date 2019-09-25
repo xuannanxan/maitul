@@ -22,9 +22,10 @@ def index(nav_id=None,cate_id=None,content_id=None):
     if request.args.get('tag'):
         tag = int(request.args.get('tag'))    
     if request.args.get('search'):
-        tag = int(request.args.get('search'))  
+        search = str(request.args.get('search'))  
     if tag or search:
-        print(1123123123)        
+        search_data = searchData(tag,search,page)  
+        print(search_data.items)      
     if nav_id:
         nav_data = [v for v in category_data if v.id == nav_id][0]
         seo_data = seoData(nav_data.keywords,nav_data.info,nav_data.name) 
@@ -140,10 +141,9 @@ def selectSubData(tableName,query,page,num):
     num:页面数量
     '''
     sql='''
-        SELECT SQL_CALC_FOUND_ROWS {tableName}.*,GROUP_CONCAT(tag.id SEPARATOR ',') as tags
+        SELECT SQL_CALC_FOUND_ROWS {tableName}.*,GROUP_CONCAT(tag_relation.tag_id SEPARATOR ',') as tags
         FROM {tableName} 
             left join tag_relation on {tableName}.id = tag_relation.relation_id
-            left join tag on tag.id = tag_relation.tag_id
         WHERE {0} AND {tableName}.is_del = 0
         GROUP BY {tableName}.id
         ORDER BY {tableName}.sort DESC
@@ -164,10 +164,9 @@ def getSubData(tableName,id):
     id:查询的id
     '''
     sql='''
-        SELECT SQL_CALC_FOUND_ROWS p.*,GROUP_CONCAT(t.id SEPARATOR ',') as tags
+        SELECT SQL_CALC_FOUND_ROWS p.*,GROUP_CONCAT(r.tag_id SEPARATOR ',') as tags
         FROM %s as p
             left join tag_relation as r on p.id = r.relation_id
-            left join tag as t on t.id = r.tag_id
         WHERE p.id = %i;
         '''%(tableName,int(id))
     sql_data = Crud.auto_select(sql)
@@ -206,20 +205,30 @@ def noneToZero(data):
     else:
         return 0
 
-def searchData(tag,search):
+def searchData(tag_id,search,page):
     '''
     数据查询
     '''
-    sql = '''select SQL_CALC_FOUND_ROWS b.* ,c.type,GROUP_CONCAT(t.id,':',t.name SEPARATOR ',') as tags FROM
+    if tag_id:
+        tag_select = 'AND r.tag_id=%d'%(tag_id)
+    else:
+        tag_select = ''
+    sql = '''select SQL_CALC_FOUND_ROWS b.* ,c.type,GROUP_CONCAT(r.tag_id SEPARATOR ',') as tags FROM
 	(select p.id,p.title,p.cover,p.info,p.content,p.click,p.category_id,p.create_time,p.sort,p.is_del
 	from product as p  
 	union all 
 	select a.id,a.title,a.cover,a.info,a.content,a.click,a.category_id,a.create_time,a.sort,a.is_del
 	from article  as a) as b
-    left join tag_relation as r on b.id = r.relation_id
-    left join tag as t on t.id = r.tag_id
+    left join tag_relation as r on b.id = r.relation_id 
     left join category as c on c.id = b.category_id
-    WHERE b.id>3
+    WHERE (b.title LIKE '%{0}%' OR b.content LIKE '%{0}%' OR b.info LIKE '%{0}%' ) {1}
     GROUP BY b.id
     ORDER BY b.sort DESC
-    '''
+    LIMIT {2},{3};
+    '''.format(search,tag_select,(page-1)*8,8)
+    sql_data = Crud.auto_select(sql)
+    count_num = Crud.auto_select("SELECT FOUND_ROWS() as countnum")
+    count = int((count_num.first()).countnum)
+    if sql_data:
+        return Pagination(page,8,count,sql_data.fetchall())
+    return False

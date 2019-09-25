@@ -18,7 +18,7 @@ class Tag(Base):
 class TagRelation(Base):
     __tablename__ = "tag_relation"
     tag_type = db.Column(db.SmallInteger, primary_key=True)  # 标签类型，1为产品，2为文章,''为其他
-    relation_id = db.Column(db.Integer, primary_key=True)  # 关联id
+    relation_id = db.Column(db.String(32), primary_key=True)  # 关联id
     tag_id = db.Column(db.Integer, primary_key=True)
 
     def __repr__(self):
