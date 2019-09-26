@@ -3,25 +3,41 @@
 __author__ = 'Allen xu'
 from flask import render_template, request,jsonify
 from app.expand.mail import MailObj,send_email
+from app.expand.utils import Pagination
 from app.home.forms import MessageForm
 from app.models import Crud, Category,Message
-from . import home,seoData,cache
+from . import home,seoData,cache,getTag,getWebTemplate
 
-@home.route("/contact/<int:nav_id>", methods=['GET'])
-@home.route("/contact", methods=['GET'])
-@cache.memoize(60)
-def contact(nav_id=None):
-    return render_template('home/contact.html',
-                           seo_data =seoData,
-                           )
+@home.route("/search", methods=['GET'])
+def search():
+    page,tag,search,cate,templates = 1,'','','',[]
+    if request.args.get('page'):
+        page = int(request.args.get('page'))
+    if request.args.get('tag'):
+        tag = int(request.args.get('tag'))    
+    if request.args.get('cate'):
+        cate = int(request.args.get('cate'))    
+    if request.args.get('search'):
+        search = str(request.args.get('search'))  
 
-@home.route("/about/<int:nav_id>", methods=['GET'])
-@home.route("/about", methods=['GET'])
-@cache.memoize(60)
-def about(nav_id=None):
-    return render_template('home/about.html',
-                           seo_data =seoData,
-                           )
+    temp_data = {
+            "temp": {"template":'search_results'},
+            "data": {
+                "search_data":searchData(cate,tag,search,page),
+                "tags":getTag()
+                }
+        }
+    templates.append(temp_data)
+        
+    return render_template("home/%s/home.html"%getWebTemplate(),
+            seo_data = seoData(search,search,search) ,
+            templates = templates,
+            param = {
+            'nav_data':'',
+            'cate_data':'',
+            'content_data':''
+            } 
+            ) 
 
 @home.route("/message", methods=['POST'])
 def message():
@@ -48,4 +64,36 @@ def message():
             return {"code":1, "msg": "Message submitted successfully, thank you for your support, we will contact you as soon as possible!"}
         return {"code": 0, "msg": 'System error, message submitted failure, please call our phone.'}
     return {"code": 0, "msg": form.get_errors()}
+
+
+
+def searchData(cate_id,tag_id,search,page):
+    '''
+    数据查询
+    '''
+    cate_select,tag_select = '',''
+    if cate_id:
+        cate_select = 'AND b.category_id=%d'%(cate_id)
+    if tag_id:
+        tag_select = 'AND r.tag_id=%d'%(tag_id)
+    sql = '''select SQL_CALC_FOUND_ROWS b.* ,c.type,GROUP_CONCAT(r.tag_id SEPARATOR ',') as tags ,c.pid as cate_pid
+    FROM
+	(select p.id,p.title,p.cover,p.info,p.content,p.click,p.category_id,p.create_time,p.sort,p.is_del
+	from product as p  
+	union all 
+	select a.id,a.title,a.cover,a.info,a.content,a.click,a.category_id,a.create_time,a.sort,a.is_del
+	from article  as a) as b
+    left join tag_relation as r on b.id = r.relation_id 
+    left join category as c on c.id = b.category_id
+    WHERE (b.title LIKE '%{0}%' OR b.content LIKE '%{0}%' OR b.info LIKE '%{0}%' ) {1} {2}
+    GROUP BY b.id
+    ORDER BY b.sort DESC
+    LIMIT {3},{4};
+    '''.format(search,tag_select,cate_select,(page-1)*8,8)
+    sql_data = Crud.auto_select(sql)
+    count_num = Crud.auto_select("SELECT FOUND_ROWS() as countnum")
+    count = int((count_num.first()).countnum)
+    if sql_data:
+        return Pagination(page,8,count,sql_data.fetchall())
+    return False
    

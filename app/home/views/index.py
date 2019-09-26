@@ -15,35 +15,10 @@ from . import home,seoData,cache,getWebTemplate,getCategory,getTemplates,getTag,
 def index(nav_id=None,cate_id=None,content_id=None):
     # 页码
     url = request.url
-    page,artpage,seo_data,templates, category_data,all_templates,tag,search,cate= 1,1,{},[],getCategory(),getTemplates(),'','',''
+    page,artpage,seo_data,templates, category_data,all_templates= 1,1,{},[],getCategory(),getTemplates()
     nav_data,cate_data,content_data = {'id':nav_id},{'id':cate_id},{'id':content_id}
     if request.args.get('page'):
         page = int(request.args.get('page'))
-    if request.args.get('tag'):
-        tag = int(request.args.get('tag'))    
-    if request.args.get('cate'):
-        cate = int(request.args.get('cate'))    
-    if request.args.get('search'):
-        search = str(request.args.get('search'))  
-    if tag or search:
-        temp_data = {
-            "temp": {"template":'search_results'},
-            "data": {
-                "search_data":searchData(cate_id,tag,search,page),
-                "tags":getTag()
-                }
-        }
-        templates.append(temp_data)
-        
-        return render_template("home/%s/home.html"%getWebTemplate(),
-            seo_data = seoData(search,search,search) ,
-            templates = templates,
-            param = {
-            'nav_data':'',
-            'cate_data':'',
-            'content_data':''
-            } 
-            ) 
     if nav_id:
         nav_data = [v for v in category_data if v.id == nav_id][0]
         seo_data = seoData(nav_data.keywords,nav_data.info,nav_data.name) 
@@ -224,32 +199,5 @@ def noneToZero(data):
     else:
         return 0
 
-def searchData(cate_id,tag_id,search,page):
-    '''
-    数据查询
-    '''
-    if tag_id:
-        tag_select = 'AND r.tag_id=%d'%(tag_id)
-    else:
-        tag_select = ''
-    sql = '''select SQL_CALC_FOUND_ROWS b.* ,c.type,GROUP_CONCAT(r.tag_id SEPARATOR ',') as tags ,c.pid as cate_pid
-    FROM
-	(select p.id,p.title,p.cover,p.info,p.content,p.click,p.category_id,p.create_time,p.sort,p.is_del
-	from product as p  
-	union all 
-	select a.id,a.title,a.cover,a.info,a.content,a.click,a.category_id,a.create_time,a.sort,a.is_del
-	from article  as a) as b
-    left join tag_relation as r on b.id = r.relation_id 
-    left join category as c on c.id = b.category_id
-    WHERE (b.title LIKE '%{0}%' OR b.content LIKE '%{0}%' OR b.info LIKE '%{0}%' ) {1}
-    GROUP BY b.id
-    ORDER BY b.sort DESC
-    LIMIT {2},{3};
-    '''.format(search,tag_select,(page-1)*8,8)
-    sql_data = Crud.auto_select(sql)
-    count_num = Crud.auto_select("SELECT FOUND_ROWS() as countnum")
-    count = int((count_num.first()).countnum)
-    if sql_data:
-        return Pagination(page,8,count,sql_data.fetchall())
-    return False
+
 

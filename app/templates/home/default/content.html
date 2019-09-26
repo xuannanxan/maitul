@@ -793,11 +793,11 @@
         <div class="container">
             <div class="col-md-8 hidden-xs">
                 <div class="filters margin-bottom-clear">
-                    <ul class="nav nav-pills">
-                        {% for v in data.tags[:5] %}
-                        <li><a href="{{url_for('home.index',tag=v.id)}}">{{v.name}}</a></li>
-                        {% endfor %}
-                    </ul>
+                        <div class="elements-list">
+                                {% for v in data.tags[:8] %}
+                                <li><a href="{{url_for('home.index',tag=v.id)}}">{{v.name}}</a></li>
+                                {% endfor %}
+                                </div>
                 </div>
             </div>
             <div class="col-md-4">
