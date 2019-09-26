@@ -12,6 +12,9 @@
 <!-- cate_page 栏目单页，用栏目数据作为数据来源 -->
 <!-- tabs_page tabs页，用内容详情数据作为数据来源 -->
 <!-- message 留言表单 -->
+<!-- search_results 搜索结果 -->
+<!-- product_page 产品详情页 -->
+<!-- article_page 文字详情页 -->
 {% import "home/default/pagination.html" as pagination %}
 {% macro banner(data,temp,param,webconfig) -%}
 {% if data.sub_data %}
@@ -97,6 +100,7 @@
             {% endif %}
             <!-- portfolio items start -->
             <div class="col-md-12 isotope-container grid-space-20" style="display: block; position: relative;">
+                    {% if data.sub_data.items %}
                 {% for v in data.sub_data.items %}
                 <div class="col-sm-6 col-md-3 isotope-item web-design">
                     <div class="image-box">
@@ -120,6 +124,9 @@
                 </div>
                 {% endfor %}
                 {{ pagination.page(data.sub_data,"home.index",nav_id = param.nav_data.id,cate_id = param.cate_data.id,content_id = param.content_data.id) }}
+                {% else %}
+                <p>Can't find any information.</p>
+                {% endif %}
             </div>
             <!-- portfolio items end -->
         </div>
@@ -154,6 +161,7 @@
                 </div>
             </div>
             <div class="main col-md-12">
+                {% if data.sub_data.items %}
                 {% for v in data.sub_data.items %}
                 <article class="clearfix blogpost object-non-visible animated object-visible fadeInUpSmall"
                     data-animation-effect="fadeInUpSmall" data-effect-delay="200">
@@ -190,6 +198,9 @@
                 </article>
                 {% endfor%}
                 {{ pagination.page(data.sub_data,"home.index",nav_id = param.nav_data.id,cate_id = param.cate_data.id,content_id = param.content_data.id) }}
+                {% else %}
+                <p>Can't find any information.</p>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -203,13 +214,11 @@
     <div class="container">
         <div class="col-md-8 hidden-xs">
             <div class="filters margin-bottom-clear">
-                <ul class="nav nav-pills">
-
-                    {% for v in data.tags[:5] %}
+                    <div class="elements-list">
+                    {% for v in data.tags[:8] %}
                     <li><a href="{{url_for('home.index',tag=v.id)}}">{{v.name}}</a></li>
                     {% endfor %}
-
-                </ul>
+                    </div>
             </div>
         </div>
         <div class="col-md-4">
@@ -271,7 +280,7 @@
                 {% endif%}
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="row about">
+                        <div class="row">
                             <div class="col-md-4 col-sm-4">
                                 <img src="{{data.cover}}" alt="">
                             </div>
@@ -701,11 +710,11 @@
                     {% for v in data.relation_data.items %}
                     <div class="item image-box" data-animation-effect="fadeInLeft" data-effect-delay="300">
                         <div class="overlay-container">
-                            <img src="{{v.cover}}" alt="{{v.title}}" style="min-height:210px;">
-                            <a href="{{url_for('home.index',nav_id = v.id,cate_id = v.category_id,content_id = v.id)}}"
+                            <img src="{{v.cover}}" alt="{{v.title}}" style="max-height:198px;">
+                            <a href="{{url_for('home.index',nav_id = v.cate_pid,cate_id = v.category_id,content_id = v.id)}}"
                                 class="overlay"></a>
                         </div>
-                        <a href="{{url_for('home.index',nav_id = v.id,cate_id = v.category_id,content_id = v.id)}}"
+                        <a href="{{url_for('home.index',nav_id = v.cate_pid,cate_id = v.category_id,content_id = v.id)}}"
                             class="btn btn-light-gray btn-block">{{v.title}}</a>
                         <div class="product_tag">
                             {% if v.tags %}
@@ -775,4 +784,95 @@
     </div>
 </section>
 <!-- article_page end -->
+{% endmacro %}
+
+
+{% macro search_results(data,temp,param,webconfig) -%}
+<!-- search_results start -->
+<div class="section text-muted clearfix" style="background-color:{{temp.bgcolor}}">
+        <div class="container">
+            <div class="col-md-8 hidden-xs">
+                <div class="filters margin-bottom-clear">
+                    <ul class="nav nav-pills">
+                        {% for v in data.tags[:5] %}
+                        <li><a href="{{url_for('home.index',tag=v.id)}}">{{v.name}}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                    <form role="search" class="search-box" style="margin:0;">
+                            <div class="form-group has-feedback" style="margin-bottom: 0px;">
+                                <input type="text" class="form-control" placeholder="Search"  name="search">
+                                <i class="fa fa-search form-control-feedback"></i>
+                            </div>
+                        </form>
+            </div>
+        </div>
+    </div>
+<div class="section  clearfix object-non-visible animated object-visible fadeInUpSmall"
+    style="background-color:{{temp.bgcolor}}" data-animation-effect="fadeInUpSmall" data-effect-delay="300">
+    <div class="container">
+        <div class="row">
+            <div class="main col-md-12">
+                {% if data.search_data.items %}
+                {% for v in data.search_data.items %}
+                <article class="clearfix blogpost object-non-visible animated object-visible fadeInUpSmall"
+                    data-animation-effect="fadeInUpSmall" data-effect-delay="200">
+                    <div class="blogpost-body">
+                        {% if v.type ==1 %}
+                        <div class="row">
+                                <div class="col-md-4 col-sm-4">
+                                    <img src="{{v.cover}}" alt="">
+                                </div>
+                                <div class="col-md-8 col-sm-8">
+                                        <header>
+                                                <h2 class="title"><a
+                                                        href="{{url_for('home.index',nav_id = v.cate_pid,cate_id = v.category_id,content_id = v.id)}}">{{v.title}}</a>
+                                                </h2>
+                                            </header>
+                                        <p>{{v.info|safe}}</p>
+                                </div>
+                            </div>
+                        {% else %}
+                        <div class="post-info">
+                                <span class="day">{{v.create_time.strftime('%d')}}</span>
+                                <span class="month">{{v.create_time.strftime('%m/%y')}}</span>
+                            </div>
+                            <div class="blogpost-content">
+                                <header>
+                                    <h2 class="title"><a
+                                            href="{{url_for('home.index',nav_id = v.cate_pid,cate_id = v.category_id,content_id = v.id)}}">{{v.title}}</a>
+                                    </h2>
+                                </header>
+                                <p>{{v.info|safe}}</p>
+                            </div>
+                            {% endif %}
+                    </div>
+                    <footer class="clearfix">
+                        <ul class="links pull-left">
+                                <div class="elements-list">
+                                        {% if v.tags %}
+                                        {% for tag in data.tags%}
+                                        {% if tag.id | string in v.tags.split(',') %}
+                                        <a href="{{url_for('home.index',tag=tag.id)}}"> {{tag.name}} </a>
+                                        {% endif %}
+                                        {% endfor %}
+                                        {% endif %}              
+                                </div>
+                        </ul>
+                        <a class="pull-right link"
+                            href="{{url_for('home.index',nav_id = v.cate_pid,cate_id = v.category_id,content_id = v.id)}}"><span>Read
+                                more</span></a>
+                    </footer>
+                </article>
+                {% endfor%}
+                {{ pagination.page(data.search_data,"home.index") }}
+                {% else %}
+                <p>Can't find any information.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
 {% endmacro %}

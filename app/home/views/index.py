@@ -15,17 +15,35 @@ from . import home,seoData,cache,getWebTemplate,getCategory,getTemplates,getTag,
 def index(nav_id=None,cate_id=None,content_id=None):
     # 页码
     url = request.url
-    page,artpage,seo_data,templates, category_data,all_templates,tag,search= 1,1,{},[],getCategory(),getTemplates(),'',''
+    page,artpage,seo_data,templates, category_data,all_templates,tag,search,cate= 1,1,{},[],getCategory(),getTemplates(),'','',''
     nav_data,cate_data,content_data = {'id':nav_id},{'id':cate_id},{'id':content_id}
     if request.args.get('page'):
         page = int(request.args.get('page'))
     if request.args.get('tag'):
         tag = int(request.args.get('tag'))    
+    if request.args.get('cate'):
+        cate = int(request.args.get('cate'))    
     if request.args.get('search'):
         search = str(request.args.get('search'))  
     if tag or search:
-        search_data = searchData(tag,search,page)  
-        print(search_data.items)      
+        temp_data = {
+            "temp": {"template":'search_results'},
+            "data": {
+                "search_data":searchData(cate_id,tag,search,page),
+                "tags":getTag()
+                }
+        }
+        templates.append(temp_data)
+        
+        return render_template("home/%s/home.html"%getWebTemplate(),
+            seo_data = seoData(search,search,search) ,
+            templates = templates,
+            param = {
+            'nav_data':'',
+            'cate_data':'',
+            'content_data':''
+            } 
+            ) 
     if nav_id:
         nav_data = [v for v in category_data if v.id == nav_id][0]
         seo_data = seoData(nav_data.keywords,nav_data.info,nav_data.name) 
@@ -141,9 +159,10 @@ def selectSubData(tableName,query,page,num):
     num:页面数量
     '''
     sql='''
-        SELECT SQL_CALC_FOUND_ROWS {tableName}.*,GROUP_CONCAT(tag_relation.tag_id SEPARATOR ',') as tags
+        SELECT SQL_CALC_FOUND_ROWS {tableName}.*,GROUP_CONCAT(tag_relation.tag_id SEPARATOR ',') as tags,category.pid as cate_pid
         FROM {tableName} 
             left join tag_relation on {tableName}.id = tag_relation.relation_id
+            left join category on category.id = {tableName}.category_id
         WHERE {0} AND {tableName}.is_del = 0
         GROUP BY {tableName}.id
         ORDER BY {tableName}.sort DESC
@@ -205,7 +224,7 @@ def noneToZero(data):
     else:
         return 0
 
-def searchData(tag_id,search,page):
+def searchData(cate_id,tag_id,search,page):
     '''
     数据查询
     '''
@@ -213,7 +232,8 @@ def searchData(tag_id,search,page):
         tag_select = 'AND r.tag_id=%d'%(tag_id)
     else:
         tag_select = ''
-    sql = '''select SQL_CALC_FOUND_ROWS b.* ,c.type,GROUP_CONCAT(r.tag_id SEPARATOR ',') as tags FROM
+    sql = '''select SQL_CALC_FOUND_ROWS b.* ,c.type,GROUP_CONCAT(r.tag_id SEPARATOR ',') as tags ,c.pid as cate_pid
+    FROM
 	(select p.id,p.title,p.cover,p.info,p.content,p.click,p.category_id,p.create_time,p.sort,p.is_del
 	from product as p  
 	union all 
@@ -232,3 +252,4 @@ def searchData(tag_id,search,page):
     if sql_data:
         return Pagination(page,8,count,sql_data.fetchall())
     return False
+
