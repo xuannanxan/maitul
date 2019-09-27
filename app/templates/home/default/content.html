@@ -115,7 +115,7 @@
                             {% if v.tags %}
                             {% for tag in data.tags%}
                             {% if tag.id | string in v.tags.split(',') %}
-                            <li><a href="{{url_for('home.index',tag=tag.id)}}">{{tag.name}}</a></li>
+                            <li><a href="{{url_for('home.search',tag=tag.id)}}">{{tag.name}}</a></li>
                             {% endif %}
                             {% endfor %}
                             {% endif %}
@@ -185,7 +185,7 @@
                                 {% if v.tags %}
                                 {% for tag in data.tags%}
                                 {% if tag.id | string in v.tags.split(',') %}
-                                <a href="{{url_for('home.index',tag=tag.id)}}"> {{tag.name}} </a>
+                                <a href="{{url_for('home.search',tag=tag.id)}}"> {{tag.name}} </a>
                                 {% endif %}
                                 {% endfor %}
                                 {% endif %}
@@ -216,18 +216,18 @@
             <div class="filters margin-bottom-clear">
                     <div class="elements-list">
                     {% for v in data.tags[:8] %}
-                    <li><a href="{{url_for('home.index',tag=v.id)}}">{{v.name}}</a></li>
+                    <li><a href="{{url_for('home.search',tag=v.id)}}">{{v.name}}</a></li>
                     {% endfor %}
                     </div>
             </div>
         </div>
         <div class="col-md-4">
-                <form role="search" class="search-box" style="margin:0;">
+               
                         <div class="form-group has-feedback" style="margin-bottom: 0px;">
-                            <input type="text" class="form-control" placeholder="Search"  name="search">
+                            <input type="text" class="form-control" placeholder="Search"  name="search" data-url="{{url_for('home.search')}}">
                             <i class="fa fa-search form-control-feedback"></i>
                         </div>
-                    </form>
+                   
         </div>
     </div>
 </div>
@@ -681,7 +681,7 @@
                                                 <div class="elements-list">
                                                     {% for tag in data.tags%}
                                                     {% if tag.id | string in data.content_data.tags.split(',') %}
-                                                     <a href="{{url_for('home.index',tag=tag.id)}}">{{tag.name}} </a>
+                                                     <a href="{{url_for('home.search',tag=tag.id)}}">{{tag.name}} </a>
                                                     {% endif %}
                                                     {% endfor %}
                                                 </div>
@@ -720,7 +720,7 @@
                             {% if v.tags %}
                             {% for tag in data.tags%}
                             {% if tag.id | string in v.tags.split(',') %}
-                            <li><a href="{{url_for('home.index',tag=tag.id)}}">{{tag.name}}</a></li>
+                            <li><a href="{{url_for('home.search',tag=tag.id)}}">{{tag.name}}</a></li>
                             {% endif %}
                             {% endfor %}
                             {% endif %}
@@ -794,19 +794,22 @@
             <div class="col-md-8 hidden-xs">
                 <div class="filters margin-bottom-clear">
                         <div class="elements-list">
-                                {% for v in data.tags[:8] %}
-                                <li><a href="{{url_for('home.index',tag=v.id)}}">{{v.name}}</a></li>
+                                {% for tag in data.tags[:8]%}
+                               
+                                 <a href="{{url_for('home.search',query=param.search,tag=tag.id,cate=param.cate)}}">{{tag.name}} </a>
+                              
                                 {% endfor %}
-                                </div>
+                            </div>
                 </div>
             </div>
             <div class="col-md-4">
-                    <form role="search" class="search-box" style="margin:0;">
                             <div class="form-group has-feedback" style="margin-bottom: 0px;">
-                                <input type="text" class="form-control" placeholder="Search"  name="search">
+                                <input type="text" class="form-control" placeholder="Search"  
+                                name="select" data-url="{{url_for('home.search')}}" 
+                                data-tag="{{param.tag}}" data-cate="{{param.cate}}"
+                                value="{{param.search}}">
                                 <i class="fa fa-search form-control-feedback"></i>
                             </div>
-                        </form>
             </div>
         </div>
     </div>
@@ -855,7 +858,7 @@
                                         {% if v.tags %}
                                         {% for tag in data.tags%}
                                         {% if tag.id | string in v.tags.split(',') %}
-                                        <a href="{{url_for('home.index',tag=tag.id)}}"> {{tag.name}} </a>
+                                        <a href="{{url_for('home.search',tag=tag.id)}}"> {{tag.name}} </a>
                                         {% endif %}
                                         {% endfor %}
                                         {% endif %}              

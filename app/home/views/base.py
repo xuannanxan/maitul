@@ -17,8 +17,8 @@ def search():
         tag = int(request.args.get('tag'))    
     if request.args.get('cate'):
         cate = int(request.args.get('cate'))    
-    if request.args.get('search'):
-        search = str(request.args.get('search'))  
+    if request.args.get('query'):
+        search = str(request.args.get('query'))  
 
     temp_data = {
             "temp": {"template":'search_results'},
@@ -35,7 +35,10 @@ def search():
             param = {
             'nav_data':'',
             'cate_data':'',
-            'content_data':''
+            'content_data':'',
+            'tag':tag,
+            'cate':cate,
+            'search':search
             } 
             ) 
 
@@ -90,6 +93,7 @@ def searchData(cate_id,tag_id,search,page):
     ORDER BY b.sort DESC
     LIMIT {3},{4};
     '''.format(search,tag_select,cate_select,(page-1)*8,8)
+    print(sql)
     sql_data = Crud.auto_select(sql)
     count_num = Crud.auto_select("SELECT FOUND_ROWS() as countnum")
     count = int((count_num.first()).countnum)

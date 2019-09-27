@@ -296,16 +296,36 @@ function initSelectBar(obj) {
 		console.log(result)
         return result;
     }
-
+	$("input[name=search]").keypress(function(e){
+		if (e.which == 13) {
+			url = $(this).attr('data-url')
+			window.location.href = url+"?query="+$(this).val()
+		}
+	});
+	$("input[name=select]").keypress(function(e){
+		if (e.which == 13) {
+			url = $(this).attr('data-url')
+			cate = $(this).attr('data-cate')
+			tag = $(this).attr('data-tag')
+			var query = ''
+			if(cate){
+				query = query + '&cate='+cate
+			}
+			if(tag){
+				query = query + '&tag='+tag
+			}
+			window.location.href = url+"?query="+$(this).val()+query
+		}
+	});
 	function enterSearch(obj,url=window.location.pathname){
 		$(obj).keypress(function (e) {
 						if (e.which == 13) {
-							window.location.href = url+"?search="+$(this).val()
+							window.location.href = url+"?query="+$(this).val()
 						}
 		});
 	}
 	function btnSearch(obj,url=window.location.pathname){
-		window.location.href = url+"?search="+$(obj).prev().val()
+		window.location.href = url+"?query="+$(obj).prev().val()
 	}
 　　function GetUrlRelativePath()
 　　{
