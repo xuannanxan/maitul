@@ -1742,14 +1742,9 @@ tbody {
 	margin-right: 0;
 	padding-right: 0;
 }
-
-.elements-list >a{
+.elements-list .active{
 	color: #38c7f4;
-	text-decoration:none;
-}
-.elements-list >a:hover{
-	color: #0ea4b7;
-	font-weight:400;
+	font-weight: 600;
 }
 .price {
 	font-size: 22px;
@@ -5258,10 +5253,10 @@ ul.tweets li span {
 File Description: Light Blue Skin
 ----------------------------------------------------------------------------- */
 a, .text-default {
-	color: #38c7f4;
+	color: #666666;
 }
 a:hover {
-	color: #17b5e5;
+	color: #38c7f4;
 }
 .footer-content a,
 .subfooter a {

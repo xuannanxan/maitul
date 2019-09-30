@@ -38,6 +38,7 @@ class Crud:
         try:
             data = db.session.execute(sql)
             db.session.commit()
+            db.session.close()
             return data
         except Exception as e:
             db.session.rollback()
@@ -53,6 +54,7 @@ class Crud:
         """
         try:
             data = db.session.execute(sql)
+            db.session.close()
             return data
         except Exception as e:
             db.session.rollback()

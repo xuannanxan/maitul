@@ -28,7 +28,6 @@ def search():
                 }
         }
     templates.append(temp_data)
-        
     return render_template("home/%s/home.html"%getWebTemplate(),
             seo_data = seoData(search,search,search) ,
             templates = templates,
@@ -93,7 +92,6 @@ def searchData(cate_id,tag_id,search,page):
     ORDER BY b.sort DESC
     LIMIT {3},{4};
     '''.format(search,tag_select,cate_select,(page-1)*8,8)
-    print(sql)
     sql_data = Crud.auto_select(sql)
     count_num = Crud.auto_select("SELECT FOUND_ROWS() as countnum")
     count = int((count_num.first()).countnum)

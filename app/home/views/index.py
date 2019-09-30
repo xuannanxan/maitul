@@ -4,17 +4,18 @@
 from flask import render_template,g,request
 from app.expand.utils import object_to_dict,Pagination
 from app.models import Crud,Product,Category,Template,Ad,Article,TagRelation
-from . import home,seoData,cache,getWebTemplate,getCategory,getTemplates,getTag,getQrcode
+from . import home,seoData,cache,getWebTemplate,getCategory,getTemplates,getTag,getQrcode,CLICKS_COUNT
 
 
 @home.route("/", methods=['GET'])
 @home.route("/<int:nav_id>", methods=['GET'])
 @home.route("/<int:nav_id>/<int:cate_id>", methods=['GET'])
 @home.route("/<int:nav_id>/<int:cate_id>/<int:content_id>", methods=['GET'])
-#@cache.cached(key_prefix='index')#设置一个key_prefix来作为标记,调用cache.delete('index')来删除缓存来保证用户访问到的内容是最新的
+@cache.memoize(60)
 def index(nav_id=None,cate_id=None,content_id=None):
     # 页码
     url = request.url
+    rule = str(request.path)
     page,artpage,seo_data,templates, category_data,all_templates= 1,1,{},[],getCategory(),getTemplates()
     nav_data,cate_data,content_data = {'id':nav_id},{'id':cate_id},{'id':content_id}
     if request.args.get('page'):
@@ -34,6 +35,16 @@ def index(nav_id=None,cate_id=None,content_id=None):
         relation_cate,relation_data = {},[]   
         if tableName:
             content_data = getSubData(tableName,content_id)
+            #点击量
+            click = 0
+            #如果有缓存的点击量，更新点击量
+            if rule in CLICKS_COUNT:
+                click = int(content_data.click) + int(CLICKS_COUNT[rule])
+                # 如果记录了缓存的更新，就把数据重置
+                CLICKS_COUNT[rule] = 0
+            else:
+                click = int(content_data.click)+1
+            Crud.auto_commit('UPDATE {} SET click = {} WHERE id = {} '.format(tableName,click,content_id))
             if not content_data.id:
                 return render_template('admin/404.html')
             seo_data = seoData(content_data.keywords,content_data.description,content_data.title) 
@@ -43,9 +54,10 @@ def index(nav_id=None,cate_id=None,content_id=None):
             str_tag_content=''
             if content_data.tags:
                 tag_content = Crud.search_data(TagRelation,TagRelation.tag_id.in_((content_data.tags).split(',')),'tag_id')
-                #关联数据
-                str_tag_content = ','.join([str(x) for x in [v.relation_id for v in tag_content if v.tag_type==cate_data.type]])
-            relation_data = selectSubData(tableName,'{tableName}.relation_id={0} OR {tableName}.id in ({1}) AND {tableName}.id<>{2}'.format(noneToZero(content_data.relation_id),str_tag_content,content_data.id,tableName=tableName),1,8)
+                #关联数据查询语句
+                if tag_content:
+                    str_tag_content = 'OR {0}.id in ({1})' .format(tableName,','.join([str(x) for x in [v.relation_id for v in tag_content if v.tag_type==cate_data.type]]))
+            relation_data = selectSubData(tableName,'{tableName}.relation_id={0} {1} AND {tableName}.id<>{2}'.format(noneToZero(content_data.relation_id),str_tag_content,content_data.id,tableName=tableName),1,8)
             temp_data = {
                 "temp": {"template":getContentTemplate(int(cate_data.type))},
                 "data": {
@@ -198,6 +210,5 @@ def noneToZero(data):
         return data
     else:
         return 0
-
 
 
