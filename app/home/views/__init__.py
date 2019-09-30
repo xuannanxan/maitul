@@ -40,17 +40,13 @@ def tpl_extra():
     url =request.url
     ip=request.remote_addr
     current_app.logger.info("【%s】-%s"%(ip,url))
-    #当前页面的最上级栏目
-    top_nav = session.get('top_nav')
-    active_nav = session.get('active_nav')
     # 生成页面二维码
     url_code = getQrcode(url)
     data = dict(
         navs = getNavs(),
         webconfig = getWebConfig(),
-        top_nav = top_nav,
-        active_nav = active_nav,
-        url_code = url_code
+        url_code = url_code,
+        email = session.get('email')
     )
     return data
 

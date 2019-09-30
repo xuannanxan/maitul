@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*- 
 # Created by xuannan on 2019-01-01.
 #从当前模块__init__导入蓝图对象
-from flask import render_template,g,request
+from flask import render_template,g,request,session
 from app.expand.utils import object_to_dict,Pagination
 from app.models import Crud,Product,Category,Template,Ad,Article,TagRelation
 from . import home,seoData,cache,getWebTemplate,getCategory,getTemplates,getTag,getQrcode,CLICKS_COUNT
@@ -121,6 +121,7 @@ def index(nav_id=None,cate_id=None,content_id=None):
             elif v.data_type == 2:
                 data['sub_data'] = Crud.search_data(Ad,Ad.space_id == v.data_id,Ad.sort.desc(),v.data_num)
             data['tags'] = getTag()
+            data['email'] = session.get('email')
             temp_data['data'] = data
             # 全部页面数据压入数组
             templates.append(temp_data)

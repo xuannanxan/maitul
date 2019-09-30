@@ -6,15 +6,13 @@
 <!--<![endif]-->
 <head>
     <meta charset="utf-8">
-    <title>{{webconfig.webname+(("-"+active_nav.name) if active_nav.name else '')+(("-"+seo_data.title) if
+    <title>{{webconfig.webname+(("-"+seo_data.title) if
         seo_data.title else '')}}</title>
     <meta name="keywords"
-          content="{{webconfig.webkeywords+(('-'+active_nav.keywords) if active_nav.keywords else '')+(('-'+seo_data.keywords) if seo_data.keywords else '')}}">
+          content="{{webconfig.webkeywords+(('-'+seo_data.keywords) if seo_data.keywords else '')}}">
     <meta name="description" content="
     {% if seo_data.description %}
         {{seo_data.description}}
-    {% elif active_nav.info %}
-        {{active_nav.info}}
     {% else %}
         {{webconfig.webdescription}}
     {% endif %}
@@ -344,7 +342,7 @@
                                     <form role="form" id="message-form">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                             <div class="form-group has-feedback">
-                                                <input type="email" class="form-control" placeholder="Email" name="email">
+                                                <input type="email" class="form-control" placeholder="Email" name="email"  value="{% if email %}{{email}}{% endif %}" >
                                                 <i class="fa fa-envelope-o form-control-feedback"></i>
                                             </div>
 

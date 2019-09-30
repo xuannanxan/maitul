@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*- 
 # Created by xuannan on 2019-03-24.
 __author__ = 'Allen xu'
-from flask import render_template, request,jsonify
+from flask import render_template, request,jsonify,session
 from app.expand.mail import MailObj,send_email
 from app.expand.utils import Pagination
 from app.home.forms import MessageForm
@@ -52,6 +52,7 @@ def message():
     if form.validate():
         message_data = Crud.add(Message,dict_data)
         if message_data:
+            session['email'] = message_data.email
             re_mail = MailObj()
             re_mail.recipients.append(message_data.email)
             send_email(re_mail)
