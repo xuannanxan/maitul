@@ -121,7 +121,6 @@ def index(nav_id=None,cate_id=None,content_id=None):
             elif v.data_type == 2:
                 data['sub_data'] = Crud.search_data(Ad,Ad.space_id == v.data_id,Ad.sort.desc(),v.data_num)
             data['tags'] = getTag()
-            data['email'] = session.get('email')
             temp_data['data'] = data
             # 全部页面数据压入数组
             templates.append(temp_data)

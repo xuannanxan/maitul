@@ -39,14 +39,14 @@ def make_cache_key(*args, **kwargs):
 def tpl_extra():
     url =request.url
     ip=request.remote_addr
-    current_app.logger.info("【%s】-%s"%(ip,url))
+    webconfig = getWebConfig()
+    current_app.logger.info("【%s】【%s】-%s"%(ip,session.get('user_email'),url))
     # 生成页面二维码
     url_code = getQrcode(url)
     data = dict(
         navs = getNavs(),
-        webconfig = getWebConfig(),
+        webconfig = webconfig,
         url_code = url_code,
-        email = session.get('email')
     )
     return data
 
