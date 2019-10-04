@@ -5367,6 +5367,13 @@ fieldset[disabled] .btn-default {
 	border-color: #17b5e5;
 }
 
+.btn-default.disabled,
+.btn-default[disabled],
+fieldset[disabled] .btn-default:hover {
+	background-color: #17b5e5;
+	border-color: #17b5e5;
+}
+
 /* Button with transparent bg
 ---------------------------------- */
 .btn-white {
@@ -6229,4 +6236,16 @@ a.overlay i {
 }
 .owl-nav >button{
 	z-index: 999;
+}
+.btn-default.disabled.focus,
+ .btn-default.disabled:focus, 
+ .btn-default.disabled:hover, 
+ .btn-default[disabled].focus, 
+ .btn-default[disabled]:focus, 
+ .btn-default[disabled]:hover, 
+ fieldset[disabled] .btn-default.focus, 
+ fieldset[disabled] .btn-default:focus,
+  fieldset[disabled] .btn-default:hover {
+    background-color: #ccc; 
+    border-color: #ccc;
 }
