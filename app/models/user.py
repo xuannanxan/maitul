@@ -3,10 +3,11 @@
 __author__ = 'Allen xu'
 from  app.models.base import db,Base,login_manager
 from werkzeug.security import check_password_hash,generate_password_hash
+from app.expand.utils import diyId
 # 会员的数据模型
 class User(Base):
     __tablename__ = "user"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(32), primary_key=True,default=diyId)
     email = db.Column(db.String(100), unique=True)
     _password = db.Column(db.String(100))
     name = db.Column(db.String(100))
@@ -14,7 +15,7 @@ class User(Base):
     info = db.Column(db.Text)
     status = db.Column(db.SmallInteger, default=1)  # 用户状态，第一位 1为已激活 0为禁用
     profile = db.Column(db.String(255))
-   
+    address = db.Column(db.String(255))
 
 
     def __repr__(self):
@@ -47,12 +48,12 @@ class User(Base):
     # 继承了flask-login的UserMixin，主键为id，无需重新定义
     # def get_id(self):
     #     return self.id
-@login_manager.user_loader
-def get_User(id):
-    """
-    返回用户模型
-    :param id:
-    :return:
-    """
-    return User.query.get(int(id))
+# @login_manager.user_loader
+# def get_User(id):
+#     """
+#     返回用户模型
+#     :param id:
+#     :return:
+#     """
+#     return User.query.get(int(id))
 

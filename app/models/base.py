@@ -21,7 +21,7 @@ class Base(db.Model):
     #所有模型继承的字段
     create_time = db.Column(db.DateTime, nullable=True,default=datetime.now)
     update_time = db.Column(db.DateTime, nullable=True, default=datetime.now, onupdate=datetime.now)  # 记录的更新时间
-    is_del = db.Column(db.Integer, default=0)  # 状态，0为未删除，其他为已删除
+    is_del = db.Column(db.String(32), default=0)  # 状态，0为未删除，其他为已删除
     def set_attrs(self,attrs_dict):
         for key,value in attrs_dict.items():
             if hasattr(self,key) and key != "id":

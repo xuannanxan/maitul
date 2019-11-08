@@ -10,6 +10,7 @@ from app.models.product import Product
 from app.models.tag import Tag,TagRelation
 from app.models.ad import Ad,Adspace
 from app.models.admin import Admin
+from app.models.user import User
 from app.models.menu import Menu
 from app.models.conf import Conf
 from app.models.reptile import ReptileRequest,ReptileList
@@ -39,6 +40,7 @@ ReptileRequest=ReptileRequest
 ReptileList=ReptileList
 TagRelation =TagRelation
 Template = Template
+User = User
 and_ = and_
 or_ = or_
 not_ = not_
