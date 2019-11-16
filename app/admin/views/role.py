@@ -23,7 +23,7 @@ def role_list(page=None):
     WHERE auth.is_del = 0
     ORDER BY menu.sort DESC;
     '''
-    data = Crud.auto_commit(sql)  
+    data = Crud.auto_select(sql)  
     menu_auths = rows_by_date(data.fetchall(),'menu_name')
     page_data = Crud.get_data_paginate(Role, Role.create_time.asc(), page, 10)
     return render_template("admin/role/role_list.html",page_data = page_data,menu_auths = menu_auths)

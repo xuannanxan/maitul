@@ -44,7 +44,7 @@ def admin_list(page=None):
     WHERE admin.is_del = 0
     ORDER BY admin.create_time ASC
     '''
-    data = Crud.auto_commit(sql)
+    data = Crud.auto_select(sql)
     role_data = Crud.get_data(Role,'create_time')
     return render_template("admin/admin/admin_list.html", admin_data=data.fetchall(),role_data = role_data)
 
