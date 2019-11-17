@@ -11,7 +11,7 @@ from app.extensions import cache
 CLICKS_COUNT = {}
 
 class seoData(object):
-    def __init__(self, keywords,description,title):
+    def __init__(self, keywords='',description='',title=''):
         self.keywords = keywords
         self.description = description
         self.title = title
